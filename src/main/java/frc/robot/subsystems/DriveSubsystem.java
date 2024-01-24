@@ -15,9 +15,10 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -117,8 +118,15 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field.
    * @param rateLimit     Whether to enable rate limiting for smoother control.
    */
-  public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
+  public void drive(double ySpeed, double xSpeed, double rot, boolean fieldRelative, boolean rateLimit) {
     
+    // Curve the inputs for easier more precise driving
+    double linearCurveMultiplier = Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)),Constants.OIConstants.INPUT_CURVE_POWER - 1);
+    double angularCurveMultiplier = Math.pow(Math.abs(rot),Constants.OIConstants.INPUT_CURVE_POWER - 1);
+    xSpeed *= linearCurveMultiplier;
+    ySpeed *= linearCurveMultiplier;
+    rot *= angularCurveMultiplier;
+
     double xSpeedCommanded;
     double ySpeedCommanded;
 
