@@ -14,7 +14,9 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
@@ -38,26 +40,40 @@ public class RobotContainer {
   private final LimelightVision LimelightVision = new LimelightVision();
 
   // The driver's controller
-  XboxController m_driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
+    private final XboxController m_driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
+    private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
 
+  // Controller commands
+  private final RunCommand xBoxControllerCommand = new RunCommand(
+    () -> driveSubsystem.drive(
+        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
+        true, true),
+        driveSubsystem);
+
+    private final RunCommand flightstickCommand = new RunCommand(
+        () -> driveSubsystem.drive(
+            -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
+            true, true),
+            driveSubsystem);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
     // Configure the button bindings
     configureButtonBindings();
 
-    // Configure default commands
-    driveSubsystem.setDefaultCommand(
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
-        new RunCommand(
-            () -> driveSubsystem.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
-                true, true),
-                driveSubsystem));
+
+    // Adjust the dafult command based on which controler the driver ants to use.
+    if (SmartDashboard.getBoolean("useXBoxController", true)) {
+      driveSubsystem.setDefaultCommand(xBoxControllerCommand);
+    } else {
+      driveSubsystem.setDefaultCommand(flightstickCommand);
+    }
   }
 
   /**
