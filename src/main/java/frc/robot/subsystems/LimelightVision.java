@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -20,12 +19,12 @@ public class LimelightVision extends SubsystemBase {
     @Override
     public void periodic() {
         
-       //read values periodically
+        // Read values periodically
         double x = tx.getDouble(0.0);
         double y = ty.getDouble(0.0);
         double area = ta.getDouble(0.0);
 
-        //post to smart dashboard periodically
+        // Post to smart dashboard periodically
         SmartDashboard.putNumber("LimelightX", x);
         SmartDashboard.putNumber("LimelightY", y);
         SmartDashboard.putNumber("LimelightArea", area);
