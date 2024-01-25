@@ -4,6 +4,9 @@
 
 package frc.robot.subsystems;
 
+import org.photonvision.PhotonCamera;
+import org.photonvision.targeting.PhotonTrackedTarget;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
@@ -43,6 +46,9 @@ public class DriveSubsystem extends SubsystemBase {
 
   // The gyro sensor
   private final Pigeon2 gyro = new Pigeon2(42);
+
+  // PhotonCamera
+  private final PhotonCamera aprilTagCamera = new PhotonCamera("Apriltag_Cam");
 
   // Slew rate filter variables for controlling lateral acceleration
   private double currentRotation = 0.0;
@@ -241,5 +247,25 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public double getTurnRate() {
     return gyro.getRate();
+  }
+
+  public void alignShot() {
+    // double forwardSpeed;
+    // double rotationSpeed;
+    var result = aprilTagCamera.getLatestResult();
+
+    if(result.hasTargets()) {
+      PhotonTrackedTarget target = result.getBestTarget();
+      int targetId = target.getFiducialId();
+      System.out.println(targetId);
+      // if red/blue check
+      if(targetId == 7 || targetId == 8 || targetId == 42) {
+        // double poseAmbiguity = target.getPoseAmbiguity();
+        // Transform3d bestCameraToTarget = target.getBestCameraToTarget();
+        // Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
+        //rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
+        this.drive(0, 0, result.getBestTarget().getYaw(), true, true);
+      }
+    }
   }
 }
