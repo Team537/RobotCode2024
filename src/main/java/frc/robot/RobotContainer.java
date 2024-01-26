@@ -93,7 +93,7 @@ public class RobotContainer {
             driveSubsystem));
     new JoystickButton(m_driverController, Button.kX.value)
         .whileTrue(new RunCommand(
-            () -> driveSubsystem.setX(),
+            () -> driveSubsystem.alignShot(),
             driveSubsystem));
   }
 

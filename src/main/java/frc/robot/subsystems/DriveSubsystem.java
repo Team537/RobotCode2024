@@ -176,11 +176,17 @@ public class DriveSubsystem extends SubsystemBase {
       currentRotation = rot;
     }
 
+    if(currentRotation > 0) {
+      System.out.println("CurrentRot: " + currentRotation);
+    }
     // Convert the commanded speeds into the correct units for the drivetrain
     double xSpeedDelivered = xSpeedCommanded * DriveConstants.MAX_SPEED_METERS_PER_SECOND;
     double ySpeedDelivered = ySpeedCommanded * DriveConstants.MAX_SPEED_METERS_PER_SECOND;
     double rotDelivered = currentRotation * DriveConstants.MAX_ANGULAR_SPEED;
 
+    if(rotDelivered > 0) {
+      System.out.println("RotDelivered: " + rotDelivered);
+    }
     var swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(xSpeedDelivered, ySpeedDelivered, rotDelivered, gyro.getRotation2d())
@@ -191,7 +197,7 @@ public class DriveSubsystem extends SubsystemBase {
     backLeft.setDesiredState(swerveModuleStates[2]);
     backRight.setDesiredState(swerveModuleStates[3]);
 
-    System.out.println("gyro: " + gyro.getRotation2d().getDegrees());
+    // System.out.println("gyro: " + gyro.getRotation2d().getDegrees());
   }
 
   /**
@@ -257,14 +263,17 @@ public class DriveSubsystem extends SubsystemBase {
     if(result.hasTargets()) {
       PhotonTrackedTarget target = result.getBestTarget();
       int targetId = target.getFiducialId();
-      System.out.println(targetId);
+      //System.out.println(targetId);
+      // System.out.println(result.getBestTarget().getYaw());
       // if red/blue check
-      if(targetId == 7 || targetId == 8 || targetId == 42) {
+      if((targetId == 7 || targetId == 8 || targetId == 42) && (Math.abs(result.getBestTarget().getYaw()) > 1)) {
         // double poseAmbiguity = target.getPoseAmbiguity();
         // Transform3d bestCameraToTarget = target.getBestCameraToTarget();
         // Transform3d alternateCameraToTarget = target.getAlternateCameraToTarget();
         //rotationSpeed = -turnController.calculate(result.getBestTarget().getYaw(), 0);
-        this.drive(0, 0, result.getBestTarget().getYaw(), true, true);
+        //System.out.println(-result.getBestTarget().getYaw()/360);
+        this.drive(0, 0, -result.getBestTarget().getYaw()/360, false, false);
+        
       }
     }
   }
