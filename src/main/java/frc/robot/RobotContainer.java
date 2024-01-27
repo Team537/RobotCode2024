@@ -16,6 +16,7 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -35,22 +36,23 @@ import java.util.List;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  private final LimelightVision LimelightVision = new LimelightVision();
 
-  // The driver's controller
+    // The robot's subsystems
+    private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+    private final LimelightVision LimelightVision = new LimelightVision();
+
+    // The driver's controller
     private final XboxController m_driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
     private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
 
-  // Controller commands
-  private final RunCommand xBoxControllerCommand = new RunCommand(
-    () -> driveSubsystem.drive(
-        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
-        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
-        -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
-        true, true),
-        driveSubsystem);
+    // Controller dependent commands
+    private final RunCommand xBoxControllerCommand = new RunCommand(
+        () -> driveSubsystem.drive(
+            -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
+            -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
+            true, true),
+            driveSubsystem);
 
     private final RunCommand flightstickCommand = new RunCommand(
         () -> driveSubsystem.drive(
@@ -59,6 +61,10 @@ public class RobotContainer {
             -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
             true, true),
             driveSubsystem);
+
+    // SmartDashboard options
+    private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
+
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -67,13 +73,16 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    // Setup controller selection.
+    controllerSelection.setDefaultOption("Xbox Controller", xBoxControllerCommand);
+    controllerSelection.addOption("Flightstick", flightstickCommand);
 
-    // Adjust the dafult command based on which controler the driver ants to use.
-    if (SmartDashboard.getBoolean("useXBoxController", true)) {
-      driveSubsystem.setDefaultCommand(xBoxControllerCommand);
-    } else {
-      driveSubsystem.setDefaultCommand(flightstickCommand);
-    }
+    // Create the selection object in SmartDashboard (If it doesn't already exist)
+    SmartDashboard.putData("Controller Selection", controllerSelection);
+
+    // Get the drive command for the selected controller.(Note that the getSelected() method returns
+    // the command assosiated with each option, which is set above).
+    driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
   }
 
   /**
@@ -86,6 +95,8 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
+
+    // Move the robot's wheels into an X to prevent movement.
     new JoystickButton(m_driverController, Button.kR1.value)
         .whileTrue(new RunCommand(
             () -> driveSubsystem.setX(),
@@ -98,6 +109,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.MAX_SPEED_METERS_PER_SECOND,
