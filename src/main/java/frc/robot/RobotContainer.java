@@ -36,124 +36,119 @@ import java.util.List;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-                                                .build();
-  // Replace with CommandPS4Controller or CommandJoystick if needed
-  private final CommandXboxController m_driverController =
-      new CommandXboxController(OperatorConstants.kDriverControllerPort);
-  
-                                                .setLedMode(1)
-  private final LimelightVision limelightVision = new LimelightVision.Builder()
 
     // The robot's subsystems
     private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-    private final LimelightVision LimelightVision = new LimelightVision();
+    private final LimelightVision LimelightVision = new LimelightVision.Builder()
+                                                        .setLedMode(1)
+                                                        .build();
 
-    // The driver's controller
-    private final XboxController m_driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
-    private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
+   // The driver's controller
+   private final XboxController m_driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
+   private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
 
-    // Controller dependent commands
-    private final RunCommand xBoxControllerCommand = new RunCommand(
-        () -> driveSubsystem.drive(
-            -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
-            true, true),
-            driveSubsystem);
+   // Controller dependent commands
+   private final RunCommand xBoxControllerCommand = new RunCommand(
+       () -> driveSubsystem.drive(
+           -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
+           -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
+           -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
+           true, true),
+           driveSubsystem);
 
-    private final RunCommand flightstickCommand = new RunCommand(
-        () -> driveSubsystem.drive(
-            -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
-            true, true),
-            driveSubsystem);
+   private final RunCommand flightstickCommand = new RunCommand(
+       () -> driveSubsystem.drive(
+           -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
+           -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
+           -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
+           true, true),
+           driveSubsystem);
 
-    // SmartDashboard options
-    private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
+   // SmartDashboard options
+   private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
+ /**
+  * The container for the robot. Contains subsystems, OI devices, and commands.
+  */
+ public RobotContainer() {
 
-    // Configure the button bindings
-    configureButtonBindings();
+   // Configure the button bindings
+   configureButtonBindings();
 
-    // Setup controller selection.
-    controllerSelection.setDefaultOption("Xbox Controller", xBoxControllerCommand);
-    controllerSelection.addOption("Flightstick", flightstickCommand);
+   // Setup controller selection.
+   controllerSelection.setDefaultOption("Xbox Controller", xBoxControllerCommand);
+   controllerSelection.addOption("Flightstick", flightstickCommand);
 
-    // Create the selection object in SmartDashboard (If it doesn't already exist)
-    SmartDashboard.putData("Controller Selection", controllerSelection);
+   // Create the selection object in SmartDashboard (If it doesn't already exist)
+   SmartDashboard.putData("Controller Selection", controllerSelection);
 
-    // Get the drive command for the selected controller.(Note that the getSelected() method returns
-    // the command assosiated with each option, which is set above).
-    driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
-  }
+   // Get the drive command for the selected controller.(Note that the getSelected() method returns
+   // the command assosiated with each option, which is set above).
+   driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
+ }
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
-   * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
-   * subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
-   * passing it to a
-   * {@link JoystickButton}.
-   */
-  private void configureButtonBindings() {
+ /**
+  * Use this method to define your button->command mappings. Buttons can be
+  * created by
+  * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
+  * subclasses ({@link
+  * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
+  * passing it to a
+  * {@link JoystickButton}.
+  */
+ private void configureButtonBindings() {
 
-    // Move the robot's wheels into an X to prevent movement.
-    new JoystickButton(m_driverController, Button.kR1.value)
-        .whileTrue(new RunCommand(
-            () -> driveSubsystem.setX(),
-            driveSubsystem));
-  }
+   // Move the robot's wheels into an X to prevent movement.
+   new JoystickButton(m_driverController, Button.kR1.value)
+       .whileTrue(new RunCommand(
+           () -> driveSubsystem.setX(),
+           driveSubsystem));
+ }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
+ /**
+  * Use this to pass the autonomous command to the main {@link Robot} class.
+  *
+  * @return the command to run in autonomous
+  */
+ public Command getAutonomousCommand() {
 
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.MAX_SPEED_METERS_PER_SECOND,
-        AutoConstants.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.DRIVE_KINEMATICS);
+   // Create config for trajectory
+   TrajectoryConfig config = new TrajectoryConfig(
+       AutoConstants.MAX_SPEED_METERS_PER_SECOND,
+       AutoConstants.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
+       // Add kinematics to ensure max speed is actually obeyed
+       .setKinematics(DriveConstants.DRIVE_KINEMATICS);
 
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        config);
+   // An example trajectory to follow. All units in meters.
+   Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+       // Start at the origin facing the +X direction
+       new Pose2d(0, 0, new Rotation2d(0)),
+       // Pass through these two interior waypoints, making an 's' curve path
+       List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+       // End 3 meters straight ahead of where we started, facing forward
+       new Pose2d(3, 0, new Rotation2d(0)),
+       config);
 
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.THETA_CONTROLLER_KP, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+   var thetaController = new ProfiledPIDController(
+       AutoConstants.THETA_CONTROLLER_KP, 0, 0, AutoConstants.kThetaControllerConstraints);
+   thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-        driveSubsystem::getPose, // Functional interface to feed supplier
-        DriveConstants.DRIVE_KINEMATICS,
+   SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+       exampleTrajectory,
+       driveSubsystem::getPose, // Functional interface to feed supplier
+       DriveConstants.DRIVE_KINEMATICS,
 
-        // Position controllers
-        new PIDController(AutoConstants.X_CONTROLLER_KP, 0, 0),
-        new PIDController(AutoConstants.Y_CONTROLLER_KP, 0, 0),
-        thetaController,
-        driveSubsystem::setModuleStates,
-        driveSubsystem);
+       // Position controllers
+       new PIDController(AutoConstants.X_CONTROLLER_KP, 0, 0),
+       new PIDController(AutoConstants.Y_CONTROLLER_KP, 0, 0),
+       thetaController,
+       driveSubsystem::setModuleStates,
+       driveSubsystem);
 
-    // Reset odometry to the starting pose of the trajectory.
-    driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
+   // Reset odometry to the starting pose of the trajectory.
+   driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
 
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, false, false));
-  }
+   // Run path following command, then stop at the end.
+   return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, false, false));
+ }
 }
