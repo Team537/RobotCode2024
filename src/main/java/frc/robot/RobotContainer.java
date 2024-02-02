@@ -52,13 +52,13 @@ public class RobotContainer {
         true, true),
         driveSubsystem);
 
-    private final RunCommand flightstickCommand = new RunCommand(
-        () -> driveSubsystem.drive(
-            -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
-            true, true),
-            driveSubsystem);
+  private final RunCommand flightstickCommand = new RunCommand(
+      () -> driveSubsystem.drive(
+          -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
+          -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
+          -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
+          true, true),
+          driveSubsystem);
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */

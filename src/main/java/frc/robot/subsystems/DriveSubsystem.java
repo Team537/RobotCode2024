@@ -15,9 +15,11 @@ import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import frc.utils.SwerveUtils;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.utils.SlewRateLimiterEX;
 
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
@@ -49,7 +51,7 @@ public class DriveSubsystem extends SubsystemBase {
   private double currentTranslationDir = 0.0;
   private double currentTranslationMag = 0.0;
 
-  private SlewRateLimiter magLimiter = new SlewRateLimiter(DriveConstants.MAGNITUDE_SLEW_RATE);
+  private SlewRateLimiterEX magLimiter = new SlewRateLimiterEX(DriveConstants.MAGNITUDE_SLEW_RATE);
   private SlewRateLimiter rotLimiter = new SlewRateLimiter(DriveConstants.ROTATIONAL_SLEW_RATE);
   private double prevTime = WPIUtilJNI.now() * 1e-6;
 
@@ -66,6 +68,7 @@ public class DriveSubsystem extends SubsystemBase {
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    zeroHeading();
   }
 
   @Override
@@ -119,6 +122,13 @@ public class DriveSubsystem extends SubsystemBase {
    */
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
     
+    // Curve the inputs for easier more precise driving
+    double linearCurveMultiplier = Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)),Constants.OIConstants.INPUT_CURVE_POWER - 1);
+    double angularCurveMultiplier = Math.pow(Math.abs(rot),Constants.OIConstants.INPUT_CURVE_POWER - 1);
+    xSpeed *= linearCurveMultiplier;
+    ySpeed *= linearCurveMultiplier;
+    rot *= angularCurveMultiplier;
+
     double xSpeedCommanded;
     double ySpeedCommanded;
 
@@ -139,23 +149,29 @@ public class DriveSubsystem extends SubsystemBase {
       double currentTime = WPIUtilJNI.now() * 1e-6;
       double elapsedTime = currentTime - prevTime;
       double angleDif = SwerveUtils.AngleDifference(inputTranslationDir, currentTranslationDir);
+
+      //quickly accelerate if changing directions
+      if (angleDif > 0.1*Math.PI && currentTranslationMag > 1e-4 && inputTranslationMag > 1e-4) {
+        magLimiter.setRate(Constants.DriveConstants.FASTER_MAGNITUDE_SLEW_RATE);
+        directionSlewRate = DriveConstants.DIRECTION_SLEW_RATE * 3;
+      } else {
+        magLimiter.setRate(Constants.DriveConstants.MAGNITUDE_SLEW_RATE);
+      }
+
       if (angleDif < 0.45*Math.PI) {
         currentTranslationDir = SwerveUtils.StepTowardsCircular(currentTranslationDir, inputTranslationDir, directionSlewRate * elapsedTime);
         currentTranslationMag = magLimiter.calculate(inputTranslationMag);
-      }
-      else if (angleDif > 0.85*Math.PI) {
+      } else if (angleDif > 0.85*Math.PI) {
         if (currentTranslationMag > 1e-4) { //some small number to avoid floating-point errors with equality checking
           // keep currentTranslationDir unchanged
-          currentTranslationMag = magLimiter.calculate(0.0);
-        }
-        else {
+          currentTranslationMag = magLimiter.calculate(0);
+        } else {
           currentTranslationDir = SwerveUtils.WrapAngle(currentTranslationDir + Math.PI);
           currentTranslationMag = magLimiter.calculate(inputTranslationMag);
         }
-      }
-      else {
+      } else {
         currentTranslationDir = SwerveUtils.StepTowardsCircular(currentTranslationDir, inputTranslationDir, directionSlewRate * elapsedTime);
-        currentTranslationMag = magLimiter.calculate(0.0);
+        currentTranslationMag = magLimiter.calculate(0);
       }
       prevTime = currentTime;
       
@@ -185,7 +201,8 @@ public class DriveSubsystem extends SubsystemBase {
     backLeft.setDesiredState(swerveModuleStates[2]);
     backRight.setDesiredState(swerveModuleStates[3]);
 
-    System.out.println("gyro: " + gyro.getRotation2d().getDegrees());
+    //System.out.println("gyro: " + gyro.getRotation2d().getDegrees());
+    //System.out.println("quickAccel " + currentTranslationMag);
   }
 
   /**
