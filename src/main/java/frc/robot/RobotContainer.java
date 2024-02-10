@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -13,21 +15,19 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.LimelightVision;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
-import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import java.util.List;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -47,45 +47,46 @@ public class RobotContainer {
    private final XboxController m_driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
    private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
 
-   // Controller dependent commands
-   private final RunCommand xBoxControllerCommand = new RunCommand(
-       () -> driveSubsystem.drive(
-           -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
-           -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
-           -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
-           true, true),
-           driveSubsystem);
+  // Controller commands
+  private final RunCommand xBoxControllerCommand = new RunCommand(
+    () -> driveSubsystem.drive(
+        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(m_driverController.getRightY(), OIConstants.DRIVE_DEADBAND),
+        m_driverController.getRightTriggerAxis(),
+        m_driverController.getBackButton(),
+        true, true),
+        driveSubsystem);
 
-   private final RunCommand flightstickCommand = new RunCommand(
-       () -> driveSubsystem.drive(
-           -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
-           -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
-           -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
-           true, true),
-           driveSubsystem);
+  private final RunCommand flightstickCommand = new RunCommand(
+      () -> driveSubsystem.drive(
+          -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
+          -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
+          -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
+          0,
+          0,
+          false,
+          true, true),
+          driveSubsystem);
 
-   // SmartDashboard options
-   private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
-
+  private final RunCommand targetPositionCommand = new RunCommand(() -> driveSubsystem.position(new Pose2d(-5 * m_driverController.getLeftX(),5 * m_driverController.getLeftY(),new Rotation2d(0))), driveSubsystem);
  /**
   * The container for the robot. Contains subsystems, OI devices, and commands.
   */
- public RobotContainer() {
+  public RobotContainer() {
 
-   // Configure the button bindings
-   configureButtonBindings();
+    // Configure the button bindings
+    configureButtonBindings();
 
-   // Setup controller selection.
-   controllerSelection.setDefaultOption("Xbox Controller", xBoxControllerCommand);
-   controllerSelection.addOption("Flightstick", flightstickCommand);
-
-   // Create the selection object in SmartDashboard (If it doesn't already exist)
-   SmartDashboard.putData("Controller Selection", controllerSelection);
-
-   // Get the drive command for the selected controller.(Note that the getSelected() method returns
-   // the command assosiated with each option, which is set above).
-   driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
- }
+    // Adjust the dafult command based on which controler the driver ants to use.
+    if (SmartDashboard.getBoolean("useXBoxController", true)) {
+      driveSubsystem.setDefaultCommand(xBoxControllerCommand);
+      //driveSubsystem.setDefaultCommand(targetPositionCommand); //expiramental position based control :)
+    } else {
+      driveSubsystem.setDefaultCommand(flightstickCommand);
+    }
+  }
 
  /**
   * Use this method to define your button->command mappings. Buttons can be
@@ -103,7 +104,7 @@ public class RobotContainer {
        .whileTrue(new RunCommand(
            () -> driveSubsystem.setX(),
            driveSubsystem));
- }
+  }
 
  /**
   * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -148,7 +149,7 @@ public class RobotContainer {
    // Reset odometry to the starting pose of the trajectory.
    driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
 
-   // Run path following command, then stop at the end.
-   return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, false, false));
- }
+    // Run path following command, then stop at the end.
+    return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, 0, false, false, false));
+  }
 }
