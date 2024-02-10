@@ -49,25 +49,16 @@ public class RobotContainer {
         -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
-        -MathUtil.applyDeadband(m_driverController.getRightY(), OIConstants.DRIVE_DEADBAND),
-        m_driverController.getRightTriggerAxis(),
-        m_driverController.getBackButton(),
         true, true),
         driveSubsystem);
 
   private final RunCommand flightstickCommand = new RunCommand(
       () -> driveSubsystem.drive(
           -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
-          -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
+          -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
           -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
-          0,
-          0,
-          false,
           true, true),
           driveSubsystem);
-
-  private final RunCommand targetPositionCommand = new RunCommand(() -> driveSubsystem.position(new Pose2d(-5 * m_driverController.getLeftX(),5 * m_driverController.getLeftY(),new Rotation2d(0))), driveSubsystem);
-  
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -80,7 +71,6 @@ public class RobotContainer {
     // Adjust the dafult command based on which controler the driver ants to use.
     if (SmartDashboard.getBoolean("useXBoxController", true)) {
       driveSubsystem.setDefaultCommand(xBoxControllerCommand);
-      //driveSubsystem.setDefaultCommand(targetPositionCommand); //expiramental position based control :)
     } else {
       driveSubsystem.setDefaultCommand(flightstickCommand);
     }
@@ -145,6 +135,6 @@ public class RobotContainer {
     driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, 0, false, false, false));
+    return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, false, false));
   }
 }

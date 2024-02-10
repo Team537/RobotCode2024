@@ -28,25 +28,17 @@ public final class Constants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
     public static final double MAX_SPEED_METERS_PER_SECOND = 2; //4 // meters per second
-    public static final double BOOST_MODE_MAX_SPEED_METERS_PER_SECOND = 4.8; //meters per second
     public static final double MAX_ANGULAR_SPEED = 2 * Math.PI; // radians per second
 
-    public static final double DIRECTION_SLEW_RATE = 2; // radians per second
-    public static final double GRIP_DIRECTION_SLEW_RATE = 5; // radians per second
-    public static final double BOOST_MODE_DIRECTION_SLEW_RATE = 1.8; // radians per second
-    public static final double GRIP_BOOST_MODE_DIRECTION_SLEW_RATE = 5; // radians per second
-    public static final double MAGNITUDE_POSITIVE_SLEW_RATE = 1.8; // percent per second (1 = 100%)
-    public static final double MAGNITUDE_NEGATIVE_SLEW_RATE = 2.4; // percent per second (1 = 100%)
-    public static final double GRIP_MAGNITUDE_POSITIVE_SLEW_RATE = 3.6; // percent per second (1 = 100%)
-    public static final double GRIP_MAGNITUDE_NEGATIVE_SLEW_RATE = 4; // percent per second (1 = 100%)
-    public static final double BOOST_MODE_MAGNITUDE_POSITIVE_SLEW_RATE = 1; // percent per second (1 = 100%)
-    public static final double BOOST_MODE_MAGNITUDE_NEGATIVE_SLEW_RATE = 1.8; // percent per second (1 = 100%)
+    public static final double DIRECTION_SLEW_RATE = 1.2; // radians per second
+    public static final double MAGNITUDE_SLEW_RATE = 1.8; // percent per second (1 = 100%)
+    public static final double FASTER_MAGNITUDE_SLEW_RATE = 3.6; // percent per second (1 = 100%)
     public static final double ROTATIONAL_SLEW_RATE = 2.0; // percent per second (1 = 100%)
 
     // Chassis configuration
-    public static final double TRACK_WIDTH = Units.inchesToMeters(16); //16 for amy; 14.5 for alucard
+    public static final double TRACK_WIDTH = Units.inchesToMeters(16);
     // Distance between centers of right and left wheels on robot
-    public static final double WHEEL_BASE = Units.inchesToMeters(16); //16 for amy; 14.5 for alucard
+    public static final double WHEEL_BASE = Units.inchesToMeters(16);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
         new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2),
@@ -72,12 +64,6 @@ public final class Constants {
     public static final int BACK_RIGHT_TURNING_CAN_ID = 3;
 
     public static final boolean GYRO_REVERSED = false;
-
-    //orientation lock PID values
-    public static final double ORIENTATION_LOCK_KP = 1.4;
-    public static final double ORIENTATION_LOCK_KI = 0;
-    public static final double ORIENTATION_LOCK_KD = 0.1;
-
   }
 
   public static final class ModuleConstants {
