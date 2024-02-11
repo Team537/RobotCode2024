@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.subsystems.cameras;
 
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
@@ -9,99 +9,46 @@ import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class LimelightVision extends SubsystemBase {
+public class LimelightCamera extends SubsystemBase {
     
-    NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    private NetworkTable table;
+    private String name; // NetworkTable's name
 
-    private LimelightVision(int ledMode, int camMode, int pipeline, int streamMode) {
+    /**
+     * Create a new LimelightCamera object with the desired paramaters.
+     * 
+     * @param networktableName The anme of the network table that this limelight is using.
+     * @param ledMode The LEDMode you want this limelight to use. 
+     *                  <ul>
+     *                      <li> 0: Use the LED Mode set in the current pipeline </li>
+     *                      <li> 1: Force off </li>
+     *                      <li> 2: Force blink </li>
+     *                      <li> 3: Force on </li>
+     *                  </ul>
+     * @param camMode The operating mode you want this limelight to be running in.
+     *                  <ul>
+     *                      <li> 0: Vision processor </li>
+     *                      <li> 1: Driver Camera (Increases exposure, disables vision processing) </li>
+     *                  </ul>
+     * @param pipeline The pipeline (number 0-9) that you want this limelight to use.
+     * @param streamMode The streaming mode you want this limelight to be running in.
+     *                  <ul>
+     *                      <li> 0: Standard - Side-by-side streams if a webcam is attached to Limelight </li>
+     *                      <li> 1: PiP Main - The secondary camera stream is placed in the lower-right corner of the primary camera stream </li>
+     *                      <li> 2: PiP Secondary - The primary camera stream is placed in the lower-right corner of the secondary camera stream </li>
+     *                  </ul>
+     */
+    public LimelightCamera(String networktableName, int ledMode, int camMode, int pipeline, int streamMode) {
+        table = NetworkTableInstance.getDefault().getTable(networktableName);
+        name = networktableName;
         setLedMode(ledMode);
-        setCamMode(camMode);
+        setCameraMode(camMode);
         setPipeline(pipeline);
         setStreamMode(streamMode);
     }
 
-    /**
-     * This class is responsable for creating and setting up a <code> LimelightVision </code> object.
-     */
-    public static class Builder {
-        private int ledMode = 0;
-        private int camMode = 0;
-        private int pipeline = 0;
-        private int streamMode = 0;
-
-        /**
-         * Sets the LED's mode.
-         *  
-         * @param mode The mode you want this limelight's LED's to be set to. Below is a list
-         *                of the LED modes along with which input will set the LEDs to each mode.
-         *                  <ul>
-         *                      <li> 0: Use the LED Mode set in the current pipeline </li>
-         *                      <li> 1: Force off </li>
-         *                      <li> 2: Force blink </li>
-         *                      <li> 3: Force on </li>
-         *                  </ul>
-         */
-        public Builder setLedMode(int mode) {
-            this.ledMode = mode;
-            return this;
-        }
-
-        /**
-         * Sets the camera mode.
-         * 
-         * @param mode The operating mode you want this limelight to be running in.
-         *                  <ul>
-         *                      <li> 0: Vision processor </li>
-         *                      <li> 1: Driver Camera (Increases exposure, disables vision processing) </li>
-         *                  </ul>
-         */
-        public Builder setCamMode(int mode) {
-            this.camMode = mode;
-            return this;
-        }
-
-        /**
-         * Sets this limelight's pipeline. 
-         * 
-         * @param pipeline The pipeline (number 0-9) that you want this limelight to use.
-         */
-        public Builder setPipeline(int pipeline) {
-            this.pipeline = pipeline;
-            return this;
-        }
-
-        /**
-         * Sets the streaming mode.
-         * 
-         * @param mode The streaming mode you want this limelight to be running in.
-         *              <ul>
-         *                  <li> 0: Standard - Side-by-side streams if a webcam is attached to 
-         *                       Limelight </li>
-         *                  <li> 1: PiP Main - The secondary camera stream is placed in the lower-
-         *                       right corner of the primary camera stream </li>
-         *                  <li> 2: PiP Secondary - The primary camera stream is placed in the lower-
-         *                       right corner of the secondary camera stream </li>
-         *              </ul>
-         */
-        public Builder setStreamMode(int mode) {
-            this.streamMode = mode;
-            return this;
-        }
-        
-        /**
-         * This method builds a <code> LimelightVision </code> object with the desired settings.
-         * 
-         * @return A <code> LimelightVision </code> object setup with the desired parameters.
-         */
-        public LimelightVision build() {
-            return new LimelightVision(ledMode, camMode, pipeline, streamMode);
-        }
-    }
-
     @Override
-    public void periodic() {
-        
-    }
+    public void periodic() {}
 
     /**
      * Sets this limelight's LED's mode.
@@ -133,7 +80,7 @@ public class LimelightVision extends SubsystemBase {
      *                      <li> 1: Driver Camera (Increases exposure, disables vision processing) </li>
      *                  </ul>
      */
-    public void setCamMode(int mode) {
+    public void setCameraMode(int mode) {
 
         // Make sure mode is within the allowed range.
         mode = validateAndClampInput(mode, 0, 1, "Camera Mode");
@@ -171,6 +118,20 @@ public class LimelightVision extends SubsystemBase {
     }
 
     /**
+     * Take exactly one snapshot.
+     */
+    public void snapshot() {
+        getValue("snapshot").setNumber(1);
+    }
+
+    /**
+     * Reset snapshot mode.
+     */
+    public void resetSnapshotMode() {
+        getValue("snapshot").setNumber(0);
+    }
+
+    /**
      * Returns which pipeline this limelight is currently using.
      * 
      * @return The pipeline that this limelight is currently using.
@@ -184,7 +145,7 @@ public class LimelightVision extends SubsystemBase {
      * 
      * @return Whether or not an april tag is being detected.
      */
-    public boolean isTargetInView() {
+    public boolean hasTarget() {
         return getValue("tv").getDouble(0) == 1;
     }
 
@@ -221,8 +182,8 @@ public class LimelightVision extends SubsystemBase {
      * 
      * @return This limelight's pipeline's latency in ms.
      */
-    public boolean getLatency() {
-        return getValue("tl").getDouble(0) == 1;
+    public double getLatency() {
+        return getValue("tl").getDouble(0);
     }
 
     /**
@@ -253,6 +214,15 @@ public class LimelightVision extends SubsystemBase {
 
         // Return a Pose3d value containing the above calculated translation3d and rotaton3d. (Robot's positon)
         return new Pose3d(robotTranslation, robotRotation);
+    }
+
+    /**
+     * Returns the name of the camera.
+     * 
+     * @return The name of this camera.
+     */
+    public String getCameraName() {
+        return name;
     }
 
     /**
