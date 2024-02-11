@@ -1,7 +1,6 @@
-package frc.robot.subsystems.commands;
+package frc.robot.commands;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.DriveSubsystem;
@@ -24,7 +23,7 @@ public class TrackAprilTagCommand extends Command {
 
     public TrackAprilTagCommand(DriveSubsystem driveSubsystem, RobotVision robotVision) {
 
-        // Gain acsess to subsystems
+        // Gain access to subsystems
         this.swerveDrivetrain = driveSubsystem;
         this.vision = robotVision;
 
@@ -66,7 +65,7 @@ public class TrackAprilTagCommand extends Command {
          * Multiply all of these values by negative one so that the PID controller will 
          * drive towards the tag. Were this line of code not to be here, the robot would 
          * attempt to drive in the complete opposite direction of the tag as a result of the
-         * PID controlelrs attempting to lower the distance, which results in a negative speed
+         * PID controllers attempting to lower the distance, which results in a negative speed
          * and thus causes the robot to drive backwards away from the tag.
          */
         distanceToTag.times(-1);

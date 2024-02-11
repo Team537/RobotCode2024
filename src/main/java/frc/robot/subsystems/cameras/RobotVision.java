@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose3d;
-import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
@@ -146,12 +145,12 @@ public class RobotVision extends SubsystemBase {
         ArrayList<PhotonTrackedTarget> validTargets = new ArrayList<>();
         TagPose3d tagPosition = new TagPose3d();
 
-        // Loop through all of the cameras in this RobotVision oject.
+        // Loop through all of the cameras in this RobotVision object.
         for (PhotonVisionCamera camera : photonVisionCameras) {
 
-            // Check whether or not the camera is currrently viewing a AprilTag with the desired id. IF it is, then
-            // ensure the the position data isn't ambigus and add it to the list of validTargets for future mathematical opperations.
-            PhotonTrackedTarget target = validtatePhotonTrackedTarget(camera, id);
+            // Check whether or not the camera is currently viewing a AprilTag with the desired id. IF it is, then
+            // ensure the the position data isn't ambiguous and add it to the list of validTargets for future mathematical operations.
+            PhotonTrackedTarget target = validatePhotonTrackedTarget(camera, id);
             if (target != null) {
                 validTargets.add(target);
             }
@@ -163,7 +162,7 @@ public class RobotVision extends SubsystemBase {
             return null;
         }
 
-        // Avverage out all of the tag data to minimize error.
+        // Average out all of the tag data to minimize error.
         for (PhotonTrackedTarget target : validTargets) {
             tagPosition.plus(target.getBestCameraToTarget());
         }
@@ -189,28 +188,28 @@ public class RobotVision extends SubsystemBase {
 
     /**
      * Returns a PhotonTrackedTarget if the specified camera is able to see a tag with a desired ID and 
-     * provides unambigus data. Otherwise return null.
+     * provides unambiguous data. Otherwise return null.
      * 
      * @param camera The camera you want to check te targets of.
      * @param targetId The ID of the desired AprilTag target.
      * @return A PhotonTrackedTarget if the specified camera is able to see a tag with a desired ID and 
-     *         provides unambigus data. Otherwise return null.
+     *         provides unambiguous data. Otherwise return null.
      */
-    private PhotonTrackedTarget validtatePhotonTrackedTarget(PhotonVisionCamera camera, int targetId) {
+    private PhotonTrackedTarget validatePhotonTrackedTarget(PhotonVisionCamera camera, int targetId) {
 
-        // Check if the camera is able to see the desired april tag. If not then reutrn null.
-        PhotonTrackedTarget target = camera.getDistacneToTag(targetId);
+        // Check if the camera is able to see the desired april tag. If not then return null.
+        PhotonTrackedTarget target = camera.getDistanceToTag(targetId);
         if (target == null) {
             return null;
         }
 
-        // Make sure the tag's ambigus is lower than the maximum allowed ambiguity. This helps ensure that our robot
-        // doesn't get confusted by ambigus position data.
+        // Make sure the tag's ambiguous is lower than the maximum allowed ambiguity. This helps ensure that our robot
+        // doesn't get confused by ambiguous position data.
         if (target.getPoseAmbiguity() > CameraConstants.MAX_AMBIGUITY) {
             return null;
         }
 
-        // Return a PhotonTrackedTarget with the deisred targetId.
+        // Return a PhotonTrackedTarget with the desired targetId.
         return target;
     }
 
@@ -248,7 +247,7 @@ public class RobotVision extends SubsystemBase {
      */
     public void snapshot() {
 
-        // Loop throguh all of then cameras and take a snapshot (photograph) using each camera.
+        // Loop through all of then cameras and take a snapshot (photograph) using each camera.
         for (PhotonVisionCamera camera : photonVisionCameras) {
             camera.takeInputSnapshot();
         }

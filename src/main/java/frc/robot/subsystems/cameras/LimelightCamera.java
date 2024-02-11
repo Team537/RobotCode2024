@@ -15,9 +15,9 @@ public class LimelightCamera extends SubsystemBase {
     private String name; // NetworkTable's name
 
     /**
-     * Create a new LimelightCamera object with the desired paramaters.
+     * Create a new LimelightCamera object with the desired parameters.
      * 
-     * @param networktableName The anme of the network table that this limelight is using.
+     * @param networktableName The name of the network table that this limelight is using.
      * @param ledMode The LEDMode you want this limelight to use. 
      *                  <ul>
      *                      <li> 0: Use the LED Mode set in the current pipeline </li>
@@ -68,7 +68,7 @@ public class LimelightCamera extends SubsystemBase {
         mode = validateAndClampInput(mode, 0, 3, "LED Mode");
 
         // Set this limelight's LED Mode.
-        getValue("LedledMode").setNumber(mode);
+        getValue("ledMode").setNumber(mode);
     }
 
     /**
@@ -141,7 +141,7 @@ public class LimelightCamera extends SubsystemBase {
     }
 
     /**
-     * This method returns true if the limelight can see an apriltag.
+     * This method returns true if the limelight can see an AprilTag.
      * 
      * @return Whether or not an april tag is being detected.
      */
@@ -169,7 +169,7 @@ public class LimelightCamera extends SubsystemBase {
     }
 
     /**
-     * This method returns the verticle offset from the crosshair to the target.
+     * This method returns the vertical offset from the crosshair to the target.
      * 
      * @return Vertical Offset from crosshair to target in degrees. (Output ranges from +- 1/2 FOV)
      */
@@ -212,7 +212,7 @@ public class LimelightCamera extends SubsystemBase {
         Translation3d robotTranslation = new Translation3d(botposeValues[0], botposeValues[1], botposeValues[2]);
         Rotation3d robotRotation = new Rotation3d(botposeValues[3], botposeValues[4], botposeValues[5]);
 
-        // Return a Pose3d value containing the above calculated translation3d and rotaton3d. (Robot's positon)
+        // Return a Pose3d value containing the above calculated translation3d and Rotation3d. (Robot's position)
         return new Pose3d(robotTranslation, robotRotation);
     }
 
@@ -226,7 +226,7 @@ public class LimelightCamera extends SubsystemBase {
     }
 
     /**
-     * Returns the NetworkTableEntry under this Limelight netwoektable with the 
+     * Returns the NetworkTableEntry under this Limelight's NetworkTable with the 
      * desired name (key).
      * 
      * @param key The name of the NetworkTableEntry you want to get.
@@ -238,17 +238,17 @@ public class LimelightCamera extends SubsystemBase {
 
     /**
      * Checks if the provided value is within the desired range. If it isn't, then print an
-     * error and set the value to the closests value in nthe range. Lastly, return the vlaue.
+     * error and set the value to the closest value in the range. Lastly, return the value.
      * 
      * @param value The value to clamp and validate.
      * @param min The minimum allowed value.
      * @param max The maximum allowed value.
-     * @param settingName The name of the settign that is trying to be set/changed.
+     * @param settingName The name of the setting that is trying to be set/changed.
      * @return A value that is within the desired range as close to the original value as possible.
      */
     private int validateAndClampInput(int value, int min, int max, String settingName) {
 
-        // Make sure the value is within the desired range. If it isn't, then print out an erro and 
+        // Make sure the value is within the desired range. If it isn't, then print out an error and 
         // set value to the closest value within the range.
         if (value < min) {
             System.err.println("Error: " + settingName + " out of range. " +

@@ -19,7 +19,7 @@ public class PhotonVisionCamera extends SubsystemBase {
     private Pose3d cameraOffset; // The camera's position relative to the robot.
     
     /**
-     * Creates a <code> PhotonVisionCamera </code> with the desired paramaters.
+     * Creates a {@code PhotonVisionCamera} with the desired parameters.
      * 
      * @param cameraName The name of the camera you want to create.
      * @param cameraOffset The camera's position relative to the robot's origin.
@@ -57,7 +57,7 @@ public class PhotonVisionCamera extends SubsystemBase {
     }
 
     /**
-     * Returns the esimate position of the robot. 
+     * Returns the estimated position of the robot. 
      * 
      * @return The estimated position of the robot.
      */
@@ -67,20 +67,19 @@ public class PhotonVisionCamera extends SubsystemBase {
         MultiTargetPNPResult multiTargetPNPResults = result.getMultiTagResult();
         PNPResult estimatedPosition = multiTargetPNPResults.estimatedPose;
 
-        // Make sure that the calcualted robot position isn't outdated
+        // Make sure that the calculated robot position isn't outdated
         if (!estimatedPosition.isPresent) {
-            System.out.println("bad haha go brrrrrr");
             return null;
         }
 
-        // TODO: Look into getting mroe accurate data.
+        // TODO: Look into getting more accurate data.
         return estimatedPosition.best;
     }
 
     /**
      * This method sets the pipeline that this camera's stream will be processed using.
      * 
-     * @param pipeline The pipeline number (0-9) you want this camera to be usinng 
+     * @param pipeline The pipeline number (0-9) you want this camera to be using 
      *                 to process the image.
      */
     public void setPipeline(int pipeline) {
@@ -92,13 +91,13 @@ public class PhotonVisionCamera extends SubsystemBase {
      * returns null.
      * 
      * @param id The ID of the tag you want to see if this camera can see.
-     * @return If this camera can see a tag with the deisred ID then this method returns a 
+     * @return If this camera can see a tag with the desired ID then this method returns a 
      *         PhotonTrackedTarget. Otherwise this method returns null.
      */
-    public PhotonTrackedTarget getDistacneToTag(int id) {
+    public PhotonTrackedTarget getDistanceToTag(int id) {
 
         // Make sure that this camera is detecting targets. If not then return false
-        // since if there aren't any targets then there isn't a target with the drsired id.
+        // since if there aren't any targets then there isn't a target with the desired id.
         if(!hasTargets()) {
             return null;
         }
@@ -138,7 +137,7 @@ public class PhotonVisionCamera extends SubsystemBase {
     /**
      * THis method returns the most prominent target visible by this camera.
      * 
-     * @return The best target visible by this camera. (If there isn't a camer then this
+     * @return The best target visible by this camera. (If there isn't a camera then this
      *          method returns null).
      */
     public PhotonTrackedTarget getPrimaryTarget() {
@@ -153,7 +152,7 @@ public class PhotonVisionCamera extends SubsystemBase {
     }
 
     /**
-     * Returns whether or not this camera is currenlty viewing the desired apriltag.
+     * Returns whether or not this camera is currently viewing the desired AprilTag.
      * 
      * @param id The ID of the AprilTag to be checked for visibility in the camera.
      * @return Whether or not an AprilTag with the desired ID is visible.
@@ -161,7 +160,7 @@ public class PhotonVisionCamera extends SubsystemBase {
     public boolean hasTargetWithId(int id) {
 
         // Make sure that this camera is detecting targets. If not then return false
-        // since if there aren't any targets then there isn't a target with the drsired id.
+        // since if there aren't any targets then there isn't a target with the desired id.
         if(!hasTargets()) {
             return false;
         }
@@ -183,7 +182,7 @@ public class PhotonVisionCamera extends SubsystemBase {
     /**
      * This method returns whether or not this camera is detecting any targets.
      * 
-     * @return True if a target is visable, otherwise false.
+     * @return True if a target is visible, otherwise false.
      */
     public boolean hasTargets() {
         return result.hasTargets();
@@ -199,7 +198,7 @@ public class PhotonVisionCamera extends SubsystemBase {
     }
 
     /**
-     * Returns The name of this <code> PhotonVisionCamera </code>.
+     * Returns The name of this {@code PhotonVisionCamera}.
      * 
      * @return The name of this camera.
      */
