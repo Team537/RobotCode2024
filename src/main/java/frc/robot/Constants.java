@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -27,7 +29,7 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double MAX_SPEED_METERS_PER_SECOND = 2; //4 // meters per second
+    public static final double MAX_SPEED_METERS_PER_SECOND = 0.6; //2 // meters per second
     public static final double BOOST_MODE_MAX_SPEED_METERS_PER_SECOND = 4.8; //meters per second
     public static final double MAX_ANGULAR_SPEED = 2 * Math.PI; // radians per second
 
@@ -74,9 +76,9 @@ public final class Constants {
     public static final boolean GYRO_REVERSED = false;
 
     //orientation lock PID values
-    public static final double ORIENTATION_LOCK_KP = 1.4;
+    public static final double ORIENTATION_LOCK_KP = 1;
     public static final double ORIENTATION_LOCK_KI = 0;
-    public static final double ORIENTATION_LOCK_KD = 0.1;
+    public static final double ORIENTATION_LOCK_KD = 0.2;
 
   }
 
@@ -154,5 +156,9 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double FREE_SPEED_RPM = 5676;
+  }
+
+  public static final class FieldConstants {
+    public static final Pose2d SPEAKER_POSE = new Pose2d(0,0,new Rotation2d());
   }
 }
