@@ -139,4 +139,16 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double FREE_SPEED_RPM = 5676;
   }
+
+  public static final class IntakeConstants {
+    public static final int INTAKE = 9;
+  }
+
+  public static final class ShooterConstants {
+    public static final int SHOOTER = 10;
+  }
+
+  public static final class ArmConstants {
+    public static final int ARM = 11;
+  }
 }
