@@ -11,8 +11,8 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
-import frc.utils.RobotPose3d;
-import frc.utils.TagPose3d;
+import frc.utils.geometry.RobotPose3d;
+import frc.utils.geometry.TagPose3d;
 
 public class RobotVision extends SubsystemBase {
     

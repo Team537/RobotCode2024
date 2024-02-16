@@ -5,7 +5,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.cameras.RobotVision;
-import frc.utils.TagPose3d;
+import frc.utils.geometry.TagPose3d;
 
 public class TrackAprilTagCommand extends Command {
     

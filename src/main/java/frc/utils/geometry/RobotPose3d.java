@@ -1,4 +1,4 @@
-package frc.utils;
+package frc.utils.geometry;
 
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
@@ -139,7 +139,7 @@ public class RobotPose3d {
      * to face the same direciton.
      * 
      * @param rotation The rotation you want to get the distance to.
-     * @return A {@code Rotation3d} object specifying the amout that this robot would have to rotate
+     * @return A {@code Pose3d} object specifying the amout that this robot would have to rotate
      *         in each 
      */
     public Pose3d getDistanceTo(Rotation3d rotation) {
@@ -149,7 +149,7 @@ public class RobotPose3d {
 
         return new Pose3d(
             new Translation3d(0, 0, 0),
-            new Rotation3d(0, 0, 0)
+            new Rotation3d(relativeRoll, relativePitch, relativeYaw)
         );
     }
 

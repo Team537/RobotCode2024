@@ -6,7 +6,7 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.utils.RobotPose3d;
+import frc.utils.geometry.RobotPose3d;
 
 public class LimelightCamera extends SubsystemBase {
     

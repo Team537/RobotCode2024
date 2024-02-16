@@ -1,4 +1,4 @@
-package frc.utils;
+package frc.utils.geometry;
 
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
