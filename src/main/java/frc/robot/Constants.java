@@ -6,8 +6,11 @@ package frc.robot;
 
 import com.revrobotics.CANSparkBase.IdleMode;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -129,27 +132,27 @@ public final class Constants {
         // Pipeline settings
         public static final int APRIL_TAG_PIPELINE = 0;
         public static final int OBJECT_DETECTION_PIPELINE = 1;
+        public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
 
         // Target settings
         public static final float MAX_AMBIGUITY = 0.2f; // The maximum amount of ambiguity allowed for detections.
 
         // Name settings
-        public static final String FRONT_CAMERA_NAME = "limelight";
-        public static final String BACK_CAMERA_NAME = "Arducam_OV9281_USB_Camera";
-        public static final String LEFT_CAMERA_NAME = "Arducam-L";
-        public static final String RIGHT_CAMERA_NAME = "Arducam-R";
+        public static final String LIMELIGHT_NAME = "limelight";
+        public static final String BLACK_AND_WHITE_CAMERA_NAME = "Arducam_OV9281_USB_Camera";
+        public static final String COLOR_CAMERA_NAME = "USB_2M_GS_camera";
 
         // Camera offsets (NOTE: These values are placeholders and thus subject to change).
-        public static final Pose3d FRONT_CAMERA_OFFSET = new Pose3d(
+        public static final Transform3d FRONT_CAMERA_OFFSET = new Transform3d(
             new Translation3d(0, 0, 0), 
             new Rotation3d(0, 0, 0));
-        public static final Pose3d RIGHT_CAMERA_OFFSET = new Pose3d(
+        public static final Transform3d RIGHT_CAMERA_OFFSET = new Transform3d(
             new Translation3d(0, 0, 0), 
             new Rotation3d(0, 0, 0));
-        public static final Pose3d LEFT_CAMERA_OFFSET = new Pose3d(
+        public static final Transform3d LEFT_CAMERA_OFFSET = new Transform3d(
             new Translation3d(0, 0, 0), 
             new Rotation3d(0, 0, 0));
-        public static final Pose3d BACK_CAMERA_OFFSET = new Pose3d(
+        public static final Transform3d BACK_CAMERA_OFFSET = new Transform3d(
             new Translation3d(0, 0, 0), 
             new Rotation3d(0, 0, 0));
     }

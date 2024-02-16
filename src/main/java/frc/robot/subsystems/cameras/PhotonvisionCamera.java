@@ -1,30 +1,39 @@
 package frc.robot.subsystems.cameras;
 
 import java.util.List;
+import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.MultiTargetPNPResult;
 import org.photonvision.targeting.PNPResult;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.CameraConstants;
+import frc.utils.RobotPose3d;
 
 public class PhotonVisionCamera extends SubsystemBase {
     
     private PhotonCamera camera;
-    private PhotonPipelineResult result;
-    private Pose3d cameraOffset; // The camera's position relative to the robot.
+    private Transform3d cameraOffset; // The camera's position relative to the robot.
     
+    private PhotonPipelineResult result;
+    private PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(CameraConstants.APRIL_TAG_FIELD_LAYOUT, 
+            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, cameraOffset);
+
     /**
      * Creates a {@code PhotonVisionCamera} with the desired parameters.
      * 
      * @param cameraName The name of the camera you want to create.
      * @param cameraOffset The camera's position relative to the robot's origin.
      */
-    public PhotonVisionCamera(String cameraName, Pose3d cameraOffset) {
+    public PhotonVisionCamera(String cameraName, Transform3d cameraOffset) {
 
         // Create a PhotonCamera object with the given name.
         this.camera = new PhotonCamera(cameraName);
@@ -57,23 +66,12 @@ public class PhotonVisionCamera extends SubsystemBase {
     }
 
     /**
-     * Returns the estimated position of the robot. 
+     * Estimates the robot's position on the filed using all of the visilbe AprilTags and returns the result.
      * 
-     * @return The estimated position of the robot.
+     * @return An estimante of the robot's positon on the field.
      */
-    public Transform3d estimateRobotPose3d() {
-        
-        // Get the calculated MultiTagResult from this camera.
-        MultiTargetPNPResult multiTargetPNPResults = result.getMultiTagResult();
-        PNPResult estimatedPosition = multiTargetPNPResults.estimatedPose;
-
-        // Make sure that the calculated robot position isn't outdated
-        if (!estimatedPosition.isPresent) {
-            return null;
-        }
-
-        // TODO: Look into getting more accurate data.
-        return estimatedPosition.best;
+    public Optional<EstimatedRobotPose> estimateRobotPose() {
+        return photonPoseEstimator.update();
     }
 
     /**

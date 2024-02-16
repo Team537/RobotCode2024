@@ -42,7 +42,7 @@ public class RobotContainer {
     // The robot's subsystems
     private final DriveSubsystem driveSubsystem = new DriveSubsystem();
     private final RobotVision robotVision = new RobotVision.Builder()
-        .addPhotonVisionCamera(CameraConstants.BACK_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.APRIL_TAG_PIPELINE)
+        .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.APRIL_TAG_PIPELINE)
         .build();
 
    // The driver's controller
@@ -105,6 +105,11 @@ public class RobotContainer {
        .whileTrue(new RunCommand(
            () -> driveSubsystem.setX(),
            driveSubsystem));
+
+    new JoystickButton(m_driverController, Button.kL1.value)
+           .onTrue(new RunCommand(
+               () -> robotVision.snapshot(CameraConstants.COLOR_CAMERA_NAME),
+                robotVision));
  }
 
  /**

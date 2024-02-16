@@ -1,13 +1,12 @@
 package frc.robot.subsystems.cameras;
 
-import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.utils.RobotPose3d;
 
 public class LimelightCamera extends SubsystemBase {
     
@@ -188,21 +187,11 @@ public class LimelightCamera extends SubsystemBase {
 
     /**
      * This method returns the position on the field that the robot thinks the robot is 
-     * located at as a <code> Pose2d </code>.
-     * 
-     * @return The robot's position on the field <code> Pose2d </code>.
-     */
-    public Pose2d getPose2d() {
-        return getPose3d().toPose2d();
-    }
-
-    /**
-     * This method returns the position on the field that the robot thinks the robot is 
      * located at as a <code> Pose3d </code>.
      * 
      * @return The robot's position on the field as a <code> Pose3d </code>.
      */
-    public Pose3d getPose3d() {
+    public RobotPose3d estimateRobotPose3d() {
 
         // Get an array containing the values of the robot's calculated position on the field.
         double[] botposeValues = getValue("botpose").getDoubleArray(new double[6]);
@@ -213,7 +202,7 @@ public class LimelightCamera extends SubsystemBase {
         Rotation3d robotRotation = new Rotation3d(botposeValues[3], botposeValues[4], botposeValues[5]);
 
         // Return a Pose3d value containing the above calculated translation3d and Rotation3d. (Robot's position)
-        return new Pose3d(robotTranslation, robotRotation);
+        return new RobotPose3d(robotTranslation, robotRotation);
     }
 
     /**

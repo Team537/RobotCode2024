@@ -1,13 +1,17 @@
 package frc.robot.subsystems.cameras;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
+import org.photonvision.EstimatedRobotPose;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
+import frc.utils.RobotPose3d;
 import frc.utils.TagPose3d;
 
 public class RobotVision extends SubsystemBase {
@@ -36,7 +40,7 @@ public class RobotVision extends SubsystemBase {
          * @param cameraOffset This camera's position relative to this robot's center.
          * @param pipeline The vision pipeline this camera will process images with.
          */
-        public Builder addPhotonVisionCamera(String cameraName, Pose3d cameraOffset, int pipeline) {
+        public Builder addPhotonVisionCamera(String cameraName, Transform3d cameraOffset, int pipeline) {
             
             // Create a new camera with the desired settings
             PhotonVisionCamera newCamera = new PhotonVisionCamera(cameraName, cameraOffset);
@@ -131,7 +135,71 @@ public class RobotVision extends SubsystemBase {
     @Override
     public void periodic() {}
 
-    public Pose3d estimateRobotPose() { return null; }
+    /**
+     * Estimates the robot's positon on the field using by using the position data gathered from
+     * visible AprilTags and returns the value. If the robot can't see any AprilTags, then this
+     * method will return null.
+     * 
+     * @return The estimated position of the robot on the field.
+     */
+    public Pose3d estimateRobotPose() {
+
+        // Create a new ArrayList to store all of the estimated robot positions.
+        RobotPose3d estimatedRobotPosition = new RobotPose3d();
+        int numEstimatedPositons = 0;
+
+        // Loop through all of this RobotVision's PhotonVisionCameras and get their estimated robot position 
+        for (PhotonVisionCamera camera : photonVisionCameras) {
+
+            // Get the camera's estimante of the robot's positon on the field. If the camera was unable to estimate a
+            // positon, then skip over to the next camera.
+            Optional<EstimatedRobotPose> optionalEstimatedPose = camera.estimateRobotPose();
+            if (optionalEstimatedPose.isEmpty()) {
+                continue;
+            }
+
+            // Get the EstimatedRobotPose from optionalEstimatedPosition since we know the value isn't null.  
+            EstimatedRobotPose estimateddRobotPose = optionalEstimatedPose.get();
+
+            // Get the estimated position and convert it to a RobotPose3d. Then add it to estimatedRobotPosition
+            // so that we can average out each camera's estimated position and get a more accurate estimante.
+            RobotPose3d estimateddRobotPose3d = new RobotPose3d(estimateddRobotPose.estimatedPose);
+            estimatedRobotPosition.add(estimateddRobotPose3d);
+
+            // Add 1 to the numEstimatedPositons so that we can keep track of the total number of positions used in
+            // the final estimante. This helps ensure our final position is as accurate as possible. 
+            numEstimatedPositons++;
+        }
+
+         // Loop through all of this RobotVision's LimelightCameras and get their estimated robot position 
+         for (LimelightCamera camera : limelightCameras) {
+
+            // Get the camera's estimante of the robot's positon on the field. If the camera was unable to estimate a
+            // positon, then skip over to the next camera.
+            RobotPose3d estimatedRobotPose3d = camera.estimateRobotPose3d();
+            if (estimatedRobotPose3d == null) {
+                continue;
+            }
+
+            // Aadd the camera's estimated position to estimatedRobotPosition so that we can average out each camera's 
+            // estimated position and get a more accurate estimante.
+            estimatedRobotPosition.add(estimatedRobotPose3d);
+
+            // Add 1 to the numEstimatedPositons so that we can keep track of the total number of positions used in
+            // the final estimante. This helps ensure our final position is as accurate as possible. 
+            numEstimatedPositons++;
+         }
+
+        // Return null if we can't see any tags.
+        if (numEstimatedPositons == 0) {
+            return null;
+        }
+
+        // Average out all of the estimated values
+        estimatedRobotPosition.div(numEstimatedPositons);
+
+        return estimatedRobotPosition.toPose3d();
+    }
 
     /**
      * Returns the distance to a desired tag if the robot can see said tag. If the tag is not visible, then
@@ -220,6 +288,8 @@ public class RobotVision extends SubsystemBase {
      */
     public void snapshot(String cameraName) {
         
+        System.out.println("Snap!");
+        
         // Check if any of the PhotonVisionCameras have the desired name. If one does, then
         // take a snapshot and return.
         for (PhotonVisionCamera camera : photonVisionCameras) {
@@ -245,7 +315,7 @@ public class RobotVision extends SubsystemBase {
     /**
      * Takes a snapshot on every camera.
      */
-    public void snapshot() {
+    public void snapshotAll() {
 
         // Loop through all of then cameras and take a snapshot (photograph) using each camera.
         for (PhotonVisionCamera camera : photonVisionCameras) {
