@@ -170,6 +170,7 @@ public class DriveSubsystem extends SubsystemBase {
                 .toSwerveModuleStates(driveController.calculate(getPose(), targetPose, 0, targetPose.getRotation())));
 
         System.out.println(getPose());
+
     }
 
     /**
