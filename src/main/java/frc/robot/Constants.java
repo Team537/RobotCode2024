@@ -128,37 +128,43 @@ public final class Constants {
 
     public static final class CameraConstants {
 
+        // Data gathering settings
+        public static final double SNAPSHOTS_PER_SECOND = 4; // How many snapshots are taken per second.
+        public static final double SNAPSHOT_RATE = 1 / SNAPSHOTS_PER_SECOND; 
+
         // Pipeline settings
         public static final int APRIL_TAG_PIPELINE = 0;
         public static final int OBJECT_DETECTION_PIPELINE = 1;
-        public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFields.k2024Crescendo.loadAprilTagLayoutField();
+        public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFields.k2024Crescendo
+            .loadAprilTagLayoutField();
 
         // Target settings
         public static final float MAX_AMBIGUITY = 0.2f; // The maximum amount of ambiguity allowed for detections.
 
-        // Name settings
+        // Camera settings
         public static final String LIMELIGHT_NAME = "limelight";
         public static final String BLACK_AND_WHITE_CAMERA_NAME = "Arducam_OV9281_USB_Camera";
         public static final String COLOR_CAMERA_NAME = "USB_2M_GS_camera";
 
-        // Camera offsets (NOTE: These values are placeholders and thus subject to change).
+        // Camera offsets (NOTE: These values are placeholders and thus subject to
+        // change).
         public static final Transform3d FRONT_CAMERA_OFFSET = new Transform3d(
-            new Translation3d(0, 0, 0), 
+            new Translation3d(0, 0, 0),
             new Rotation3d(0, 0, 0));
         public static final Transform3d RIGHT_CAMERA_OFFSET = new Transform3d(
-            new Translation3d(0, 0, 0), 
+            new Translation3d(0, 0, 0),
             new Rotation3d(0, 0, 0));
         public static final Transform3d LEFT_CAMERA_OFFSET = new Transform3d(
-            new Translation3d(0, 0, 0), 
+            new Translation3d(0, 0, 0),
             new Rotation3d(0, 0, 0));
         public static final Transform3d BACK_CAMERA_OFFSET = new Transform3d(
-            new Translation3d(0, 0, 0), 
+            new Translation3d(0, 0, 0),
             new Rotation3d(0, 0, 0));
     }
 
     public static final class OIConstants {
-        public static final int DRIVER_CONTROLLER_PORT = 0;
-        public static final double DRIVE_DEADBAND = 0.1;
+      public static final int DRIVER_CONTROLLER_PORT = 0;
+      public static final double DRIVE_DEADBAND = 0.1;
     }
 
     public static final class AutoConstants {
@@ -173,10 +179,10 @@ public final class Constants {
 
         // Constraint for the motion profiled robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-                MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
+            MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
     }
 
     public static final class NeoMotorConstants {
         public static final double FREE_SPEED_RPM = 5676;
     }
-}
+  }

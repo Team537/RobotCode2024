@@ -22,7 +22,7 @@ public class RobotVision extends SubsystemBase {
     private RobotVision(ArrayList<PhotonVisionCamera> photonVisionCameras, 
         ArrayList<LimelightCamera> limelightCameras) {
 
-        // Set this RobotVision
+        // Set this RobotVision's processed cameras up.
         this.photonVisionCameras = photonVisionCameras;
         this.limelightCameras = limelightCameras;
     }
@@ -125,6 +125,7 @@ public class RobotVision extends SubsystemBase {
 
         /**
          * Builds the <code> RobotVision </code> objet.
+         * 
          * @return A new <code> RobotVision </code> objet with the configured setting.
          */
         public RobotVision build() {
@@ -320,6 +321,7 @@ public class RobotVision extends SubsystemBase {
         // Loop through all of then cameras and take a snapshot (photograph) using each camera.
         for (PhotonVisionCamera camera : photonVisionCameras) {
             camera.takeInputSnapshot();
+            System.out.println("Snap!");
         }
         for (LimelightCamera camera : limelightCameras) {
             camera.snapshot();

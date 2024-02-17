@@ -22,7 +22,6 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CameraConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.TrackAprilTagCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.cameras.RobotVision;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -42,120 +41,129 @@ public class RobotContainer {
     // The robot's subsystems
     private final DriveSubsystem driveSubsystem = new DriveSubsystem();
     private final RobotVision robotVision = new RobotVision.Builder()
-        .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.APRIL_TAG_PIPELINE)
+        .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.OBJECT_DETECTION_PIPELINE)
+        .addLimelightCamera(CameraConstants.LIMELIGHT_NAME, 0, 0, 0, 0)
         .build();
 
-   // The driver's controller
-   private final XboxController m_driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
-   private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
+    // The driver's controller
+    private final XboxController m_driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
+    private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
 
-   // Controller dependent commands
-   private final RunCommand xBoxControllerCommand = new RunCommand(
-       () -> driveSubsystem.drive(
-           -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
-           -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
-           -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
-           true, true),
-           driveSubsystem);
+    // Controller dependent commands
+    private final RunCommand xBoxControllerCommand = new RunCommand(
+            () -> driveSubsystem.drive(
+                    -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
+                    -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
+                    -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
+                    true, true),
+            driveSubsystem);
 
-   private final RunCommand flightstickCommand = new RunCommand(
-       () -> driveSubsystem.drive(
-           -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
-           -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
-           -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
-           true, true),
-           driveSubsystem);
+    private final RunCommand flightstickCommand = new RunCommand(
+            () -> driveSubsystem.drive(
+                    -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
+                    -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
+                    -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
+                    true, true),
+            driveSubsystem);
 
-   // SmartDashboard options
-   private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
+    // SmartDashboard options
+    private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
 
- /**
-  * The container for the robot. Contains subsystems, OI devices, and commands.
-  */
- public RobotContainer() {
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
 
-   // Configure the button bindings
-   configureButtonBindings();
+        // Configure the button bindings
+        configureButtonBindings();
 
-   // Setup controller selection.
-   controllerSelection.setDefaultOption("Xbox Controller", xBoxControllerCommand);
-   controllerSelection.addOption("Flightstick", flightstickCommand);
+        // Setup controller selection.
+        controllerSelection.setDefaultOption("Xbox Controller", xBoxControllerCommand);
+        controllerSelection.addOption("Flightstick", flightstickCommand);
 
-   // Create the selection object in SmartDashboard (If it doesn't already exist)
-   SmartDashboard.putData("Controller Selection", controllerSelection);
+        // Create the selection object in SmartDashboard (If it doesn't already exist)
+        SmartDashboard.putData("Controller Selection", controllerSelection);
 
-   // Get the drive command for the selected controller.(Note that the getSelected() method returns
-   // the command assosiated with each option, which is set above).
-   driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
- }
+        // Get the drive command for the selected controller.(Note that the
+        // getSelected() method returns
+        // the command assosiated with each option, which is set above).
+        driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
+    }
 
- /**
-  * Use this method to define your button->command mappings. Buttons can be
-  * created by
-  * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
-  * subclasses ({@link
-  * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
-  * passing it to a
-  * {@link JoystickButton}.
-  */
- private void configureButtonBindings() {
+    /**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by
+     * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
+     * subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
+     * passing it to a
+     * {@link JoystickButton}.
+     */
+    private void configureButtonBindings() {
 
-   // Move the robot's wheels into an X to prevent movement.
-   new JoystickButton(m_driverController, Button.kR1.value)
-       .whileTrue(new RunCommand(
-           () -> driveSubsystem.setX(),
-           driveSubsystem));
+        // Move the robot's wheels into an X to prevent movement.
+        new JoystickButton(m_driverController, Button.kR1.value)
+                .whileTrue(new RunCommand(
+                        () -> driveSubsystem.setX(),
+                        driveSubsystem));
 
-    new JoystickButton(m_driverController, Button.kL1.value)
-           .onTrue(new RunCommand(
-               () -> robotVision.snapshot(CameraConstants.COLOR_CAMERA_NAME),
-                robotVision));
- }
+        new JoystickButton(m_driverController, Button.kL1.value)
+                .onTrue(new RunCommand(
+                        () -> robotVision.snapshot(CameraConstants.COLOR_CAMERA_NAME),
+                        robotVision));
+    }
 
- /**
-  * Use this to pass the autonomous command to the main {@link Robot} class.
-  *
-  * @return the command to run in autonomous
-  */
- public Command getAutonomousCommand() {
+    /**
+     * Takes a photongraph using all of the cameras.
+     */
+    public void snapshot() {
+        robotVision.snapshotAll();
+    }
 
-   // Create config for trajectory
-   TrajectoryConfig config = new TrajectoryConfig(
-       AutoConstants.MAX_SPEED_METERS_PER_SECOND,
-       AutoConstants.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
-       // Add kinematics to ensure max speed is actually obeyed
-       .setKinematics(DriveConstants.DRIVE_KINEMATICS);
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
 
-   // An example trajectory to follow. All units in meters.
-   Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-       // Start at the origin facing the +X direction
-       new Pose2d(0, 0, new Rotation2d(0)),
-       // Pass through these two interior waypoints, making an 's' curve path
-       List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-       // End 3 meters straight ahead of where we started, facing forward
-       new Pose2d(3, 0, new Rotation2d(0)),
-       config);
+        // Create config for trajectory
+        TrajectoryConfig config = new TrajectoryConfig(
+                AutoConstants.MAX_SPEED_METERS_PER_SECOND,
+                AutoConstants.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
+                // Add kinematics to ensure max speed is actually obeyed
+                .setKinematics(DriveConstants.DRIVE_KINEMATICS);
 
-   var thetaController = new ProfiledPIDController(
-       AutoConstants.THETA_CONTROLLER_KP, 0, 0, AutoConstants.kThetaControllerConstraints);
-   thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        // An example trajectory to follow. All units in meters.
+        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+                // Start at the origin facing the +X direction
+                new Pose2d(0, 0, new Rotation2d(0)),
+                // Pass through these two interior waypoints, making an 's' curve path
+                List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+                // End 3 meters straight ahead of where we started, facing forward
+                new Pose2d(3, 0, new Rotation2d(0)),
+                config);
 
-   SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-       exampleTrajectory,
-       driveSubsystem::getPose, // Functional interface to feed supplier
-       DriveConstants.DRIVE_KINEMATICS,
+        var thetaController = new ProfiledPIDController(
+                AutoConstants.THETA_CONTROLLER_KP, 0, 0, AutoConstants.kThetaControllerConstraints);
+        thetaController.enableContinuousInput(-Math.PI, Math.PI);
 
-       // Position controllers
-       new PIDController(AutoConstants.X_CONTROLLER_KP, 0, 0),
-       new PIDController(AutoConstants.Y_CONTROLLER_KP, 0, 0),
-       thetaController,
-       driveSubsystem::setModuleStates,
-       driveSubsystem);
+        SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+                exampleTrajectory,
+                driveSubsystem::getPose, // Functional interface to feed supplier
+                DriveConstants.DRIVE_KINEMATICS,
 
-   // Reset odometry to the starting pose of the trajectory.
-   driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
+                // Position controllers
+                new PIDController(AutoConstants.X_CONTROLLER_KP, 0, 0),
+                new PIDController(AutoConstants.Y_CONTROLLER_KP, 0, 0),
+                thetaController,
+                driveSubsystem::setModuleStates,
+                driveSubsystem);
 
-   // Run path following command, then stop at the end.
-   return new TrackAprilTagCommand(driveSubsystem, robotVision);
- }
+        // Reset odometry to the starting pose of the trajectory.
+        driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
+
+        // Run path following command, then stop at the end.
+        return swerveControllerCommand;
+    }
 }
