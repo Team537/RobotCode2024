@@ -80,7 +80,7 @@ public class TrackAprilTagCommand extends Command {
         var thetaSpeed = thetaController.calculate(distanceToTag.getYaw());
 
         // Drive the robot towards the tag.
-        swerveDrivetrain.drive(xSpeed, ySpeed, thetaSpeed, false, true);
+        swerveDrivetrain.drive(xSpeed, ySpeed, thetaSpeed, 0, 0, false, true);
     }
 
     /**
