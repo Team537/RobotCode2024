@@ -29,35 +29,35 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    public static final class DriveConstants {
-        // Driving Parameters - Note that these are not the maximum capable speeds of
-        // the robot, rather the allowed maximum speeds
-        public static final double MAX_SPEED_METERS_PER_SECOND = 2; // 4 // meters per second
-        public static final double BOOST_MODE_MAX_SPEED_METERS_PER_SECOND = 4.8; // meters per second
-        public static final double MAX_ANGULAR_SPEED = 2 * Math.PI; // radians per second
+  public static final class DriveConstants {
+    // Driving Parameters - Note that these are not the maximum capable speeds of
+    // the robot, rather the allowed maximum speeds
+    public static final double MAX_SPEED_METERS_PER_SECOND = 2; //4 // meters per second
+    public static final double BOOST_MODE_MAX_SPEED_METERS_PER_SECOND = 4.8; //meters per second
+    public static final double MAX_ANGULAR_SPEED = 2 * Math.PI; // radians per second
 
-        public static final double DIRECTION_SLEW_RATE = 2; // radians per second
-        public static final double GRIP_DIRECTION_SLEW_RATE = 5; // radians per second
-        public static final double BOOST_MODE_DIRECTION_SLEW_RATE = 1.8; // radians per second
-        public static final double GRIP_BOOST_MODE_DIRECTION_SLEW_RATE = 5; // radians per second
-        public static final double MAGNITUDE_POSITIVE_SLEW_RATE = 1.8; // percent per second (1 = 100%)
-        public static final double MAGNITUDE_NEGATIVE_SLEW_RATE = 2.4; // percent per second (1 = 100%)
-        public static final double GRIP_MAGNITUDE_POSITIVE_SLEW_RATE = 3.6; // percent per second (1 = 100%)
-        public static final double GRIP_MAGNITUDE_NEGATIVE_SLEW_RATE = 4; // percent per second (1 = 100%)
-        public static final double BOOST_MODE_MAGNITUDE_POSITIVE_SLEW_RATE = 1; // percent per second (1 = 100%)
-        public static final double BOOST_MODE_MAGNITUDE_NEGATIVE_SLEW_RATE = 1.8; // percent per second (1 = 100%)
-        public static final double ROTATIONAL_SLEW_RATE = 2.0; // percent per second (1 = 100%)
+    public static final double DIRECTION_SLEW_RATE = 2; // radians per second
+    public static final double GRIP_DIRECTION_SLEW_RATE = 5; // radians per second
+    public static final double BOOST_MODE_DIRECTION_SLEW_RATE = 1.8; // radians per second
+    public static final double GRIP_BOOST_MODE_DIRECTION_SLEW_RATE = 5; // radians per second
+    public static final double MAGNITUDE_POSITIVE_SLEW_RATE = 1.8; // percent per second (1 = 100%)
+    public static final double MAGNITUDE_NEGATIVE_SLEW_RATE = 2.4; // percent per second (1 = 100%)
+    public static final double GRIP_MAGNITUDE_POSITIVE_SLEW_RATE = 3.6; // percent per second (1 = 100%)
+    public static final double GRIP_MAGNITUDE_NEGATIVE_SLEW_RATE = 4; // percent per second (1 = 100%)
+    public static final double BOOST_MODE_MAGNITUDE_POSITIVE_SLEW_RATE = 1; // percent per second (1 = 100%)
+    public static final double BOOST_MODE_MAGNITUDE_NEGATIVE_SLEW_RATE = 1.8; // percent per second (1 = 100%)
+    public static final double ROTATIONAL_SLEW_RATE = 2.0; // percent per second (1 = 100%)
 
-        // Chassis configuration
-        public static final double TRACK_WIDTH = Units.inchesToMeters(16); // 16 for amy; 14.5 for alucard
-        // Distance between centers of right and left wheels on robot
-        public static final double WHEEL_BASE = Units.inchesToMeters(16); // 16 for amy; 14.5 for alucard
-        // Distance between front and back wheels on robot
-        public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
-                new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2),
-                new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
-                new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2),
-                new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2));
+    // Chassis configuration
+    public static final double TRACK_WIDTH = Units.inchesToMeters(16); //16 for amy; 14.5 for alucard
+    // Distance between centers of right and left wheels on robot
+    public static final double WHEEL_BASE = Units.inchesToMeters(16); //16 for amy; 14.5 for alucard
+    // Distance between front and back wheels on robot
+    public static final SwerveDriveKinematics DRIVE_KINEMATICS = new SwerveDriveKinematics(
+        new Translation2d(WHEEL_BASE / 2, TRACK_WIDTH / 2),
+        new Translation2d(WHEEL_BASE / 2, -TRACK_WIDTH / 2),
+        new Translation2d(-WHEEL_BASE / 2, TRACK_WIDTH / 2),
+        new Translation2d(-WHEEL_BASE / 2, -TRACK_WIDTH / 2));
 
         // Angular offsets of the modules relative to the chassis in radians
         public static final double FRONT_LEFT_CHASSIS_ANGULAR_OFFSET = -Math.PI / 2;
@@ -65,25 +65,26 @@ public final class Constants {
         public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI;
         public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI / 2;
 
-        // SPARK MAX CAN IDs
-        public static final int FRONT_LEFT_DRIVE_CAN_ID = 8;
-        public static final int BACK_LEFT_DRIVE_CAN_ID = 7;
-        public static final int FRONT_RIGHT_DRIVE_CAN_ID = 1;
-        public static final int BACK_RIGHT_DRIVE_CAN_ID = 2;
+    // SPARK MAX CAN IDs
+    public static final int FRONT_LEFT_DRIVE_CAN_ID = 8;
+    public static final int BACK_LEFT_DRIVE_CAN_ID = 7;
+    public static final int FRONT_RIGHT_DRIVE_CAN_ID = 1;
+    public static final int BACK_RIGHT_DRIVE_CAN_ID = 2;
 
-        public static final int FRONT_LEFT_TURNING_CAN_ID = 9;
-        public static final int BACK_LEFT_TURNING_CAN_ID = 6;
-        public static final int FRONT_RIGHT_TURNING_CAN_ID = 10;
-        public static final int BACK_RIGHT_TURNING_CAN_ID = 3;
+    public static final int FRONT_LEFT_TURNING_CAN_ID = 9;
+    public static final int BACK_LEFT_TURNING_CAN_ID = 6;
+    public static final int FRONT_RIGHT_TURNING_CAN_ID = 10;
+    public static final int BACK_RIGHT_TURNING_CAN_ID = 3;
 
-        public static final boolean GYRO_REVERSED = false;
 
-        // orientation lock PID values
-        public static final double ORIENTATION_LOCK_KP = 1.4;
-        public static final double ORIENTATION_LOCK_KI = 0;
-        public static final double ORIENTATION_LOCK_KD = 0.1;
+    public static final boolean GYRO_REVERSED = false;
 
-    }
+    //orientation lock PID values
+    public static final double ORIENTATION_LOCK_KP = 1.4;
+    public static final double ORIENTATION_LOCK_KI = 0;
+    public static final double ORIENTATION_LOCK_KD = 0.1;
+
+  }
 
     public static final class ModuleConstants {
         // The MAXSwerve module can be configured with one of three pinion gears: 12T,
@@ -145,13 +146,13 @@ public final class Constants {
 
         // Data gathering settings
         public static final double SNAPSHOTS_PER_SECOND = 4; // How many snapshots are taken per second.
-        public static final double SNAPSHOT_RATE = 1 / SNAPSHOTS_PER_SECOND;
+        public static final double SNAPSHOT_RATE = 1 / SNAPSHOTS_PER_SECOND; 
 
         // Pipeline settings
         public static final int APRIL_TAG_PIPELINE = 0;
         public static final int OBJECT_DETECTION_PIPELINE = 1;
         public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFields.k2024Crescendo
-                .loadAprilTagLayoutField();
+            .loadAprilTagLayoutField();
 
         // Target settings
         public static final float MAX_AMBIGUITY = 0.2f; // The maximum amount of ambiguity allowed for detections.
@@ -164,41 +165,42 @@ public final class Constants {
         // Camera offsets (NOTE: These values are placeholders and thus subject to
         // change).
         public static final Transform3d FRONT_CAMERA_OFFSET = new Transform3d(
-                new Translation3d(0, 0, 0),
-                new Rotation3d(0, 0, 0));
+            new Translation3d(0, 0, 0),
+            new Rotation3d(0, 0, 0));
         public static final Transform3d RIGHT_CAMERA_OFFSET = new Transform3d(
-                new Translation3d(0, 0, 0),
-                new Rotation3d(0, 0, 0));
+            new Translation3d(0, 0, 0),
+            new Rotation3d(0, 0, 0));
         public static final Transform3d LEFT_CAMERA_OFFSET = new Transform3d(
-                new Translation3d(0, 0, 0),
-                new Rotation3d(0, 0, 0));
+            new Translation3d(0, 0, 0),
+            new Rotation3d(0, 0, 0));
         public static final Transform3d BACK_CAMERA_OFFSET = new Transform3d(
-                new Translation3d(0, 0, 0),
-                new Rotation3d(0, 0, 0));
+            new Translation3d(0, 0, 0),
+            new Rotation3d(0, 0, 0));
     }
 
     public static final class OIConstants {
         public static final int DRIVER_CONTROLLER_PORT = 0;
         public static final double DRIVE_DEADBAND = 0.1;
         public static final double INPUT_CURVE_POWER = 2.5;
-    }
-
-    public static final class AutoConstants {
+      }
+    
+      public static final class AutoConstants {
         public static final double MAX_SPEED_METERS_PER_SECOND = 3;
         public static final double MAX_ACCELERATION_METERS_PER_SECOND_SQUARED = 3;
         public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND = Math.PI;
         public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = Math.PI;
-
+    
         public static final double X_CONTROLLER_KP = 1;
         public static final double Y_CONTROLLER_KP = 1;
         public static final double THETA_CONTROLLER_KP = 1;
-
+    
         // Constraint for the motion profiled robot angle controller
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
-                MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
-    }
+            MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
+      }
+    
 
     public static final class NeoMotorConstants {
         public static final double FREE_SPEED_RPM = 5676;
     }
-}
+  }

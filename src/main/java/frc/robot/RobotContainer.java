@@ -16,7 +16,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -24,13 +24,13 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CameraConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.cameras.RobotVision;
-
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -48,17 +48,33 @@ public class RobotContainer {
         .build();
 
    // The driver's controller
-   private final XboxController m_driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
+   private final XboxController driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
    private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
+
+   // Setup each button on each controller
+   JoystickButton starButton1 = new JoystickButton(driverController, Button.kStart.value);
+   JoystickButton backButton1 = new JoystickButton(driverController, Button.kBack.value);
+   JoystickButton rightStick1 = new JoystickButton(driverController, Button.kRightStick.value);
+   JoystickButton leftStick1 = new JoystickButton(driverController, Button.kLeftStick.value);
+   JoystickButton rightBumper1 = new JoystickButton(driverController, Button.kRightBumper.value);
+   JoystickButton leftBumper1 = new JoystickButton(driverController, Button.kLeftBumper.value);
+   JoystickButton aButton1 = new JoystickButton(driverController, Button.kA.value);
+   JoystickButton bButton1 = new JoystickButton(driverController, Button.kB.value);
+   JoystickButton yButton1 = new JoystickButton(driverController, Button.kY.value);
+   JoystickButton xButton1 = new JoystickButton(driverController, Button.kX.value);
+   POVButton dpadUpButton1 = new POVButton(driverController, 0);
+   POVButton dpadDownButton1 = new POVButton(driverController, 180);
+   POVButton dpadRightButton1 = new POVButton(driverController, 90);
+   POVButton dpadLeftButton1 = new POVButton(driverController, 270);
 
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
     () -> driveSubsystem.drive(
-        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
-        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
-        -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
-        -MathUtil.applyDeadband(m_driverController.getRightY(), OIConstants.DRIVE_DEADBAND),
-        m_driverController.getRightTriggerAxis(),
+        -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(driverController.getRightY(), OIConstants.DRIVE_DEADBAND),
+        driverController.getRightTriggerAxis(),
         true, true),
         driveSubsystem);
 
@@ -76,7 +92,11 @@ public class RobotContainer {
   private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
 
   // Alternative Command Options
-  private final RunCommand targetPositionCommand = new RunCommand(() -> driveSubsystem.position(new Pose2d(-5 * m_driverController.getLeftX(),5 * m_driverController.getLeftY(),new Rotation2d(0))), driveSubsystem);
+  private final RunCommand targetPositionCommand = new RunCommand(() -> driveSubsystem.position(
+        new Pose2d(-5 * driverController.getLeftX(),
+        5 * driverController.getLeftY(),
+        new Rotation2d(0))), 
+        driveSubsystem);
    
   /**
     * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -111,15 +131,13 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
         // Move the robot's wheels into an X to prevent movement.
-        new JoystickButton(m_driverController, Button.kR1.value)
-                .whileTrue(new RunCommand(
+        starButton1.whileTrue(new RunCommand(
                         () -> driveSubsystem.setX(),
                         driveSubsystem));
 
-        new JoystickButton(m_driverController, Button.kL1.value)
-                .onTrue(new RunCommand(
-                        () -> robotVision.snapshot(CameraConstants.COLOR_CAMERA_NAME),
-                        robotVision));
+        backButton1.onTrue(new RunCommand(
+                        () -> driveSubsystem.zeroHeading(),
+                        driveSubsystem));
     }
 
     /**
