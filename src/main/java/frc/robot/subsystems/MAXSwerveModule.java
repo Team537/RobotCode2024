@@ -45,6 +45,9 @@ public class MAXSwerveModule {
     drivingSparkMax.restoreFactoryDefaults();
     turningSparkMax.restoreFactoryDefaults();
 
+    // Reverse drive motor because intake is on the back of the robot
+    drivingSparkMax.setInverted(true);
+    
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
     drivingEncoder = drivingSparkMax.getEncoder();
     turningEncoder = turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle);

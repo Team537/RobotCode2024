@@ -44,7 +44,6 @@ public class RobotContainer {
     private final DriveSubsystem driveSubsystem = new DriveSubsystem();
     private final RobotVision robotVision = new RobotVision.Builder()
         .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.OBJECT_DETECTION_PIPELINE)
-        .addLimelightCamera(CameraConstants.LIMELIGHT_NAME, 0, 0, 0, 0)
         .build();
 
    // The driver's controller
