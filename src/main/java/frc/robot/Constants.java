@@ -69,16 +69,16 @@ public final class Constants {
         public static final double BACK_LEFT_CHASSIS_ANGULAR_OFFSET = Math.PI;
         public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI / 2;
 
-        // SPARK MAX CAN IDs
-        public static final int FRONT_LEFT_DRIVE_CAN_ID = 2;
-        public static final int BACK_LEFT_DRIVE_CAN_ID = 1;
-        public static final int FRONT_RIGHT_DRIVE_CAN_ID = 7;
-        public static final int BACK_RIGHT_DRIVE_CAN_ID = 8;
+    // SPARK MAX CAN IDs
+    public static final int FRONT_LEFT_DRIVE_CAN_ID = 8;
+    public static final int BACK_LEFT_DRIVE_CAN_ID = 7;
+    public static final int FRONT_RIGHT_DRIVE_CAN_ID = 1;
+    public static final int BACK_RIGHT_DRIVE_CAN_ID = 2;
 
-        public static final int FRONT_LEFT_TURNING_CAN_ID = 3;
-        public static final int BACK_LEFT_TURNING_CAN_ID = 10;
-        public static final int FRONT_RIGHT_TURNING_CAN_ID = 6;
-        public static final int BACK_RIGHT_TURNING_CAN_ID = 9;
+    public static final int FRONT_LEFT_TURNING_CAN_ID = 9;
+    public static final int BACK_LEFT_TURNING_CAN_ID = 6;
+    public static final int FRONT_RIGHT_TURNING_CAN_ID = 10;
+    public static final int BACK_RIGHT_TURNING_CAN_ID = 3;
 
         public static final boolean GYRO_REVERSED = false;
 
@@ -291,6 +291,7 @@ public final class Constants {
       public static final double MIN_OUTPUT = -1;
       public static final double ALLOWED_ERROR = 0;
 
+      // Constants for Intake Raiser
       public static final class RaisingSubsystemConstants{
 
         public static final double MAX_VELOCITY = 150;
@@ -300,6 +301,7 @@ public final class Constants {
 
       }
 
+      // Constants for the Outtake
       public static final class OuttakeSubsystemConstants{
 
         public static final double MAX_VELOCITY = 4000;
@@ -307,7 +309,8 @@ public final class Constants {
         public static final double MAX_ACCELERATION = 4000;
 
       }
-      
+
+      // Constants for the Intake
       public static final class IntakeSubsystemConstants{
 
         public static final double GEAR_RATIO = (5*5);
@@ -317,13 +320,12 @@ public final class Constants {
         public static final double MIN_VELOCITY = 0;
         public static final double MAX_ACCELERATION = 3000;
 
-    }
+      }
 
 
     }
 
-
-
+    // Constants for the Intake Position
     public static final class IntakePositions{
 
       // To be set

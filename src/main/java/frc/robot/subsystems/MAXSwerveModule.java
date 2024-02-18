@@ -38,13 +38,20 @@ public class MAXSwerveModule {
    */
   public MAXSwerveModule(int drivingCANId, int turningCANId, double angularOffset) {
     drivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
+
+    
+    
+
     turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
 
     // Factory reset, so we get the SPARKS MAX to a known state before configuring
     // them. This is useful in case a SPARK MAX is swapped out.
     drivingSparkMax.restoreFactoryDefaults();
     turningSparkMax.restoreFactoryDefaults();
-    
+
+    // Done because motor is driving backwards. More vital than code
+    drivingSparkMax.setInverted(true);
+
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
     drivingEncoder = drivingSparkMax.getEncoder();
     turningEncoder = turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle);

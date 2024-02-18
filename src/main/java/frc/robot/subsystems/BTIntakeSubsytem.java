@@ -64,14 +64,13 @@ public class BTIntakeSubsytem extends SubsystemBase{
     // Runs Intake At Max Speed
     public void RunAtMaxSpeed(){
 
-        //I need to figure out if it should be positive or negative
-        intakeSparkMax.set(0.1);
+        intakePIDController.setReference(300, CANSparkMax.ControlType.kVelocity);
 
     }
 
     public void ReverseRunAtMaxSpeed(){
 
-        intakeSparkMax.set(-0.1);
+        intakePIDController.setReference(-300, CANSparkMax.ControlType.kVelocity);
 
     }
 
@@ -81,10 +80,16 @@ public class BTIntakeSubsytem extends SubsystemBase{
 
     }
 
+    public void RunMotorAtSpeed(){
+
+        intakePIDController.setReference(300, CANSparkMax.ControlType.kVelocity);
+
+    }
+
     // Stops the Motor
     public void StopMotor(){
 
-        intakeSparkMax.set(0);
+        intakePIDController.setReference(0, CANSparkMax.ControlType.kVelocity);
 
     }
 

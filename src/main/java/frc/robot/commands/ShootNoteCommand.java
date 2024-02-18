@@ -5,6 +5,7 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.subsystems.BTIntakeSubsytem;
 import frc.robot.subsystems.BTOutakeSubsytem;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
 
@@ -13,24 +14,19 @@ public class ShootNoteCommand extends Command{
     private final BTOutakeSubsytem m_BTOutakeSubsytem;
     private final BTIntakeSubsytem m_BTIntakeSubsytem;
     private final Timer newTimer;
-    private final JoystickButton controllingButton;
 
 
-    public ShootNoteCommand(BTIntakeSubsytem btIntakeSubsytem, BTOutakeSubsytem btOutakeSubsytem, JoystickButton controlButton){
+    public ShootNoteCommand(BTIntakeSubsytem btIntakeSubsytem, BTOutakeSubsytem btOutakeSubsytem){
 
         m_BTIntakeSubsytem = btIntakeSubsytem;
         m_BTOutakeSubsytem = btOutakeSubsytem;
         newTimer = new Timer();
 
-        //We take in the button controlling the command as a parameter, so that we can use its boolean
-        //value in the isFinished method, to decide whether or not to stop the command
-        controllingButton = controlButton;
-
     }
 
     public void initialize(){
     
-        m_BTIntakeSubsytem.RunMotorAtSpeed(500);
+        m_BTIntakeSubsytem.ReverseRunAtMaxSpeed();
         newTimer.delay(5);
         m_BTIntakeSubsytem.StopMotor();
 
@@ -42,7 +38,7 @@ public class ShootNoteCommand extends Command{
 
     }
 
-    public void end(){
+    public void end(boolean interrupted){
 
         m_BTIntakeSubsytem.StopMotor();
         m_BTOutakeSubsytem.StopMotor();
@@ -51,12 +47,9 @@ public class ShootNoteCommand extends Command{
 
     public boolean isFinished(){
 
-        return !(controllingButton.getAsBoolean());
+        return false;
 
     }
-
-
-
     
 
 }

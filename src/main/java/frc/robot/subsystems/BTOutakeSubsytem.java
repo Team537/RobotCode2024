@@ -1,5 +1,7 @@
 package frc.robot.subsystems;
 import com.revrobotics.SparkPIDController;
+
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -82,23 +84,23 @@ public class BTOutakeSubsytem extends SubsystemBase{
         the motors have to spin in opposite directions
          */ 
 
-        leftMotorSparkMax.set(-0.1);
-        rightMotorSparkMax.set(0.1);
+        leftPIDController.setReference(-300, CANSparkMax.ControlType.kSmartVelocity);
+        leftPIDController.setReference(300, CANSparkMax.ControlType.kSmartVelocity);
 
     }
 
 
     public void RunMotorAtSpeed(double inputSpeed){
 
-        leftPIDController.setReference(inputSpeed, CANSparkMax.ControlType.kVelocity);
-        rightPIDController.setReference(-inputSpeed, CANSparkMax.ControlType.kVelocity);
+        leftPIDController.setReference(inputSpeed, CANSparkMax.ControlType.kSmartVelocity);
+        rightPIDController.setReference(-inputSpeed, CANSparkMax.ControlType.kSmartVelocity);
 
     }
 
     public void StopMotor(){
 
-        leftMotorSparkMax.set(0);
-        rightMotorSparkMax.set(0);
+        leftPIDController.setReference(0, CANSparkMax.ControlType.kSmartVelocity);
+        rightPIDController.setReference(0, CANSparkMax.ControlType.kSmartVelocity);
 
     }
 

@@ -72,7 +72,7 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
     public void periodic(){
 
-        SmartDashboard.putNumber("Intake Position: ", intakeRaiserEncoder.getPosition());
+        SmartDashboard.putNumber("Intake Raiser Position: ", intakeRaiserEncoder.getPosition());
 
     }
 
