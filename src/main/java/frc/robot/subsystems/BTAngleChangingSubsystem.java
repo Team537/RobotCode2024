@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -33,6 +34,12 @@ public class BTAngleChangingSubsystem extends SubsystemBase{
     public void setAngle(int desiredAngle){
 
 
+
+    }
+
+    public void periodic(){
+
+        SmartDashboard.putNumber("Angle Changer Position: ", angleChangerEncoder.getPosition());
 
     }
 

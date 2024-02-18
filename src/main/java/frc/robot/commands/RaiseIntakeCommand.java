@@ -8,12 +8,10 @@ import frc.robot.subsystems.BTRaisingSubsystem;
 public class RaiseIntakeCommand extends Command{
 
     BTRaisingSubsystem m_BTRaisingSubsystem;
-    JoystickButton controllingButton;
 
-    public RaiseIntakeCommand(BTRaisingSubsystem btRaisingSubsystem, JoystickButton controlButton){
+    public RaiseIntakeCommand(BTRaisingSubsystem btRaisingSubsystem){
 
         m_BTRaisingSubsystem = btRaisingSubsystem;
-        controllingButton = controlButton;
 
     }
 
@@ -27,7 +25,7 @@ public class RaiseIntakeCommand extends Command{
 
     }
 
-    public void end(){
+    public void end(boolean interrupted){
 
     }
 
@@ -35,8 +33,7 @@ public class RaiseIntakeCommand extends Command{
 
         // Command is finished when either the intake reaches its position
         // Or when the controlling button isn't triggered
-        return (m_BTRaisingSubsystem.intakePosition() == Constants.BTConstants.IntakePositions.releasePosition) 
-                || !(controllingButton.getAsBoolean());
+        return (m_BTRaisingSubsystem.intakePosition() == Constants.BTConstants.IntakePositions.releasePosition);
 
     }
 

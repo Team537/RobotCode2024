@@ -25,6 +25,7 @@ import frc.robot.commands.LowerIntakeCommand;
 import frc.robot.commands.RaiseIntakeCommand;
 import frc.robot.commands.ShootNoteCommand;
 import frc.robot.commands.StopIntakeCommand;
+import frc.robot.commands.StopOuttakeCommand;
 import frc.robot.subsystems.BTIntakeSubsytem;
 import frc.robot.subsystems.BTOutakeSubsytem;
 import frc.robot.subsystems.BTRaisingSubsystem;
@@ -49,6 +50,8 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final LimelightVision LimelightVision = new LimelightVision();
+
+    //**Black Team's Subsystems
   private final BTIntakeSubsytem intakeSubsytem = new BTIntakeSubsytem();
   private final BTOutakeSubsytem outakeSubsytem = new BTOutakeSubsytem();
   private final BTRaisingSubsystem raisingSubsystem = new BTRaisingSubsystem();
@@ -86,10 +89,14 @@ public class RobotContainer {
      * The reason why we pass in the buttons as arguments, is so that we can use their boolean values
      * to decide whether or not the command is finished
      */
-    Command intakeNote = new IntakeNoteCommand(intakeSubsytem, aButton);   
-    Command shootNote = new ShootNoteCommand(intakeSubsytem, outakeSubsytem, yButton);
-    Command raiseIntake = new RaiseIntakeCommand(raisingSubsystem, bButton);
-    Command lowerIntake = new LowerIntakeCommand(raisingSubsystem, xButton);
+
+    
+    Command shootNote = new ShootNoteCommand(intakeSubsytem, outakeSubsytem);
+    Command intakeNote = new IntakeNoteCommand(intakeSubsytem);
+    Command raiseIntake = new RaiseIntakeCommand(raisingSubsystem);
+    Command lowerIntake = new LowerIntakeCommand(raisingSubsystem);
+    Command stopIntake = new StopIntakeCommand(intakeSubsytem);
+    Command stopShooter = new StopOuttakeCommand(outakeSubsytem);
 
           
   /**
@@ -99,7 +106,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
-
+    
 
     // Adjust the dafult command based on which controler the driver ants to use.
     if (SmartDashboard.getBoolean("useXBoxController", true)) {
@@ -126,8 +133,12 @@ public class RobotContainer {
 
     // Button Bindings for Black Team Controls
 
+
     // Button A is for intaking
+    // aButton.onTrue(new StartEndCommand(intakeSubsytem::RunMotorAtSpeed, intakeSubsytem::StopMotor, intakeSubsytem));
     aButton.onTrue(intakeNote);
+    aButton.onFalse(stopIntake);
+    
 
     // Button B is for raising and Button X is for lowering
     bButton.onTrue(raiseIntake);
@@ -135,6 +146,7 @@ public class RobotContainer {
     
     // Button Y is for Shooting
     yButton.onTrue(shootNote);
+    yButton.onFalse(stopShooter);
     
     
   }
