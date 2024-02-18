@@ -52,8 +52,8 @@ public class RobotContainer {
   private final LimelightVision LimelightVision = new LimelightVision();
 
     //**Black Team's Subsystems
-  private final BTIntakeSubsytem intakeSubsytem = new BTIntakeSubsytem();
-  private final BTOutakeSubsytem outakeSubsytem = new BTOutakeSubsytem();
+  private final BTIntakeSubsytem intakeSubsystem = new BTIntakeSubsytem();
+  private final BTOutakeSubsytem outakeSubsystem = new BTOutakeSubsytem();
   private final BTRaisingSubsystem raisingSubsystem = new BTRaisingSubsystem();
 
 
@@ -65,8 +65,28 @@ public class RobotContainer {
     JoystickButton bButton = new JoystickButton(m_driverController, Button.kB.value);
     JoystickButton xButton = new JoystickButton(m_driverController, Button.kX.value);
     JoystickButton yButton = new JoystickButton(m_driverController, Button.kY.value);
+    JoystickButton leftBumper = new JoystickButton(m_driverController, Button.kLeftBumper.value);
 
 
+    private final RunCommand intakeCommand = new RunCommand(
+      () -> intakeSubsystem.intakeCommand(
+        m_driverController.getAButton(),
+        m_driverController.getLeftBumper()
+      ),intakeSubsystem
+    );
+
+    private final RunCommand outakeCommand = new RunCommand(
+      () -> outakeSubsystem.outakeCommand(
+        m_driverController.getYButton()
+      ),outakeSubsystem
+    );
+
+    private final RunCommand raisingCommand = new RunCommand(
+      () -> raisingSubsystem.raisingCommand(
+        m_driverController.getBButton(),
+        m_driverController.getXButton()
+      ),raisingSubsystem
+    );
 
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
@@ -84,19 +104,6 @@ public class RobotContainer {
             -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
             true, true),
             driveSubsystem);
-  
-    /* Black Team's Commands
-     * The reason why we pass in the buttons as arguments, is so that we can use their boolean values
-     * to decide whether or not the command is finished
-     */
-
-    
-    Command shootNote = new ShootNoteCommand(intakeSubsytem, outakeSubsytem);
-    Command intakeNote = new IntakeNoteCommand(intakeSubsytem);
-    Command raiseIntake = new RaiseIntakeCommand(raisingSubsystem);
-    Command lowerIntake = new LowerIntakeCommand(raisingSubsystem);
-    Command stopIntake = new StopIntakeCommand(intakeSubsytem);
-    Command stopShooter = new StopOuttakeCommand(outakeSubsytem);
 
           
   /**
@@ -114,6 +121,11 @@ public class RobotContainer {
     } else {
       driveSubsystem.setDefaultCommand(flightstickCommand);
     }
+
+    intakeSubsystem.setDefaultCommand(intakeCommand);
+    outakeSubsystem.setDefaultCommand(outakeCommand);
+    raisingSubsystem.setDefaultCommand(raisingCommand);
+
   }
 
   /**
@@ -133,22 +145,7 @@ public class RobotContainer {
 
     // Button Bindings for Black Team Controls
 
-
-    // Button A is for intaking
-    // aButton.onTrue(new StartEndCommand(intakeSubsytem::RunMotorAtSpeed, intakeSubsytem::StopMotor, intakeSubsytem));
-    aButton.onTrue(intakeNote);
-    aButton.onFalse(stopIntake);
-    
-
-    // Button B is for raising and Button X is for lowering
-    bButton.onTrue(raiseIntake);
-    xButton.onTrue(lowerIntake);
-    
-    // Button Y is for Shooting
-    yButton.onTrue(shootNote);
-    yButton.onFalse(stopShooter);
-    
-    
+  
   }
 
   /**

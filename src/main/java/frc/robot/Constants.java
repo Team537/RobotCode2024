@@ -225,7 +225,7 @@ public final class Constants {
 
       // To be set
       public static final double intakePosition = 0;
-      public static final double releasePosition = 20;
+      public static final double releasePosition = 12.93;
 
     }
 

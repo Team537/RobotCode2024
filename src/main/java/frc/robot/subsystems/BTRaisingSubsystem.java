@@ -1,22 +1,23 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkPIDController;
 
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.IntakePosition;
-
-import com.revrobotics.CANSparkLowLevel.MotorType;
 
 public class BTRaisingSubsystem extends SubsystemBase{
     
 
     private CANSparkMax intakeRaiserSparkMax;
-    private AbsoluteEncoder intakeRaiserEncoder;
+    private AbsoluteEncoder intakeRaiserAbsoluteEncoder;
+    private RelativeEncoder intakeRaiserRelativeEncoder;
     private SparkPIDController intakeRaiserPIDController;
     private IntakePosition intakePosition;
 
@@ -38,9 +39,11 @@ public class BTRaisingSubsystem extends SubsystemBase{
         
 
         // Initialization of Encoder & PID Controller Objects
-        intakeRaiserEncoder = intakeRaiserSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
-        intakeRaiserEncoder.setVelocityConversionFactor(Constants.BTConstants.IntakeRaisingConstants.VELOCITY_CONVERSION_FACTOR);
-        intakeRaiserEncoder.setPositionConversionFactor(Constants.BTConstants.IntakeRaisingConstants.POSITION_CONVERSION_FACTOR);
+        intakeRaiserAbsoluteEncoder = intakeRaiserSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
+        intakeRaiserAbsoluteEncoder.setVelocityConversionFactor(Constants.BTConstants.IntakeRaisingConstants.VELOCITY_CONVERSION_FACTOR);
+        intakeRaiserAbsoluteEncoder.setPositionConversionFactor(Constants.BTConstants.IntakeRaisingConstants.POSITION_CONVERSION_FACTOR);
+
+        intakeRaiserRelativeEncoder = intakeRaiserSparkMax.getEncoder();
 
         intakeRaiserPIDController = intakeRaiserSparkMax.getPIDController();
         
@@ -72,15 +75,32 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
     public void periodic(){
 
-        SmartDashboard.putNumber("Intake Raiser Position: ", intakeRaiserEncoder.getPosition());
+        SmartDashboard.putNumber("Intake Raiser Position: ", intakeRaiserAbsoluteEncoder.getPosition());
 
     }
 
     public double intakePosition(){
 
-        return intakeRaiserEncoder.getPosition();
+        return intakeRaiserAbsoluteEncoder.getPosition();
 
     }
 
+    public void raisingCommand(boolean raiseUp, boolean raiseDown) {
+
+        // Button B is for raising and Button X is for lowering
+        if (raiseDown){
+
+            goToIntakePosition();
+
+        }
+
+    
+        if (raiseUp){
+
+            goToReleasePosition();
+
+        }
+
+    }
 
 }

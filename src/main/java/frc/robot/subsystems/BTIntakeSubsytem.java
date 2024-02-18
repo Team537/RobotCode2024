@@ -1,15 +1,13 @@
 package frc.robot.subsystems;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-
+import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkPIDController;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 /*
 The Intake Subsystem controls the Mechanism for Intaking the Note
@@ -29,6 +27,8 @@ public class BTIntakeSubsytem extends SubsystemBase{
     private final RelativeEncoder intakeRelativeEncoder;
     private final SparkLimitSwitch limitSwitch;
     private final SparkPIDController intakePIDController;
+
+    private boolean buttonPressed = false;
 
     // Constructor
     public BTIntakeSubsytem(){
@@ -80,11 +80,6 @@ public class BTIntakeSubsytem extends SubsystemBase{
 
     }
 
-    public void RunMotorAtSpeed(){
-
-        intakePIDController.setReference(300, CANSparkMax.ControlType.kVelocity);
-
-    }
 
     // Stops the Motor
     public void StopMotor(){
@@ -103,6 +98,26 @@ public class BTIntakeSubsytem extends SubsystemBase{
     public void periodic(){
 
         SmartDashboard.putBoolean("Note is In: ", limitSwitchActivated());
+    }
+
+    public void intakeCommand(boolean input, boolean output) {
+
+        if (input == output){
+            
+            if (buttonPressed){
+                StopMotor();
+            };
+
+        } else {
+
+            buttonPressed = true;
+            if (input) {
+                RunAtMaxSpeed();
+            } else {
+                ReverseRunAtMaxSpeed();
+            }
+        }
+
     }
 
 }

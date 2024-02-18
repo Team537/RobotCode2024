@@ -22,7 +22,7 @@ public class IntakeNoteCommand extends Command{
 
     public void execute(){
 
-        m_BTIntakeSubsytem.RunMotorAtSpeed();
+        m_BTIntakeSubsytem.RunAtMaxSpeed();
 
     }
 
