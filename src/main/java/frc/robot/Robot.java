@@ -4,12 +4,10 @@
 
 package frc.robot;
 
-import edu.wpi.first.net.PortForwarder;
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.CameraConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -19,8 +17,8 @@ import frc.robot.Constants.CameraConstants;
  */
 public class Robot extends TimedRobot {
   private Command autonomousCommand;
+
   private RobotContainer robotContainer;
-  private final Timer snapshotTimer = new Timer(); // Used to take photographs after a set period of time.
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -28,16 +26,9 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-
     // Instantiate our RobotContainer.  This will perform all our button bindings, and put our
     // autonomous chooser on the dashboard.
     robotContainer = new RobotContainer();
-
-    // Start the timer
-    snapshotTimer.start();
-
-    // Make it possible to view the photonvision dashboard over the internet
-    // PortForwarder.add(5800, "photonvision.local", 5800);
   }
 
   /**
@@ -83,14 +74,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {
-
-     // Take a screenshot every 250ms.
-     if (snapshotTimer.get() >= CameraConstants.SNAPSHOT_RATE) {
-      snapshotTimer.reset();
-      robotContainer.snapshot();
-    }
-  }
+  public void autonomousPeriodic() {}
 
   @Override
   public void teleopInit() {
@@ -105,14 +89,7 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during operator control. */
   @Override
-  public void teleopPeriodic() {
-
-     // Take a screenshot every 250ms.
-     if (snapshotTimer.get() >= CameraConstants.SNAPSHOT_RATE) {
-      snapshotTimer.reset();
-      robotContainer.snapshot();
-    }
-  }
+  public void teleopPeriodic() {}
 
   @Override
   public void testInit() {
