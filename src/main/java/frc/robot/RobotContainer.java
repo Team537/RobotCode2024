@@ -14,16 +14,20 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.PS4Controller.Button;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.LimelightVision;
+import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
@@ -38,10 +42,18 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final LimelightVision LimelightVision = new LimelightVision();
+  private final Arm Arm = new Arm();
+  private final Intake Intake = new Intake();
+  private final Shooter Shooter = new Shooter();
 
   // The driver's controller
     private final XboxController m_driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
     private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
+
+    JoystickButton aButton = new JoystickButton(m_driverController, Button.kA.value);
+    JoystickButton bButton = new JoystickButton(m_driverController, Button.kB.value);
+    JoystickButton yButton = new JoystickButton(m_driverController, Button.kY.value);
+    JoystickButton xButton = new JoystickButton(m_driverController, Button.kX.value);
 
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
@@ -67,6 +79,13 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
+    aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake,Arm));
+    bButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp,Arm));
+    xButton.onTrue(new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter));
+    xButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
+
+    
+    // aButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
 
     // Adjust the dafult command based on which controler the driver ants to use.
     if (SmartDashboard.getBoolean("useXBoxController", true)) {
@@ -86,7 +105,7 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kR1.value)
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
         .whileTrue(new RunCommand(
             () -> driveSubsystem.setX(),
             driveSubsystem));
