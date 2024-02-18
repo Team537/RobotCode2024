@@ -139,4 +139,95 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double FREE_SPEED_RPM = 5676;
   }
+
+  // These are All of Black Team's Constants
+  public static final class BTConstants{
+
+
+    public static final class AngleChangingConstants{
+
+      public static final double POSITION_CONVERSION_FACTOR = (2 * Math.PI);
+      public static final double VELOCITY_CONVERSION_FACTOR = (2 * Math.PI) / 60;
+
+    }
+
+    // This has the CAN ID For different components
+    public static final class CANIdConstants{
+
+      public static final int LEFT_OUTTAKE_CAN_ID = 15;
+      public static final int RIGHT_OUTTAKE_CAN_ID = 16;
+      public static final int ANGLE_CHANGER_CAN_ID = 18;
+      public static final int PIVOT_MOTOR_CAN_ID = 17;
+      public static final int INTAKE_MOTOR_CAN_ID = 19;
+
+
+    }
+
+    //Constants for the Intake Raiser
+    public static final class IntakeRaisingConstants{
+
+      public static final double PIVOT_MOTOR_GEAR_RATIO = (5 * 5);
+      public static final double VELOCITY_CONVERSION_FACTOR = PIVOT_MOTOR_GEAR_RATIO;
+      public static final double POSITION_CONVERSION_FACTOR = PIVOT_MOTOR_GEAR_RATIO;
+
+
+    }
+
+    // Constants for the PID Controllers of Different Components
+    public static final class PIDControllerConstants{
+
+      // General PID Controller Constants
+      public static final double P = 0;
+      public static final double I = 0;
+      public static final double D = 0;
+      public static final double IZONE = 0;
+      public static final double FF = 0.000156;
+      public static final double MAX_OUTPUT = 1;
+      public static final double MIN_OUTPUT = -1;
+      public static final double ALLOWED_ERROR = 0;
+
+      public static final class RaisingSubsystemConstants{
+
+        public static final double MAX_VELOCITY = 150;
+        public static final double MIN_VELOCITY = 0; 
+
+        public static final double MAX_ACCELERATION = 200;
+
+      }
+
+      public static final class OuttakeSubsystemConstants{
+
+        public static final double MAX_VELOCITY = 4000;
+        public static final double MIN_VELOCITY = 0;
+        public static final double MAX_ACCELERATION = 4000;
+
+      }
+      
+      public static final class IntakeSubsystemConstants{
+
+        public static final double GEAR_RATIO = (5*5);
+        public static final double VELOCITY_CONVERSION_FACTOR = GEAR_RATIO; 
+
+        public static final double MAX_VELOCITY = 3000;
+        public static final double MIN_VELOCITY = 0;
+        public static final double MAX_ACCELERATION = 3000;
+
+    }
+
+
+    }
+
+
+
+    public static final class IntakePositions{
+
+      // To be set
+      public static final double intakePosition = 0;
+      public static final double releasePosition = 20;
+
+    }
+
+
+  }
+
 }
