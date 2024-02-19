@@ -14,7 +14,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
 
-public class PhotonVisionCamera extends SubsystemBase {
+public class PhotonVisionCamera extends SubsystemBase{
     
     private PhotonCamera camera;
     private Transform3d cameraOffset; // The camera's position relative to the robot.

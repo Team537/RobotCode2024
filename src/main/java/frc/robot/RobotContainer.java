@@ -18,6 +18,9 @@ import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController.Button;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -29,15 +32,24 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CameraConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-import frc.robot.commands.IntakeNoteCommand;
-import frc.robot.commands.LowerIntakeCommand;
-import frc.robot.commands.RaiseIntakeCommand;
-import frc.robot.commands.ShootNoteCommand;
-import frc.robot.commands.StopIntakeCommand;
-import frc.robot.commands.StopOuttakeCommand;
+
 import frc.robot.subsystems.BTIntakeSubsytem;
 import frc.robot.subsystems.BTOutakeSubsytem;
 import frc.robot.subsystems.BTRaisingSubsystem;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.cameras.LimelightCamera;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
+import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.CameraConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.cameras.RobotVision;
 
@@ -48,6 +60,12 @@ import frc.robot.subsystems.cameras.RobotVision;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+  //**Black Team's Subsystems
+  private final BTIntakeSubsytem intakeSubsystem = new BTIntakeSubsytem();
+  private final BTOutakeSubsytem outakeSubsystem = new BTOutakeSubsytem();
+  private final BTRaisingSubsystem raisingSubsystem = new BTRaisingSubsystem();
+
 
     // The robot's subsystems
     private final DriveSubsystem driveSubsystem = new DriveSubsystem();
@@ -137,7 +155,12 @@ public class RobotContainer {
    * passing it to a
    * {@link JoystickButton}.
    */
-  private void configureButtonBindings() {
+    private void configureButtonBindings() {
+
+        new JoystickButton(driverController, Button.kRightBumper.value)
+        .whileTrue(new RunCommand(
+            () -> driveSubsystem.setX(),
+            driveSubsystem));
 
         // Move the robot's wheels into an X to prevent movement.
         starButton1.whileTrue(new RunCommand(
@@ -147,14 +170,19 @@ public class RobotContainer {
         backButton1.onTrue(new RunCommand(
                         () -> driveSubsystem.zeroHeading(),
                         driveSubsystem));
+    
     }
 
-    /**
+        /**
      * Takes a photongraph using all of the cameras.
      */
     public void snapshot() {
         robotVision.snapshotAll();
     }
+
+
+
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
