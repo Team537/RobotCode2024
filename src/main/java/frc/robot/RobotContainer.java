@@ -94,6 +94,27 @@ public class RobotContainer {
    POVButton dpadRightButton1 = new POVButton(driverController, 90);
    POVButton dpadLeftButton1 = new POVButton(driverController, 270);
 
+
+    private final RunCommand intakeCommand = new RunCommand(
+      () -> intakeSubsystem.intakeCommand(
+        driverController.getAButton(),
+        driverController.getLeftBumper()
+      ),intakeSubsystem
+    );
+
+    private final RunCommand outakeCommand = new RunCommand(
+      () -> outakeSubsystem.outakeCommand(
+        driverController.getYButton()
+      ),outakeSubsystem
+    );
+
+    private final RunCommand raisingCommand = new RunCommand(
+      () -> raisingSubsystem.raisingCommand(
+        driverController.getBButton(),
+        driverController.getXButton()
+      ),raisingSubsystem
+    );
+
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
     () -> driveSubsystem.drive(
@@ -144,6 +165,12 @@ public class RobotContainer {
         // getSelected() method returns
         // the command assosiated with each option, which is set above).
         driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
+
+
+
+        intakeSubsystem.setDefaultCommand(intakeCommand);
+        outakeSubsystem.setDefaultCommand(outakeCommand);
+        raisingSubsystem.setDefaultCommand(raisingCommand);
     }
 
   /**
