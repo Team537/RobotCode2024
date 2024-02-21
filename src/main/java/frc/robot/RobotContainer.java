@@ -89,12 +89,6 @@ public class RobotContainer {
    POVButton dpadRightButton1 = new POVButton(driverController, 90);
    POVButton dpadLeftButton1 = new POVButton(driverController, 270);
 
-    JoystickButton aButton = new JoystickButton(driverController,Button.kA.value);
-    JoystickButton bButton = new JoystickButton(driverController, Button.kB.value);
-    JoystickButton xButton = new JoystickButton(driverController, Button.kX.value);
-    JoystickButton yButton = new JoystickButton(driverController, Button.kY.value);
-    JoystickButton leftBumper = new JoystickButton(driverController, Button.kLeftBumper.value);
-
 
     private final RunCommand intakeCommand = new RunCommand(
       () -> intakeSubsystem.intakeCommand(
@@ -166,6 +160,8 @@ public class RobotContainer {
         // getSelected() method returns
         // the command assosiated with each option, which is set above).
         driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
+
+
 
         intakeSubsystem.setDefaultCommand(intakeCommand);
         outakeSubsystem.setDefaultCommand(outakeCommand);
