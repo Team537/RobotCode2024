@@ -82,7 +82,6 @@ public final class Constants {
     public static final double ORIENTATION_LOCK_KP = 1.4;
     public static final double ORIENTATION_LOCK_KI = 0;
     public static final double ORIENTATION_LOCK_KD = 0.1;
-
   }
 
     public static final class ModuleConstants {
