@@ -143,7 +143,7 @@ public final class Constants {
     public static final class CameraConstants {
 
         // Data gathering settings
-        public static final double SNAPSHOTS_PER_SECOND = 6; // How many snapshots are taken per second.
+        public static final double SNAPSHOTS_PER_SECOND = 4; // How many snapshots are taken per second.
         public static final double SNAPSHOT_RATE = 1 / SNAPSHOTS_PER_SECOND; 
 
         // Pipeline settings
