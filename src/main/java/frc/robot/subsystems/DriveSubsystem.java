@@ -151,13 +151,13 @@ public class DriveSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        // Update the robot's positon data so that the robot can know where it is at any given tiem.
+        // Periodically update the robot's position data to keep track of its location.
         updateRobotPose();
     }
-
+    
     /**
-     * Update this {@code DriveSubsystem's} position so that future calculation involving
-     * the robot's position are made using accurate, up-to-date data.
+     * Update the position of this {@code DriveSubsystem} to ensure accurate and up-to-date data for
+     * subsequent calculations involving the robot's position.
      */
     private void updateRobotPose() {
 
@@ -166,13 +166,13 @@ public class DriveSubsystem extends SubsystemBase {
             return;
         }
 
-        // Get the robot's estimated vision measurments
+        // Retrieve the estimated position from the robot's vision system.
         Pose2d estimatedPose2d = visionMeasurementSupplier.get();
 
         // Add the robot's estimated vision measurments to the pose estimator if they are not null.
         if (estimatedPose2d != null) {
-            
-            // Add the robot's estimated vision measurments to this DriveSubsystem's poseEstimator.  
+
+            // Incorporate the robot's estimated vision measurements into this DriveSubsystem's poseEstimator.
             poseEstimator.addVisionMeasurement(
                 visionMeasurementSupplier.get(), 
                 Timer.getFPGATimestamp());
