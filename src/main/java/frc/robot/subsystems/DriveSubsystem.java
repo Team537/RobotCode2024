@@ -5,25 +5,27 @@
 package frc.robot.subsystems;
 
 import java.util.List;
+import java.util.function.Supplier;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
-import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
@@ -32,6 +34,7 @@ import frc.utils.SlewRateLimiterEX;
 import frc.utils.SwerveUtils;
 
 public class DriveSubsystem extends SubsystemBase {
+
     // Create MAXSwerveModules
     private final MAXSwerveModule frontLeft = new MAXSwerveModule(
             DriveConstants.FRONT_LEFT_DRIVE_CAN_ID,
@@ -61,7 +64,7 @@ public class DriveSubsystem extends SubsystemBase {
     private PIDController orientationLockController = new PIDController(DriveConstants.ORIENTATION_LOCK_KP,
             DriveConstants.ORIENTATION_LOCK_KI, DriveConstants.ORIENTATION_LOCK_KD);
 
-    // use orientation rolling for more precise turning
+    // Use orientation rolling for more precise turning
     private double baseRobotOrientation = 0;
     private double baseJoystickOrientation = 0;
     private boolean useOrientationTarget = false;
@@ -79,20 +82,20 @@ public class DriveSubsystem extends SubsystemBase {
     private SlewRateLimiter rotLimiter = new SlewRateLimiter(DriveConstants.ROTATIONAL_SLEW_RATE);
     private double prevTime = WPIUtilJNI.now() * 1e-6;
 
-    ProfiledPIDController thetaController = new ProfiledPIDController(
+    private ProfiledPIDController thetaController = new ProfiledPIDController(
             AutoConstants.THETA_CONTROLLER_KP, 0, 0, AutoConstants.kThetaControllerConstraints);
 
-    HolonomicDriveController driveController = new HolonomicDriveController(
+    private HolonomicDriveController driveController = new HolonomicDriveController(
             new PIDController(AutoConstants.X_CONTROLLER_KP, 0, 0),
             new PIDController(AutoConstants.Y_CONTROLLER_KP, 0, 0), thetaController);
 
     // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
+    private TrajectoryConfig config = new TrajectoryConfig(
             AutoConstants.MAX_SPEED_METERS_PER_SECOND,
             AutoConstants.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
             // Add kinematics to ensure max speed is actually obeyed
             .setKinematics(DriveConstants.DRIVE_KINEMATICS);
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+    private Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
             // Start at the origin facing the +X direction
             new Pose2d(0, 0, new Rotation2d(0)),
             // Pass through these two interior waypoints, making an 's' curve path
@@ -101,20 +104,45 @@ public class DriveSubsystem extends SubsystemBase {
             new Pose2d(3, 0, new Rotation2d(0)),
             config);
 
-    // Odometry class for tracking robot pose
-    SwerveDriveOdometry odometry = new SwerveDriveOdometry(
-            DriveConstants.DRIVE_KINEMATICS,
-            gyro.getRotation2d(),
-            new SwerveModulePosition[] {
-                    frontLeft.getPosition(),
-                    frontRight.getPosition(),
-                    backLeft.getPosition(),
-                    backRight.getPosition()
-            });
+    // SwerveDrivePoseEstimator object to keep track of the robot's position on the field.
+    private SwerveDrivePoseEstimator poseEstimator;
 
-    /** Creates a new DriveSubsystem. */
-    public DriveSubsystem() {
-        zeroHeading();
+    // Create a supplier to make it possible for this DriveSubsystem to gain acsess to the cameras' estimated position.
+    private Supplier<Pose2d> visionMeasurementSupplier;
+
+    /**
+     * Creates a new {@code DriveSubsystem} object with the specified paramaters.
+     * 
+     * @param resetOrientation          Whether or not the IMU will be reset.
+     * @param visionMeasurementSupplier A refference to a method that will provide the drivetrain with the 
+     */
+    public DriveSubsystem(boolean resetOrientation, Supplier<Pose2d> visionMeasurementSupplier) {
+
+        // Reset the IMU if told to do so.
+        if (resetOrientation) {
+            zeroHeading();
+        }
+
+        /* 
+         * Initialze up the visionMeasurementSupplier so that this DriveSubsystem is able to get
+         * the camera(s) estimate of the robot's position. This helps ensure the robot is able to
+         * reliable prefrom autonomous action, like autoscoring and auto note grabbing.
+        */
+        this.visionMeasurementSupplier = visionMeasurementSupplier;
+
+         // Setup the robot's PoseEstimator so that we are able to get the robot's position on the 
+        // field at any given time.
+        poseEstimator = new SwerveDrivePoseEstimator(
+            DriveConstants.DRIVE_KINEMATICS, 
+            gyro.getRotation2d(), 
+            new SwerveModulePosition[] {
+                frontLeft.getPosition(),
+                frontRight.getPosition(),
+                backLeft.getPosition(),
+                backRight.getPosition()},
+            new Pose2d(new Translation2d(0, 0), new Rotation2d(0, 0))); // Note: See how accurate this turns out to be. Change if need be.
+
+        // Configure alternative drive mode PID controllers.
         orientationLockController.enableContinuousInput(0, Math.PI * 2);
         targetOrientationController.enableContinuousInput(0, Math.PI * 2);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
@@ -122,43 +150,45 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Update the odometry in the periodic block
-        odometry.update(
-                gyro.getRotation2d(),
-                new SwerveModulePosition[] {
-                        frontLeft.getPosition(),
-                        frontRight.getPosition(),
-                        backLeft.getPosition(),
-                        backRight.getPosition()
-                });
+
+        // Update the robot's positon data so that the robot can know where it is at any given tiem.
+        updateRobotPose();
     }
 
     /**
-     * Returns the currently-estimated pose of the robot.
-     *
-     * @return The pose.
+     * Update this {@code DriveSubsystem's} position so that future calculation involving
+     * the robot's position are made using accurate, up-to-date data.
      */
-    public Pose2d getPose() {
-        return odometry.getPoseMeters();
+    private void updateRobotPose() {
+
+        // Return if poseEstimator hasn't been intialize yet.
+        if (poseEstimator == null) {
+            return;
+        }
+
+        // Get the robot's estimated vision measurments
+        Pose2d estimatedPose2d = visionMeasurementSupplier.get();
+
+        // Add the robot's estimated vision measurments to the pose estimator if they are not null.
+        if (estimatedPose2d != null) {
+            
+            // Add the robot's estimated vision measurments to this DriveSubsystem's poseEstimator.  
+            poseEstimator.addVisionMeasurement(
+                visionMeasurementSupplier.get(), 
+                Timer.getFPGATimestamp());
+        }
+
+        // Update the robot's position on the field.
+        poseEstimator.update(
+            geRotation2d(),
+            new SwerveModulePosition[] {
+                frontLeft.getPosition(),
+                frontRight.getPosition(),
+                backLeft.getPosition(),
+                backRight.getPosition()});
     }
 
-    /**
-     * Resets the odometry to the specified pose.
-     *
-     * @param pose The pose to which to set the odometry.
-     */
-    public void resetOdometry(Pose2d pose) {
-        odometry.resetPosition(
-                gyro.getRotation2d(),
-                new SwerveModulePosition[] {
-                        frontLeft.getPosition(),
-                        frontRight.getPosition(),
-                        backLeft.getPosition(),
-                        backRight.getPosition()
-                },
-                pose);
-    }
-
+    // NOTE: Please change the name of this method to make it's purpose more clear
     /**
      * basic layout for targeting a position
      * 
@@ -167,10 +197,11 @@ public class DriveSubsystem extends SubsystemBase {
     public void position(Pose2d targetPose) {
 
         setModuleStates(DriveConstants.DRIVE_KINEMATICS
-                .toSwerveModuleStates(driveController.calculate(getPose(), targetPose, 0, targetPose.getRotation())));
+                .toSwerveModuleStates(driveController.calculate(getPose(), targetPose,
+                 0, 
+                 targetPose.getRotation())));
 
         System.out.println(getPose());
-
     }
 
     /**
@@ -387,18 +418,52 @@ public class DriveSubsystem extends SubsystemBase {
         backRight.resetEncoders();
     }
 
+    /**
+     * Resets the odometry to the specified pose.
+     *
+     * @param pose The new position of the robot.
+     */
+    public void resetOdometry(Pose2d pose) {
+        poseEstimator.resetPosition(
+            gyro.getRotation2d(),
+            new SwerveModulePosition[] {
+                frontLeft.getPosition(),
+                frontRight.getPosition(),
+                backLeft.getPosition(),
+                backRight.getPosition()},
+            pose);
+    }
+
     /** Zeroes the heading of the robot. */
     public void zeroHeading() {
         gyro.reset();
     }
 
     /**
+     * Returns the robot's position on the field as a {@code Pose2d}.
+     *
+     * @return The robot's position on the field as a {@code Pose2d}.
+     */
+    public Pose2d getPose() {
+        return poseEstimator.getEstimatedPosition();
+    }
+
+    /**
+     * Returns the robot's rotation, as a {@code Rotation2d}.
+     * 
+     * @return The robot's rotation, as a {@code Rotation2d}.
+     */
+    public Rotation2d geRotation2d() {
+        return gyro.getRotation2d();
+    }
+
+    /**
      * Returns the heading of the robot.
      *
-     * @return the robot's heading in degrees, from -180 to 180
+     * @return the robot's heading in radians, from -pi to pi.
      */
     public double getHeading() {
-        return gyro.getRotation2d().getDegrees();
+        return gyro.getRotation2d().getRadians();
     }
 
     /**

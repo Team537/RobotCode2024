@@ -14,14 +14,20 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.CameraConstants;
 
+/**
+ * A camera attatched to a co-processer.
+ * 
+ * @author Cameron Myhre
+ * @version 1.0
+ * @category Computer Vision
+ */
 public class PhotonVisionCamera extends SubsystemBase {
     
     private PhotonCamera camera;
     private Transform3d cameraOffset; // The camera's position relative to the robot.
     
     private PhotonPipelineResult result;
-    private PhotonPoseEstimator photonPoseEstimator = new PhotonPoseEstimator(CameraConstants.APRIL_TAG_FIELD_LAYOUT, 
-            PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, cameraOffset);
+    private PhotonPoseEstimator photonPoseEstimator;
 
     /**
      * Creates a {@code PhotonVisionCamera} with the desired parameters.
@@ -36,6 +42,10 @@ public class PhotonVisionCamera extends SubsystemBase {
 
         // Set the camera offset
         this.cameraOffset = cameraOffset;
+
+        // Initialize this camera's PhotonPoseEstimaotr so that we are able to estimate the robot's position.
+        photonPoseEstimator = new PhotonPoseEstimator(CameraConstants.APRIL_TAG_FIELD_LAYOUT, 
+        PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, cameraOffset);
     }
 
     @Override

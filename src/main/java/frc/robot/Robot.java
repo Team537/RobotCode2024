@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
     snapshotTimer.start();
 
     // Make it possible to view the photonvision dashboard over the internet
-    // PortForwarder.add(5800, "photonvision.local", 5800);
+    PortForwarder.add(5800, "photonvision.local", 5800);
   }
 
   /**

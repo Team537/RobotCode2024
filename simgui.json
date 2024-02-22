@@ -11,6 +11,11 @@
           "open": true
         }
       },
+      "SPARK MAX [6]": {
+        "header": {
+          "open": true
+        }
+      },
       "SPARK MAX [7]": {
         "header": {
           "open": true
@@ -25,12 +30,24 @@
   },
   "NTProvider": {
     "types": {
-      "/FMSInfo": "FMSInfo"
+      "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Controller Selection": "String Chooser"
     }
   },
   "NetworkTables": {
-    "Retained Values": {
+    "Transitory Values": {
       "open": false
+    },
+    "transitory": {
+      "Shuffleboard": {
+        ".metadata": {
+          "open": true
+        },
+        ".recording": {
+          "open": true
+        },
+        "open": true
+      }
     }
   },
   "NetworkTables Info": {
