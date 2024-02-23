@@ -254,10 +254,10 @@ public final class Constants {
       // Constants for Intake Raiser
       public static final class RaisingSubsystemConstants{
 
-        public static final double MAX_VELOCITY = 150;
+        public static final double MAX_VELOCITY = 2000;
         public static final double MIN_VELOCITY = 0; 
 
-        public static final double MAX_ACCELERATION = 200;
+        public static final double MAX_ACCELERATION = 4000;
 
       }
 
@@ -290,7 +290,7 @@ public final class Constants {
 
       // To be set
       public static final double intakePosition = 0;
-      public static final double releasePosition = 12.93;
+      public static final double releasePosition = 0.506;
 
     }
 
