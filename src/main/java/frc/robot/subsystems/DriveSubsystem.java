@@ -307,7 +307,8 @@ public class DriveSubsystem extends SubsystemBase {
             ySpeedCommanded = currentTranslationMag * Math.sin(currentTranslationDir);
             currentRotation = rotLimiter.calculate(rotSpeedCommanded);
 
-            // if orientation is zero, begin storing the orientation lock
+            // if orientation is zero, begin storing the orientation lock 
+            /*
             if (Math.abs(currentRotation) < 1e-4 && !useOrientationTarget) {
 
                 // only activate on the rising edge
@@ -328,6 +329,7 @@ public class DriveSubsystem extends SubsystemBase {
                 orientationLockToggle = false;
             }
 
+            */
         } else {
             xSpeedCommanded = xSpeed;
             ySpeedCommanded = ySpeed;
