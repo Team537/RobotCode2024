@@ -26,7 +26,7 @@ public class ShootNoteCommand extends Command{
 
     public void initialize(){
     
-        m_BTIntakeSubsytem.ReverseRunAtMaxSpeed();
+        m_BTIntakeSubsytem.ReverseRun();
         newTimer.delay(5);
         m_BTIntakeSubsytem.StopMotor();
 

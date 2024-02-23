@@ -40,9 +40,6 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
         // Initialization of Encoder & PID Controller Objects
         intakeRaiserAbsoluteEncoder = intakeRaiserSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
-        intakeRaiserAbsoluteEncoder.setVelocityConversionFactor(Constants.BTConstants.IntakeRaisingConstants.VELOCITY_CONVERSION_FACTOR);
-        intakeRaiserAbsoluteEncoder.setPositionConversionFactor(Constants.BTConstants.IntakeRaisingConstants.POSITION_CONVERSION_FACTOR);
-
         intakeRaiserRelativeEncoder = intakeRaiserSparkMax.getEncoder();
 
         intakeRaiserPIDController = intakeRaiserSparkMax.getPIDController();
@@ -69,7 +66,7 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
     public void goToReleasePosition(){
 
-        intakeRaiserPIDController.setReference(Constants.BTConstants.IntakePositions.releasePosition, CANSparkMax.ControlType.kSmartMotion);
+        intakeRaiserPIDController.setReference(11.5, CANSparkMax.ControlType.kSmartMotion);
         intakePosition = IntakePosition.UP;
     }
 
@@ -95,7 +92,7 @@ public class BTRaisingSubsystem extends SubsystemBase{
         }
 
     
-        if (raiseUp){
+        else if (raiseUp){
 
             goToReleasePosition();
 

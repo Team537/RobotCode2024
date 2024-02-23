@@ -10,8 +10,6 @@ import frc.robot.Constants;
 public class BTOutakeSubsytem extends SubsystemBase{
 
     // Constants: will eventually be moved to constants class
-    private final int lmCANID = 2;
-    private final int rmCANID = 3;
 
     private final double OUTTAKE_POSITION_CONVERSION_FACTOR = 2 * Math.PI;
     private final double OUTTAKE_VELOCITY_CONVERSION_FACTOR = (2*Math.PI) / 60; 
@@ -59,6 +57,7 @@ public class BTOutakeSubsytem extends SubsystemBase{
         leftPIDController.setSmartMotionMinOutputVelocity(Constants.BTConstants.PIDControllerConstants.OuttakeSubsystemConstants.MIN_VELOCITY, 0);
         leftPIDController.setSmartMotionMaxAccel(Constants.BTConstants.PIDControllerConstants.OuttakeSubsystemConstants.MAX_ACCELERATION, 0);
         leftPIDController.setSmartMotionAllowedClosedLoopError(Constants.BTConstants.PIDControllerConstants.ALLOWED_ERROR, 0);
+        
 
         
         rightPIDController.setP(Constants.BTConstants.PIDControllerConstants.P);
@@ -82,8 +81,8 @@ public class BTOutakeSubsytem extends SubsystemBase{
         the motors have to spin in opposite directions
          */ 
 
-        leftPIDController.setReference(-300, CANSparkMax.ControlType.kSmartVelocity);
-        leftPIDController.setReference(300, CANSparkMax.ControlType.kSmartVelocity);
+        leftPIDController.setReference(-3999, CANSparkMax.ControlType.kSmartVelocity);
+        rightPIDController.setReference(3999, CANSparkMax.ControlType.kSmartVelocity);
 
     }
 

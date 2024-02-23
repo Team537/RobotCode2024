@@ -41,7 +41,7 @@ public class BTIntakeSubsytem extends SubsystemBase{
 
         // Relative Encoder
         intakeRelativeEncoder = intakeSparkMax.getEncoder();
-        intakeRelativeEncoder.setVelocityConversionFactor(Constants.BTConstants.PIDControllerConstants.IntakeSubsystemConstants.VELOCITY_CONVERSION_FACTOR);
+        
 
         // Limit Switch
         limitSwitch = intakeSparkMax.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
@@ -64,13 +64,13 @@ public class BTIntakeSubsytem extends SubsystemBase{
     // Runs Intake At Max Speed
     public void RunAtMaxSpeed(){
 
-        intakePIDController.setReference(300, CANSparkMax.ControlType.kVelocity);
+        intakePIDController.setReference(2000, CANSparkMax.ControlType.kVelocity);
 
     }
 
-    public void ReverseRunAtMaxSpeed(){
+    public void ReverseRun(){
 
-        intakePIDController.setReference(-300, CANSparkMax.ControlType.kVelocity);
+        intakePIDController.setReference(-2000, CANSparkMax.ControlType.kVelocity);
 
     }
 
@@ -113,9 +113,15 @@ public class BTIntakeSubsytem extends SubsystemBase{
             buttonPressed = true;
             if (input) {
                 RunAtMaxSpeed();
-            } else {
-                ReverseRunAtMaxSpeed();
+            } 
+            else if (output) {
+                ReverseRun();
             }
+
+            else if (limitSwitchActivated()){
+                StopMotor();
+            }
+
         }
 
     }
