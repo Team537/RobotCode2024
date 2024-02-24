@@ -94,14 +94,20 @@ public class RobotContainer {
    POVButton dpadRightButton1 = new POVButton(driverController, 90);
    POVButton dpadLeftButton1 = new POVButton(driverController, 270);
 
-   // A Runs Intake
+
+   // () - > syntax creates a runnable object from a method
+
+   /* 
+    * This is where we create run commands
+   */
+    // A Runs Intake
    // Left Bumper Reverses Intake
     private final RunCommand intakeCommand = new RunCommand(
-      () -> intakeSubsystem.intakeCommand(
-        driverController.getAButton(),
-        driverController.getLeftBumper()
-      ),intakeSubsystem
+      () -> intakeSubsystem.intakeCommand( driverController.getAButton(),driverController.getLeftBumper()),
+      intakeSubsystem
     );
+
+    
 
     private final RunCommand outakeCommand = new RunCommand(
       () -> outakeSubsystem.outakeCommand(

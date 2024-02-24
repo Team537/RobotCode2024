@@ -64,13 +64,14 @@ public class BTIntakeSubsytem extends SubsystemBase{
     // Runs Intake At Max Speed
     public void RunAtMaxSpeed(){
 
-        intakePIDController.setReference(2000, CANSparkMax.ControlType.kVelocity);
+        intakePIDController.setReference(5000, CANSparkMax.ControlType.kVelocity);
 
     }
 
     public void ReverseRun(){
 
-        intakePIDController.setReference(-2000, CANSparkMax.ControlType.kVelocity);
+        //intakePIDController.setReference(-11000, CANSparkMax.ControlType.kVelocity);
+        intakeSparkMax.set(-1);
 
     }
 

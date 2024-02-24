@@ -81,8 +81,11 @@ public class BTOutakeSubsytem extends SubsystemBase{
         the motors have to spin in opposite directions
          */ 
 
-        leftPIDController.setReference(-3999, CANSparkMax.ControlType.kSmartVelocity);
-        rightPIDController.setReference(3999, CANSparkMax.ControlType.kSmartVelocity);
+        // leftPIDController.setReference(-5700, CANSparkMax.ControlType.kSmartVelocity);
+        // rightPIDController.setReference(5700, CANSparkMax.ControlType.kSmartVelocity);
+
+        leftMotorSparkMax.set(-1);
+        rightMotorSparkMax.set(1);
 
     }
 
