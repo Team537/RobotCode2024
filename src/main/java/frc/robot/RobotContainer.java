@@ -56,75 +56,85 @@ import javax.xml.crypto.dsig.spec.HMACParameterSpec;
  */
 public class RobotContainer {
 
-  //**Black Team's Subsystems
+  /*Field Declaration and Initialization for Robot Container */
+
+  //Subsystems
+
+  //Black Team's Subsytems
   private final BTIntakeSubsytem intakeSubsystem = new BTIntakeSubsytem();
   private final BTOutakeSubsytem outakeSubsystem = new BTOutakeSubsytem();
   private final BTRaisingSubsystem raisingSubsystem = new BTRaisingSubsystem();
 
-
-    // The robot's subsystems
-    private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-    private final RobotVision robotVision = new RobotVision.Builder()
+  // Mobility Subsytems
+  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+  private final RobotVision robotVision = new RobotVision.Builder()
         .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.OBJECT_DETECTION_PIPELINE)
         .addLimelightCamera(CameraConstants.LIMELIGHT_NAME, 0, 0, 0, 0)
         .build();
 
-   // The driver's controller
-   private final XboxController driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
-   private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
 
-   // Setup each button on each controller
-   JoystickButton starButton1 = new JoystickButton(driverController, Button.kStart.value);
-   JoystickButton backButton1 = new JoystickButton(driverController, Button.kBack.value);
-   JoystickButton rightStick1 = new JoystickButton(driverController, Button.kRightStick.value);
-   JoystickButton leftStick1 = new JoystickButton(driverController, Button.kLeftStick.value);
-   JoystickButton rightBumper1 = new JoystickButton(driverController, Button.kRightBumper.value);
-   JoystickButton leftBumper1 = new JoystickButton(driverController, Button.kLeftBumper.value);
-   JoystickButton aButton1 = new JoystickButton(driverController, Button.kA.value);
-   JoystickButton bButton1 = new JoystickButton(driverController, Button.kB.value);
-   JoystickButton yButton1 = new JoystickButton(driverController, Button.kY.value);
-   JoystickButton xButton1 = new JoystickButton(driverController, Button.kX.value);
-   POVButton dpadUpButton1 = new POVButton(driverController, 0);
-   POVButton dpadDownButton1 = new POVButton(driverController, 180);
-   POVButton dpadRightButton1 = new POVButton(driverController, 90);
-   POVButton dpadLeftButton1 = new POVButton(driverController, 270);
+  // The Driver's Controller
+  private final XboxController driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
+  private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
+
+  // Creating the button objects for each controller
+  JoystickButton starButton1 = new JoystickButton(driverController, Button.kStart.value);
+  JoystickButton backButton1 = new JoystickButton(driverController, Button.kBack.value);
+  JoystickButton rightStick1 = new JoystickButton(driverController, Button.kRightStick.value);
+  JoystickButton leftStick1 = new JoystickButton(driverController, Button.kLeftStick.value);
+  JoystickButton rightBumper1 = new JoystickButton(driverController, Button.kRightBumper.value);
+  JoystickButton leftBumper1 = new JoystickButton(driverController, Button.kLeftBumper.value);
+  JoystickButton aButton1 = new JoystickButton(driverController, Button.kA.value);
+  JoystickButton bButton1 = new JoystickButton(driverController, Button.kB.value);
+  JoystickButton yButton1 = new JoystickButton(driverController, Button.kY.value);
+  JoystickButton xButton1 = new JoystickButton(driverController, Button.kX.value);
+  POVButton dpadUpButton1 = new POVButton(driverController, 0);
+  POVButton dpadDownButton1 = new POVButton(driverController, 180);
+  POVButton dpadRightButton1 = new POVButton(driverController, 90);
+  POVButton dpadLeftButton1 = new POVButton(driverController, 270);
+  
+
+  /*
+   * Default Run Command Objects
+   * Basically what happens is that we have these run commands run as the default commands
+   * for the subsytems. And these commands use a specific method inside each subsystem, that
+   * acts as the runnable and logic method.
+  */
+   
+  // () - > syntax creates a runnable object from a method
+  
 
 
-   // () - > syntax creates a runnable object from a method
-
-   /* 
-    * This is where we create run commands
-   */
-    // A Runs Intake
-   // Left Bumper Reverses Intake
-    private final RunCommand intakeCommand = new RunCommand(
-      () -> intakeSubsystem.intakeCommand( driverController.getAButton(),driverController.getLeftBumper()),
+   //'Left Bumper' Intakes
+   //'A' Toggles intaking and outtaking
+  private final RunCommand intakeCommand = new RunCommand(
+     () -> intakeSubsystem.intakeCommand(driverController.getLeftBumper(),(driverController.getLeftTriggerAxis()>0)),
       intakeSubsystem
-    );
+  );
 
     
+  //'Left Trigger' runs outtake
+  private final RunCommand outakeCommand = new RunCommand(
+      () -> outakeSubsystem.outakeCommand((driverController.getLeftTriggerAxis() > 0)),
+      outakeSubsystem
+  );
 
-    private final RunCommand outakeCommand = new RunCommand(
-      () -> outakeSubsystem.outakeCommand(
-        driverController.getYButton()
-      ),outakeSubsystem
-    );
+  // X Raises Intake
+  // B Lowers Intake
+  // Y Goes to the Amp Position
+  private final RunCommand raisingCommand = new RunCommand(
+    () -> raisingSubsystem.raisingCommand(driverController.getYButton(), driverController.getAButton()),
+    raisingSubsystem
+  );
 
-    // B Raises Intake
-    // X Lowers Intake
-    private final RunCommand raisingCommand = new RunCommand(
-      () -> raisingSubsystem.raisingCommand(
-        driverController.getBButton(),
-        driverController.getXButton()
-      ),raisingSubsystem
-    );
+
 
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
     () -> driveSubsystem.drive(
         -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
-        -MathUtil.applyDeadband(driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
+        MathUtil.applyDeadband(driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(driverController.getRightY(), OIConstants.DRIVE_DEADBAND),
         driverController.getRightTriggerAxis(),
         true, true),
@@ -200,7 +210,7 @@ public class RobotContainer {
     
     }
 
-        /**
+    /**
      * Takes a photongraph using all of the cameras.
      */
     public void snapshot() {

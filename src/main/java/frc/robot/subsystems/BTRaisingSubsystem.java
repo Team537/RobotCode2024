@@ -11,6 +11,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.IntakePosition;
+import edu.wpi.first.wpilibj.Timer;
 
 public class BTRaisingSubsystem extends SubsystemBase{
     
@@ -19,7 +20,8 @@ public class BTRaisingSubsystem extends SubsystemBase{
     private AbsoluteEncoder intakeRaiserAbsoluteEncoder;
     private RelativeEncoder intakeRaiserRelativeEncoder;
     private SparkPIDController intakeRaiserPIDController;
-    private IntakePosition intakePosition;
+    private IntakePosition intakePosition = IntakePosition.UP;
+    private Timer newTimer = new Timer();
 
     /*
      * Constructs a New Intake Raiser Subsystem
@@ -72,7 +74,9 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
     public void periodic(){
 
-        SmartDashboard.putNumber("Intake Raiser Position: ", intakeRaiserAbsoluteEncoder.getPosition());
+        // SmartDashboard.putNumber("Intake Raiser Position: ", intakeRaiserAbsoluteEncoder.getPosition());
+        SmartDashboard.putString("Intake Position", intakePosition.toString());
+
 
     }
 
@@ -84,32 +88,32 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
     public void goToAmpPosition(){
 
-        intakeRaiserPIDController.setReference(-(1-0.807)*25, CANSparkMax.ControlType.kSmartMotion);
+        intakeRaiserPIDController.setReference(Constants.BTConstants.IntakePositions.ampScoringPosition, CANSparkMax.ControlType.kSmartMotion);
+        intakePosition = IntakePosition.AMP;
 
     }
 
-    public void raisingCommand(boolean raiseUp, boolean raiseDown) {
+    public void raisingCommand(boolean ampScoring, boolean raise) {
 
-        // Button B is for raising and Button X is for lowering
-        if (raiseUp && raiseDown){
+        if (ampScoring){
 
             goToAmpPosition();
 
         }
 
-        else if (raiseDown){
+        else if (raise){
 
-            goToIntakePosition();
+            if (intakePosition == IntakePosition.UP){
+
+                Timer.delay(0.2);
+                goToIntakePosition();
+            }
+            else if (intakePosition == IntakePosition.DOWN){
+
+                Timer.delay(0.2);
+                goToReleasePosition();
+            }
 
         }
-
-    
-        else if (raiseUp){
-
-            goToReleasePosition();
-
-        }
-
     }
-
 }
