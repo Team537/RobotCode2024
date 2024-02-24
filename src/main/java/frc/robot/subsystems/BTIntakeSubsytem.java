@@ -4,10 +4,12 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkPIDController;
+import edu.wpi.first.wpilibj.Timer;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.IntakePosition;
 
 /*
 The Intake Subsystem controls the Mechanism for Intaking the Note
@@ -27,6 +29,9 @@ public class BTIntakeSubsytem extends SubsystemBase{
     private final RelativeEncoder intakeRelativeEncoder;
     private final SparkLimitSwitch limitSwitch;
     private final SparkPIDController intakePIDController;
+    private String intakeToggleString = "intaking";
+    private Timer newTimer = new Timer();
+    private IntakePosition intakePosition;
 
     private boolean buttonPressed = false;
 
@@ -99,32 +104,42 @@ public class BTIntakeSubsytem extends SubsystemBase{
     public void periodic(){
 
         SmartDashboard.putBoolean("Note is In: ", limitSwitchActivated());
+        SmartDashboard.putString("Intake Toggle: ", intakeToggleString);
     }
 
-    public void intakeCommand(boolean input, boolean output) {
+    public void intakeCommand(boolean activate, boolean outtake) {
 
-        if (input == output){
-            
-            if (buttonPressed){
-                StopMotor();
-            };
-
-        } else {
-
-            buttonPressed = true;
-            if (input) {
+        // This activates the different methods based on the toggle and when the limit switch is off
+        //intakePosition = intakePos;
+        if (!(limitSwitchActivated())){
+            if (activate){
                 RunAtMaxSpeed();
-            } 
-            else if (output) {
+            }
+            else if (outtake){
                 ReverseRun();
             }
+            else{
+                StopMotor();
+            }
+        }
 
-            else if (limitSwitchActivated()){
+        // This runs when the limit switch is activated.
+        else{
+
+            if (outtake){
+                ReverseRun();
+            }
+            else{
                 StopMotor();
             }
 
         }
 
+
     }
 
+
+
 }
+
+

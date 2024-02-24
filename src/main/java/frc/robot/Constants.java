@@ -286,7 +286,7 @@ public final class Constants {
     // Constants for the Intake Position
     public static final class IntakePositions{
 
-      // To be set
+      public static final double ampScoringPosition = -(1-0.807)*25; // Measured using absolute encoders
       public static final double intakePosition = -12.65;
       public static final double releasePosition = 0;
 
