@@ -264,9 +264,9 @@ public final class Constants {
       // Constants for the Outtake
       public static final class OuttakeSubsystemConstants{
 
-        public static final double MAX_VELOCITY = 4000;
+        public static final double MAX_VELOCITY = 5700;
         public static final double MIN_VELOCITY = 0;
-        public static final double MAX_ACCELERATION = 4000;
+        public static final double MAX_ACCELERATION = 11400;
 
       }
 
@@ -276,9 +276,9 @@ public final class Constants {
         public static final double GEAR_RATIO = (5*5);
         public static final double VELOCITY_CONVERSION_FACTOR = GEAR_RATIO; 
 
-        public static final double MAX_VELOCITY = 3000;
+        public static final double MAX_VELOCITY = 11000;
         public static final double MIN_VELOCITY = 0;
-        public static final double MAX_ACCELERATION = 3000;
+        public static final double MAX_ACCELERATION = 2200000;
 
       }
 
@@ -289,8 +289,8 @@ public final class Constants {
     public static final class IntakePositions{
 
       // To be set
-      public static final double intakePosition = 0;
-      public static final double releasePosition = 0.506;
+      public static final double intakePosition = -12.65;
+      public static final double releasePosition = 0;
 
     }
 

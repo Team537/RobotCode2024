@@ -60,13 +60,13 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
     public void goToIntakePosition(){
 
-        intakeRaiserPIDController.setReference(Constants.BTConstants.IntakePositions.intakePosition, CANSparkMax.ControlType.kSmartMotion);
+        intakeRaiserPIDController.setReference(-12.65, CANSparkMax.ControlType.kSmartMotion);
         intakePosition = IntakePosition.DOWN;
     }
 
     public void goToReleasePosition(){
 
-        intakeRaiserPIDController.setReference(11.5, CANSparkMax.ControlType.kSmartMotion);
+        intakeRaiserPIDController.setReference(0, CANSparkMax.ControlType.kSmartMotion);
         intakePosition = IntakePosition.UP;
     }
 
@@ -82,10 +82,22 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
     }
 
+    public void goToAmpPosition(){
+
+        intakeRaiserPIDController.setReference(-(1-0.807)*25, CANSparkMax.ControlType.kSmartMotion);
+
+    }
+
     public void raisingCommand(boolean raiseUp, boolean raiseDown) {
 
         // Button B is for raising and Button X is for lowering
-        if (raiseDown){
+        if (raiseUp && raiseDown){
+
+            goToAmpPosition();
+
+        }
+
+        else if (raiseDown){
 
             goToIntakePosition();
 
