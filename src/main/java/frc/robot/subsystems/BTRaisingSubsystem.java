@@ -4,6 +4,7 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkLimitSwitch;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkPIDController;
 
@@ -11,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.IntakePosition;
+import frc.robot.Constants.BTConstants;
 import edu.wpi.first.wpilibj.Timer;
 
 public class BTRaisingSubsystem extends SubsystemBase{
@@ -22,6 +24,8 @@ public class BTRaisingSubsystem extends SubsystemBase{
     private SparkPIDController intakeRaiserPIDController;
     private IntakePosition intakePosition = IntakePosition.UP;
     private Timer newTimer = new Timer();
+    private CANSparkMax intakeSparkMax;
+    private SparkLimitSwitch limitSwitch;
 
     /*
      * Constructs a New Intake Raiser Subsystem
@@ -38,6 +42,9 @@ public class BTRaisingSubsystem extends SubsystemBase{
         // Inititalization of Spark Max Object
         intakeRaiserSparkMax = new CANSparkMax(Constants.BTConstants.CANIdConstants.PIVOT_MOTOR_CAN_ID, MotorType.kBrushless);
         intakeRaiserSparkMax.restoreFactoryDefaults();
+        intakeSparkMax = new CANSparkMax(Constants.BTConstants.CANIdConstants.INTAKE_MOTOR_CAN_ID, MotorType.kBrushless);
+
+        limitSwitch = intakeSparkMax.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
         
 
         // Initialization of Encoder & PID Controller Objects
@@ -113,6 +120,13 @@ public class BTRaisingSubsystem extends SubsystemBase{
                 Timer.delay(0.2);
                 goToReleasePosition();
             }
+
+        }
+
+        // Automatically intakes once limit switch is activated
+        else if (limitSwitch.isPressed()){
+
+            intakeRaiserPIDController.setReference(BTConstants.IntakePositions.releasePosition, CANSparkMax.ControlType.kSmartMotion);
 
         }
     }
