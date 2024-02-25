@@ -25,7 +25,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
-
+import frc.robot.subsystems.BTAngleChangingSubsystem;
 import frc.robot.subsystems.BTIntakeSubsytem;
 import frc.robot.subsystems.BTOutakeSubsytem;
 import frc.robot.subsystems.BTRaisingSubsystem;
@@ -64,6 +64,7 @@ public class RobotContainer {
   private final BTIntakeSubsytem intakeSubsystem = new BTIntakeSubsytem();
   private final BTOutakeSubsytem outakeSubsystem = new BTOutakeSubsytem();
   private final BTRaisingSubsystem raisingSubsystem = new BTRaisingSubsystem();
+  private final BTAngleChangingSubsystem anglingSubsytem = new BTAngleChangingSubsystem();
 
   // Mobility Subsytems
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
@@ -107,6 +108,8 @@ public class RobotContainer {
 
    //'Left Bumper' Intakes
    //'A' Toggles intaking and outtaking
+
+  
   private final RunCommand intakeCommand = new RunCommand(
      () -> intakeSubsystem.intakeCommand(driverController.getLeftBumper(),(driverController.getLeftTriggerAxis()>0)),
       intakeSubsystem
@@ -119,14 +122,19 @@ public class RobotContainer {
       outakeSubsystem
   );
 
-  // X Raises Intake
-  // B Lowers Intake
+  // A Toggles Between Raising and Lowering
   // Y Goes to the Amp Position
   private final RunCommand raisingCommand = new RunCommand(
     () -> raisingSubsystem.raisingCommand(driverController.getYButton(), driverController.getAButton()),
     raisingSubsystem
   );
 
+  // 
+  private final RunCommand anglingCommand = new RunCommand(
+    () -> anglingSubsytem.defaultAnglingCommand(dpadUpButton1.getAsBoolean(), dpadDownButton1.getAsBoolean()), 
+    anglingSubsytem
+  );
+  
 
 
   // Controller commands
@@ -149,6 +157,8 @@ public class RobotContainer {
           0,
           true, true),
           driveSubsystem);
+
+  
 
   // SmartDashboard options
   private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
@@ -182,6 +192,7 @@ public class RobotContainer {
         intakeSubsystem.setDefaultCommand(intakeCommand);
         outakeSubsystem.setDefaultCommand(outakeCommand);
         raisingSubsystem.setDefaultCommand(raisingCommand);
+        anglingSubsytem.setDefaultCommand(anglingCommand);
 
     }
 

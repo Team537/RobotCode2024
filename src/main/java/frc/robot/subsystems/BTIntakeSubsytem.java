@@ -29,9 +29,7 @@ public class BTIntakeSubsytem extends SubsystemBase{
     private final RelativeEncoder intakeRelativeEncoder;
     private final SparkLimitSwitch limitSwitch;
     private final SparkPIDController intakePIDController;
-    private String intakeToggleString = "intaking";
     private Timer newTimer = new Timer();
-    private IntakePosition intakePosition;
 
     private boolean buttonPressed = false;
 
@@ -104,13 +102,12 @@ public class BTIntakeSubsytem extends SubsystemBase{
     public void periodic(){
 
         SmartDashboard.putBoolean("Note is In: ", limitSwitchActivated());
-        SmartDashboard.putString("Intake Toggle: ", intakeToggleString);
     }
 
     public void intakeCommand(boolean activate, boolean outtake) {
 
         // This activates the different methods based on the toggle and when the limit switch is off
-        //intakePosition = intakePos;
+
         if (!(limitSwitchActivated())){
             if (activate){
                 RunAtMaxSpeed();

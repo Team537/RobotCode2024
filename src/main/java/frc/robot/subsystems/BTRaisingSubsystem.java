@@ -67,18 +67,21 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
     }
 
-    public void goToIntakePosition(){
+    // Lowers the Intake
+    public void goDown(){
 
         intakeRaiserPIDController.setReference(-12.65, CANSparkMax.ControlType.kSmartMotion);
         intakePosition = IntakePosition.DOWN;
     }
 
-    public void goToReleasePosition(){
+    // Raises the intake
+    public void goUp(){
 
         intakeRaiserPIDController.setReference(0, CANSparkMax.ControlType.kSmartMotion);
         intakePosition = IntakePosition.UP;
     }
 
+    // Gives the driver information about the Intake Position
     public void periodic(){
 
         // SmartDashboard.putNumber("Intake Raiser Position: ", intakeRaiserAbsoluteEncoder.getPosition());
@@ -87,7 +90,8 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
     }
 
-    public double intakePosition(){
+    // This was used during testing to find the position of the intake
+    private double intakePosition(){
 
         return intakeRaiserAbsoluteEncoder.getPosition();
 
@@ -113,12 +117,12 @@ public class BTRaisingSubsystem extends SubsystemBase{
             if (intakePosition == IntakePosition.UP){
 
                 Timer.delay(0.2);
-                goToIntakePosition();
+                goDown();
             }
-            else if (intakePosition == IntakePosition.DOWN){
+            else{
 
                 Timer.delay(0.2);
-                goToReleasePosition();
+                goUp();
             }
 
         }
@@ -126,7 +130,7 @@ public class BTRaisingSubsystem extends SubsystemBase{
         // Automatically intakes once limit switch is activated
         else if (limitSwitch.isPressed()){
 
-            intakeRaiserPIDController.setReference(BTConstants.IntakePositions.releasePosition, CANSparkMax.ControlType.kSmartMotion);
+            goUp();
 
         }
     }
