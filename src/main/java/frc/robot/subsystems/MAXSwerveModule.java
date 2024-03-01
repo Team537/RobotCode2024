@@ -12,10 +12,14 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkLowLevel.MotorType;
 import com.revrobotics.SparkAbsoluteEncoder.Type;
 import com.revrobotics.SparkPIDController;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Constants.ModuleConstants;
+import frc.utils.SwerveUtils;
 
 public class MAXSwerveModule {
   private final CANSparkMax drivingSparkMax;
@@ -38,27 +42,30 @@ public class MAXSwerveModule {
    */
   public MAXSwerveModule(int drivingCANId, int turningCANId, double angularOffset) {
     drivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
-    
+    TalonFX drivingTalonFX = new TalonFX(drivingCANId);
     turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
 
     // Factory reset, so we get the SPARKS MAX to a known state before configuring
     // them. This is useful in case a SPARK MAX is swapped out.
-    drivingSparkMax.restoreFactoryDefaults();
+
+    //Talon Defaults
+      drivingTalonFX.getConfigurator().apply(new TalonFXConfiguration());
+      drivingTalonFX.getConfigurator().refresh(SwerveUtils.generateDriveMotorConfig());
+      drivingTalonFX.getConfigurator().refresh(SwerveUtils.generateDriveOpenLoopRampConfigs());
+      drivingTalonFX.getConfigurator().refresh(SwerveUtils.generateDriveClosedloopRampConfigs());
     turningSparkMax.restoreFactoryDefaults();
 
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
-    drivingEncoder = drivingSparkMax.getEncoder();
+    // drivingEncoder = drivingSparkMax.getEncoder();
     turningEncoder = turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle);
-    drivingPidController = drivingSparkMax.getPIDController();
+    // drivingPidController = drivingSparkMax.getPIDController();
     turningPidController = turningSparkMax.getPIDController();
-    drivingPidController.setFeedbackDevice(drivingEncoder);
+    // drivingPidController.setFeedbackDevice(drivingEncoder);
     turningPidController.setFeedbackDevice(turningEncoder);
 
     // Apply position and velocity conversion factors for the driving encoder. The
     // native units for position and velocity are rotations and RPM, respectively,
     // but we want meters and meters per second to use with WPILib's swerve APIs.
-    drivingEncoder.setPositionConversionFactor(ModuleConstants.DRIVING_ENCODER_POSITIONAL_FACTOR);
-    drivingEncoder.setVelocityConversionFactor(ModuleConstants.DRIVING_ENCODER_VELOCITY_FACTOR);
 
     // Apply position and velocity conversion factors for the turning encoder. We
     // want these in radians and radians per second to use with WPILib's swerve
@@ -79,13 +86,8 @@ public class MAXSwerveModule {
     turningPidController.setPositionPIDWrappingMaxInput(ModuleConstants.TURNING_ENCODER_POSITION_PID_MAX_INPUT);
 
     // Set the PID gains for the driving motor. Note these are example gains, and you
-    // may need to tune them for your own robot!
-    drivingPidController.setP(ModuleConstants.DRIVING_KP);
-    drivingPidController.setI(ModuleConstants.DRIVING_KI);
-    drivingPidController.setD(ModuleConstants.DRIVING_KD);
-    drivingPidController.setFF(ModuleConstants.DRIVING_FF);
-    drivingPidController.setOutputRange(ModuleConstants.DRIVING_MIN_OUTPUT,
-        ModuleConstants.DRIVING_MAX_OUTPUT);
+    // may need to tunes them for your own robot!
+    // Line 51-54
 
     // Set the PID gains for the turning motor. Note these are example gains, and you
     // may need to tune them for your own robot!
@@ -97,6 +99,7 @@ public class MAXSwerveModule {
         ModuleConstants.TURNING_MAX_OUTPUT);
 
     drivingSparkMax.setIdleMode(ModuleConstants.DRIVING_MOTOR_IDLE_MODE);
+    drivingTalonFX.setNeutralMode(Brake);
     turningSparkMax.setIdleMode(ModuleConstants.TURNING_MOTOR_IDLE_MODE);
     drivingSparkMax.setSmartCurrentLimit(ModuleConstants.DRIVING_MOTOR_CURRENT_LIMIT);
     turningSparkMax.setSmartCurrentLimit(ModuleConstants.TURNING_MOTOR_CURRENT_LIMIT);

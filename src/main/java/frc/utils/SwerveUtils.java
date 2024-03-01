@@ -1,5 +1,11 @@
 package frc.utils;
 
+import com.ctre.phoenix6.configs.ClosedLoopRampsConfigs;
+import com.ctre.phoenix6.configs.OpenLoopRampsConfigs;
+import com.ctre.phoenix6.configs.Slot0Configs;
+
+import frc.robot.Constants.ModuleConstants;
+
 public class SwerveUtils {
 
     /**
@@ -86,4 +92,34 @@ public class SwerveUtils {
             return _angle;
         }
     }
+
+    public static Slot0Configs generateDriveMotorConfig() {
+    Slot0Configs motorConfig = new Slot0Configs();
+
+    motorConfig.kV = ModuleConstants.DRIVING_FF;
+    motorConfig.kP = ModuleConstants.DRIVING_KP;
+    motorConfig.kI = ModuleConstants.DRIVING_KI;
+    motorConfig.kD = ModuleConstants.DRIVING_KD;
+
+    return motorConfig;
+  }
+
+  public static OpenLoopRampsConfigs generateDriveOpenLoopRampConfigs() {
+    OpenLoopRampsConfigs openloopconfig = new OpenLoopRampsConfigs();
+    openloopconfig.withDutyCycleOpenLoopRampPeriod(0.25);
+    openloopconfig.withTorqueOpenLoopRampPeriod(0.25);
+    openloopconfig.withVoltageOpenLoopRampPeriod(0.25);
+
+    return openloopconfig;
+
+  }
+
+  public static ClosedLoopRampsConfigs generateDriveClosedloopRampConfigs() {
+    ClosedLoopRampsConfigs closedloopconfig = new ClosedLoopRampsConfigs();
+    closedloopconfig.withDutyCycleClosedLoopRampPeriod(0.1);
+    closedloopconfig.withTorqueClosedLoopRampPeriod(0.1);
+    closedloopconfig.withVoltageClosedLoopRampPeriod(0.1);
+
+    return closedloopconfig;
+  }
 }
