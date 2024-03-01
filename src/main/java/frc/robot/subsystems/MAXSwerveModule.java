@@ -38,6 +38,7 @@ public class MAXSwerveModule {
    */
   public MAXSwerveModule(int drivingCANId, int turningCANId, double angularOffset) {
     drivingSparkMax = new CANSparkMax(drivingCANId, MotorType.kBrushless);
+    
     turningSparkMax = new CANSparkMax(turningCANId, MotorType.kBrushless);
 
     // Factory reset, so we get the SPARKS MAX to a known state before configuring

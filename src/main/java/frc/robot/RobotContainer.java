@@ -134,10 +134,11 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .whileTrue(new RunCommand(
-            () -> driveSubsystem.setX(),
-            driveSubsystem));
+    new JoystickButton(m_driverController, Button.kRightBumper.value);
+    // this part causes the X pos in wheels while robot is not moving
+        // .whileTrue(new RunCommand(
+        //     () -> driveSubsystem.setX(),
+        //     driveSubsystem));
   }
 
   /**
