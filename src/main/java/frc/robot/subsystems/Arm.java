@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -16,7 +17,8 @@ public class Arm extends SubsystemBase {
   TalonFX m_arm1 = new TalonFX(ArmConstants.ARM1);
   TalonFX m_arm2 = new TalonFX(ArmConstants.ARM2);
 
-  
+  final Follower m_follower = new Follower(11,true);
+
   /** Creates a new Arm. */
   public Arm() {
     // m_arm2.setInverted(true);
@@ -38,10 +40,10 @@ public class Arm extends SubsystemBase {
     
 
     
-    final PositionVoltage m_request = new PositionVoltage(5).withSlot(0).withEnableFOC(true);
+    final PositionVoltage m_request = new PositionVoltage(-5).withSlot(0).withEnableFOC(true);
 
-    // m_arm1.setControl(m_request);
-    m_arm2.setControl(m_request);
+    m_arm1.setControl(m_request);
+    m_arm2.setControl(m_follower);
   }
 
   public void ArmShoot() {
@@ -52,8 +54,21 @@ public class Arm extends SubsystemBase {
 
     final PositionVoltage m_request = new PositionVoltage(0).withSlot(0).withEnableFOC(true);
 
-    // m_arm1.setControl(m_request);
-    m_arm2.setControl(m_request);
+    m_arm1.setControl(m_request);
+    m_arm2.setControl(m_follower);
+  }
+
+  public void ArmManual1() {
+    m_arm1.set(-0.2);
+    m_arm2.set(0.2);
+  }
+  public void ArmManual2() {
+    m_arm1.set(0.2);
+    m_arm2.set(-0.2);
+  }
+  public void ArmManualStop() {
+    m_arm1.set(0);
+    m_arm2.set(0);
   }
   @Override
   public void periodic() {

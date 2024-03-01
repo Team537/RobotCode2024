@@ -30,6 +30,8 @@ import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.button.POVButton;
+
 import java.util.List;
 
 /*
@@ -54,6 +56,14 @@ public class RobotContainer {
     JoystickButton bButton = new JoystickButton(m_driverController, Button.kB.value);
     JoystickButton yButton = new JoystickButton(m_driverController, Button.kY.value);
     JoystickButton xButton = new JoystickButton(m_driverController, Button.kX.value);
+    JoystickButton startButton = new JoystickButton(m_driverController, Button.kStart.value);
+    JoystickButton backButton = new JoystickButton(m_driverController, Button.kBack.value);
+    JoystickButton leftBumper = new JoystickButton(m_driverController, Button.kLeftBumper.value);
+    JoystickButton rightBumper = new JoystickButton(m_driverController, Button.kRightBumper.value);
+    POVButton dPadUpButton = new POVButton(m_driverController, 0);
+    POVButton dPadDownButton = new POVButton(m_driverController, 180);
+    POVButton dPadLeftButton = new POVButton(m_driverController, 90);
+    POVButton dPadRightButton = new POVButton(m_driverController, 270);
 
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
@@ -79,10 +89,29 @@ public class RobotContainer {
     // Configure the button bindings
     configureButtonBindings();
 
-    aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake,Arm));
-    bButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp,Arm));
-    xButton.onTrue(new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter));
-    xButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
+
+    rightBumper.onTrue(new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake));
+    rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
+    
+    leftBumper.onTrue(new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter));
+    leftBumper.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
+
+    bButton.onTrue(new StartEndCommand(Intake::IntakeReverse, Intake::IntakeOff, Intake));
+    bButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
+
+    yButton.onTrue(new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop,Shooter));
+    yButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
+
+    startButton.onTrue(new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake));
+    startButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
+    
+    dPadUpButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm));
+    dPadDownButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp, Arm));
+
+    dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManual1, Arm::ArmManual1, Arm));
+    dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManual2, Arm::ArmManual2, Arm));
+    dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+    dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
 
     
     // aButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));

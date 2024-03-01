@@ -141,11 +141,11 @@ public final class Constants {
   }
 
   public static final class IntakeConstants {
-    public static final int INTAKE = 9;
+    public static final int INTAKE = 14;
   }
 
   public static final class ShooterConstants {
-    public static final int SHOOTER = 10;
+    public static final int SHOOTER = 13;
   }
 
   public static final class ArmConstants {
