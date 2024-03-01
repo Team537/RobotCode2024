@@ -45,24 +45,22 @@ public class RobotContainer {
 
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
-    () -> driveSubsystem.drive(
+    () -> driveSubsystem.driveFromController(
         -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(m_driverController.getRightY(), OIConstants.DRIVE_DEADBAND),
         m_driverController.getRightTriggerAxis(),
-        m_driverController.getBackButton(),
         true, true),
         driveSubsystem);
 
   private final RunCommand flightstickCommand = new RunCommand(
-      () -> driveSubsystem.drive(
+      () -> driveSubsystem.driveFromController(
           -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
-          -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
+          -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
           -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
           0,
           0,
-          false,
           true, true),
           driveSubsystem);
 
@@ -145,6 +143,6 @@ public class RobotContainer {
     driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, 0, false, false, false));
+    return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false));
   }
 }
