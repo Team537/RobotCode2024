@@ -44,7 +44,7 @@ public class MAXSwerveModule {
     // them. This is useful in case a SPARK MAX is swapped out.
     drivingSparkMax.restoreFactoryDefaults();
     turningSparkMax.restoreFactoryDefaults();
-
+    
     // Setup encoders and PID controllers for the driving and turning SPARKS MAX.
     drivingEncoder = drivingSparkMax.getEncoder();
     turningEncoder = turningSparkMax.getAbsoluteEncoder(Type.kDutyCycle);

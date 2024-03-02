@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -13,7 +15,10 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -23,7 +28,6 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LimelightVision;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
@@ -31,8 +35,12 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
-
-import java.util.List;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.CameraConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.cameras.RobotVision;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -41,80 +49,75 @@ import java.util.List;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-  // The robot's subsystems
-  private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-  private final LimelightVision LimelightVision = new LimelightVision();
+
+    // The robot's subsystems
+    private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+    private final RobotVision robotVision = new RobotVision.Builder()
+        .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.OBJECT_DETECTION_PIPELINE)
+        .build();
   private final Arm Arm = new Arm();
   private final Intake Intake = new Intake();
   private final Shooter Shooter = new Shooter();
 
-  // The driver's controller
-    private final XboxController m_driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
-    private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
+   // The driver's controller
+   private final XboxController driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
+   private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
 
-    JoystickButton aButton = new JoystickButton(m_driverController, Button.kA.value);
-    JoystickButton bButton = new JoystickButton(m_driverController, Button.kB.value);
-    JoystickButton yButton = new JoystickButton(m_driverController, Button.kY.value);
-    JoystickButton xButton = new JoystickButton(m_driverController, Button.kX.value);
-    JoystickButton startButton = new JoystickButton(m_driverController, Button.kStart.value);
-    JoystickButton backButton = new JoystickButton(m_driverController, Button.kBack.value);
-    JoystickButton leftBumper = new JoystickButton(m_driverController, Button.kLeftBumper.value);
-    JoystickButton rightBumper = new JoystickButton(m_driverController, Button.kRightBumper.value);
-    POVButton dPadUpButton = new POVButton(m_driverController, 0);
-    POVButton dPadDownButton = new POVButton(m_driverController, 180);
-    POVButton dPadLeftButton = new POVButton(m_driverController, 90);
-    POVButton dPadRightButton = new POVButton(m_driverController, 270);
+   // Setup each button on each controller
+   JoystickButton starButton1 = new JoystickButton(driverController, Button.kStart.value);
+   JoystickButton backButton1 = new JoystickButton(driverController, Button.kBack.value);
+   JoystickButton rightStick1 = new JoystickButton(driverController, Button.kRightStick.value);
+   JoystickButton leftStick1 = new JoystickButton(driverController, Button.kLeftStick.value);
+   JoystickButton rightBumper1 = new JoystickButton(driverController, Button.kRightBumper.value);
+   JoystickButton leftBumper1 = new JoystickButton(driverController, Button.kLeftBumper.value);
+   JoystickButton aButton1 = new JoystickButton(driverController, Button.kA.value);
+   JoystickButton bButton1 = new JoystickButton(driverController, Button.kB.value);
+   JoystickButton yButton1 = new JoystickButton(driverController, Button.kY.value);
+   JoystickButton xButton1 = new JoystickButton(driverController, Button.kX.value);
+   POVButton dpadUpButton1 = new POVButton(driverController, 0);
+   POVButton dpadDownButton1 = new POVButton(driverController, 180);
+   POVButton dpadRightButton1 = new POVButton(driverController, 90);
+   POVButton dpadLeftButton1 = new POVButton(driverController, 270);
 
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
-    () -> driveSubsystem.drive(
-        -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
-        -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
-        -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
+    () -> driveSubsystem.driveFromController(
+        -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(driverController.getRightY(), OIConstants.DRIVE_DEADBAND),
+        driverController.getRightTriggerAxis(),
         true, true),
         driveSubsystem);
 
-    private final RunCommand flightstickCommand = new RunCommand(
-        () -> driveSubsystem.drive(
-            -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
-            -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
-            true, true),
-            driveSubsystem);
+  private final RunCommand flightstickCommand = new RunCommand(
+      () -> driveSubsystem.driveFromController(
+          -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
+          -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
+          -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
+          0,
+          0,
+          true, true),
+          driveSubsystem);
+
+  // SmartDashboard options
+  private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
+
+  // Alternative Command Options
+  private final RunCommand targetPositionCommand = new RunCommand(() -> driveSubsystem.position(
+        new Pose2d(-5 * driverController.getLeftX(),
+        5 * driverController.getLeftY(),
+        new Rotation2d(0))), 
+        driveSubsystem);
+   
   /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
+    * The container for the robot. Contains subsystems, OI devices, and commands.
+    */
+    public RobotContainer() {
 
-    // Configure the button bindings
-    configureButtonBindings();
+        // Configure the button bindings
+        configureButtonBindings();
 
-
-    rightBumper.onTrue(new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake));
-    rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
-    
-    leftBumper.onTrue(new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter));
-    leftBumper.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
-
-    bButton.onTrue(new StartEndCommand(Intake::IntakeReverse, Intake::IntakeOff, Intake));
-    bButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
-
-    yButton.onTrue(new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop,Shooter));
-    yButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
-
-    startButton.onTrue(new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake));
-    startButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
-    
-    dPadUpButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm));
-    dPadDownButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp, Arm));
-
-    dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManual1, Arm::ArmManual1, Arm));
-    dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManual2, Arm::ArmManual2, Arm));
-    dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
-    dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
-
-    
-    // aButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
 
     // Adjust the dafult command based on which controler the driver ants to use.
     if (SmartDashboard.getBoolean("useXBoxController", true)) {
@@ -134,11 +137,16 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .whileTrue(new RunCommand(
-            () -> driveSubsystem.setX(),
-            driveSubsystem));
-  }
+
+        // Move the robot's wheels into an X to prevent movement.
+        // starButton1.whileTrue(new RunCommand(
+        //                 // () -> driveSubsystem.setX(),
+        //                 // driveSubsystem));
+
+        backButton1.onTrue(new RunCommand(
+                        () -> driveSubsystem.zeroHeading(),
+                        driveSubsystem));
+    }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
@@ -146,6 +154,7 @@ public class RobotContainer {
    * @return the command to run in autonomous
    */
   public Command getAutonomousCommand() {
+
     // Create config for trajectory
     TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.MAX_SPEED_METERS_PER_SECOND,
@@ -183,6 +192,6 @@ public class RobotContainer {
     driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, false, false));
+    return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false));
   }
 }
