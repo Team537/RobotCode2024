@@ -19,7 +19,7 @@ public class Intake extends SubsystemBase {
   }
 
   public void IntakeForward() {
-    m_intake.set(0.2);
+    m_intake.set(0.4);
   }
 
   public void IntakeMax() {

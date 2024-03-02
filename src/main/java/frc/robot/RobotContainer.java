@@ -19,7 +19,6 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
@@ -63,21 +62,19 @@ public class RobotContainer {
    private final XboxController driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
    private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
 
-   // Setup each button on each controller
-   JoystickButton starButton1 = new JoystickButton(driverController, Button.kStart.value);
-   JoystickButton backButton1 = new JoystickButton(driverController, Button.kBack.value);
-   JoystickButton rightStick1 = new JoystickButton(driverController, Button.kRightStick.value);
-   JoystickButton leftStick1 = new JoystickButton(driverController, Button.kLeftStick.value);
-   JoystickButton rightBumper1 = new JoystickButton(driverController, Button.kRightBumper.value);
-   JoystickButton leftBumper1 = new JoystickButton(driverController, Button.kLeftBumper.value);
-   JoystickButton aButton1 = new JoystickButton(driverController, Button.kA.value);
-   JoystickButton bButton1 = new JoystickButton(driverController, Button.kB.value);
-   JoystickButton yButton1 = new JoystickButton(driverController, Button.kY.value);
-   JoystickButton xButton1 = new JoystickButton(driverController, Button.kX.value);
-   POVButton dpadUpButton1 = new POVButton(driverController, 0);
-   POVButton dpadDownButton1 = new POVButton(driverController, 180);
-   POVButton dpadRightButton1 = new POVButton(driverController, 90);
-   POVButton dpadLeftButton1 = new POVButton(driverController, 270);
+   // Setup each button on each driverController
+   JoystickButton aButton = new JoystickButton(driverController, Button.kA.value);
+   JoystickButton bButton = new JoystickButton(driverController, Button.kB.value);
+   JoystickButton yButton = new JoystickButton(driverController, Button.kY.value);
+   JoystickButton xButton = new JoystickButton(driverController, Button.kX.value);
+   JoystickButton startButton = new JoystickButton(driverController, Button.kStart.value);
+   JoystickButton backButton = new JoystickButton(driverController, Button.kBack.value);
+   JoystickButton leftBumper = new JoystickButton(driverController, Button.kLeftBumper.value);
+   JoystickButton rightBumper = new JoystickButton(driverController, Button.kRightBumper.value);
+   POVButton dPadUpButton = new POVButton(driverController, 0);
+   POVButton dPadDownButton = new POVButton(driverController, 180);
+   POVButton dPadLeftButton = new POVButton(driverController, 90);
+   POVButton dPadRightButton = new POVButton(driverController, 270);
 
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
@@ -115,6 +112,36 @@ public class RobotContainer {
     */
     public RobotContainer() {
 
+      rightBumper.onTrue(new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake));
+      rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
+    
+      leftBumper.onTrue(new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter));
+      leftBumper.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
+
+      bButton.onTrue(new StartEndCommand(Intake::IntakeReverse, Intake::IntakeOff, Intake));
+      bButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
+
+      yButton.onTrue(new StartEndCommand(Shooter::ShooterAmp, Shooter::ShooterStop,Shooter));
+      yButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
+
+      backButton.onTrue(new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop, Shooter));
+      backButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop, Shooter));
+
+      startButton.onTrue(new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake));
+      startButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
+
+      // dPadUpButton.onTrue(new StartEndCommand(Arm::ArmShoot, Arm::ArmShoot, Arm));
+      // dPadDownButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp, Arm));
+
+      dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManual1, Arm::ArmManualStop, Arm));
+      dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManual2, Arm::ArmManualStop, Arm));
+
+
+      dPadDownButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+      dPadUpButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+      dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+      dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+
         // Configure the button bindings
         configureButtonBindings();
 
@@ -143,7 +170,7 @@ public class RobotContainer {
         //                 // () -> driveSubsystem.setX(),
         //                 // driveSubsystem));
 
-        backButton1.onTrue(new RunCommand(
+        backButton.onTrue(new RunCommand(
                         () -> driveSubsystem.zeroHeading(),
                         driveSubsystem));
     }
