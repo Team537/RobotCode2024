@@ -51,7 +51,7 @@ import frc.robot.subsystems.cameras.RobotVision;
 public class RobotContainer {
 
     // The robot's subsystems
-    private final DriveSubsystem driveSubsystem = new DriveSubsystem();
+    private final DriveSubsystem driveSubsystem = new DriveSubsystem(true);
     private final RobotVision robotVision = new RobotVision.Builder()
         .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.OBJECT_DETECTION_PIPELINE)
         .build();
@@ -81,7 +81,7 @@ public class RobotContainer {
 
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
-    () -> driveSubsystem.driveFromController(
+    () -> driveSubsystem.drive(
         -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
@@ -91,7 +91,7 @@ public class RobotContainer {
         driveSubsystem);
 
   private final RunCommand flightstickCommand = new RunCommand(
-      () -> driveSubsystem.driveFromController(
+      () -> driveSubsystem.drive(
           -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
           -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
           -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
@@ -192,6 +192,6 @@ public class RobotContainer {
     driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false));
+    return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, 0,false, false));
   }
 }

@@ -88,7 +88,7 @@ public class Robot extends TimedRobot {
      // Take a screenshot every 250ms.
      if (snapshotTimer.get() >= CameraConstants.SNAPSHOT_RATE) {
       snapshotTimer.reset();
-      robotContainer.snapshot();
+      // robotContainer.snapshot();
     }
   }
 
@@ -110,7 +110,7 @@ public class Robot extends TimedRobot {
      // Take a screenshot every 250ms.
      if (snapshotTimer.get() >= CameraConstants.SNAPSHOT_RATE) {
       snapshotTimer.reset();
-      robotContainer.snapshot();
+      // robotContainer.snapshot();
     }
   }
 
