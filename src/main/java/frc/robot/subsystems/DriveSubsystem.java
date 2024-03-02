@@ -22,8 +22,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class DriveSubsystem extends SubsystemBase {
   // Create MAXSwerveModules
   private final MAXSwerveModule frontLeft = new MAXSwerveModule(
-      DriveConstants.FRONT_LEFT_DRIVE_CAN_ID,
       DriveConstants.FRONT_LEFT_TURNING_CAN_ID,
+      DriveConstants.FRONT_LEFT_DRIVE_CAN_ID,
       DriveConstants.FRONT_LEFT_CHASSIS_ANGULAR_OFFSET);
 
   private final MAXSwerveModule frontRight = new MAXSwerveModule(

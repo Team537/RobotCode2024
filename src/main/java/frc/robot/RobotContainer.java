@@ -62,8 +62,8 @@ public class RobotContainer {
     JoystickButton rightBumper = new JoystickButton(m_driverController, Button.kRightBumper.value);
     POVButton dPadUpButton = new POVButton(m_driverController, 0);
     POVButton dPadDownButton = new POVButton(m_driverController, 180);
-    POVButton dPadLeftButton = new POVButton(m_driverController, 90);
-    POVButton dPadRightButton = new POVButton(m_driverController, 270);
+    POVButton dPadRightButton = new POVButton(m_driverController, 90);
+    POVButton dPadLeftButton = new POVButton(m_driverController, 270);
 
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
@@ -99,19 +99,28 @@ public class RobotContainer {
     bButton.onTrue(new StartEndCommand(Intake::IntakeReverse, Intake::IntakeOff, Intake));
     bButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
 
-    yButton.onTrue(new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop,Shooter));
+    yButton.onTrue(new StartEndCommand(Shooter::ShooterAmp, Shooter::ShooterStop,Shooter));
     yButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
+
+    backButton.onTrue(new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop, Shooter));
+    backButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop, Shooter));
+
+
 
     startButton.onTrue(new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake));
     startButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
     
-    dPadUpButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm));
+    dPadUpButton.onTrue(new StartEndCommand(Arm::ArmShoot, Arm::ArmShoot, Arm));
     dPadDownButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp, Arm));
 
-    dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManual1, Arm::ArmManual1, Arm));
-    dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManual2, Arm::ArmManual2, Arm));
-    dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+    dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManual1, Arm::ArmManualStop, Arm));
+    dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManual2, Arm::ArmManualStop, Arm));
+
+
+    dPadDownButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+    dPadUpButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
     dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+    dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
 
     
     // aButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
@@ -134,10 +143,10 @@ public class RobotContainer {
    * {@link JoystickButton}.
    */
   private void configureButtonBindings() {
-    new JoystickButton(m_driverController, Button.kRightBumper.value)
-        .whileTrue(new RunCommand(
-            () -> driveSubsystem.setX(),
-            driveSubsystem));
+    // new JoystickButton(m_driverController, Button.kRightBumper.value)
+        // .whileTrue(new RunCommand(
+        //     () -> driveSubsystem.setX(),
+        //     driveSubsystem));
   }
 
   /**

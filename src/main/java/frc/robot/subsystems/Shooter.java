@@ -14,8 +14,6 @@ public class Shooter extends SubsystemBase {
 
   TalonFX m_shooter = new TalonFX(ShooterConstants.SHOOTER);
 
-  final Follower m_follower = new Follower(11, false);
-  // m_shooter2.setControl(m_follower);
 
   /** Creates a new Shooter. */
   public Shooter() {
@@ -23,19 +21,20 @@ public class Shooter extends SubsystemBase {
   }
 
   public void ShooterForward() {
-    m_shooter.set(-1);
-    // m_shooter2.setControl(m_follower);
+    m_shooter.set(-.7);
 
   }
 
   public void ShooterStop() {
     m_shooter.set(0);
-    // m_shooter2.setControl(m_follower);
+  }
+
+  public void ShooterAmp() {
+    m_shooter.set(-0.1);
   }
 
   public void ShooterReverse() {
-    m_shooter.set(-0.1);
-    // m_shooter2.setControl(m_follower);
+    m_shooter.set(0.1);
   }
 
 
