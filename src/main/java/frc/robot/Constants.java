@@ -68,15 +68,15 @@ public final class Constants {
         public static final double BACK_RIGHT_CHASSIS_ANGULAR_OFFSET = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-    public static final int FRONT_LEFT_DRIVE_CAN_ID = 8;
-    public static final int BACK_LEFT_DRIVE_CAN_ID = 7;
-    public static final int FRONT_RIGHT_DRIVE_CAN_ID = 1;
-    public static final int BACK_RIGHT_DRIVE_CAN_ID = 2;
+    public static final int FRONT_LEFT_DRIVE_CAN_ID = 2;
+    public static final int BACK_LEFT_DRIVE_CAN_ID = 1;
+    public static final int FRONT_RIGHT_DRIVE_CAN_ID = 7;
+    public static final int BACK_RIGHT_DRIVE_CAN_ID = 8;
 
-    public static final int FRONT_LEFT_TURNING_CAN_ID = 9;
-    public static final int BACK_LEFT_TURNING_CAN_ID = 6;
-    public static final int FRONT_RIGHT_TURNING_CAN_ID = 10;
-    public static final int BACK_RIGHT_TURNING_CAN_ID = 3;
+    public static final int FRONT_LEFT_TURNING_CAN_ID = 3;
+    public static final int BACK_LEFT_TURNING_CAN_ID = 10;
+    public static final int FRONT_RIGHT_TURNING_CAN_ID = 6;
+    public static final int BACK_RIGHT_TURNING_CAN_ID = 9;
 
     public static final boolean GYRO_REVERSED = false;
 

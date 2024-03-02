@@ -130,9 +130,9 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
         // Move the robot's wheels into an X to prevent movement.
-        starButton1.whileTrue(new RunCommand(
-                        () -> driveSubsystem.setX(),
-                        driveSubsystem));
+        // starButton1.whileTrue(new RunCommand(
+        //                 // () -> driveSubsystem.setX(),
+        //                 // driveSubsystem));
 
         backButton1.onTrue(new RunCommand(
                         () -> driveSubsystem.zeroHeading(),

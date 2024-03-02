@@ -141,6 +141,8 @@ public class DriveSubsystem extends SubsystemBase {
             backLeft.getPosition(),
             backRight.getPosition()
         });
+      
+    SmartDashboard.putString("gyro", gyro.getRotation2d().toString());
 
     SmartDashboard.putString("Front Left Commanded Speed", Double.toString(frontLeft.getState().speedMetersPerSecond));
     SmartDashboard.putString("Front Right Commanded Speed",
@@ -205,10 +207,10 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * drives robot from inputs
    * 
-   * @param leftX         the linear input for the x direction, usually the left
-   *                      joystick y !!!NOT AN ERROR
    * @param leftY         the linear input for the y direction, usually the left
-   *                      joystick x !!!NOT AN ERROR
+   *                      joystick y
+   * @param leftX         the linear input for the x direction, usually the left
+   *                      joystick x
    * @param rightX        the rotation input for the robot, usually the right
    *                      joystick x, also used for orientation targeting
    * @param rightY        used for rotation targeting along with rightX, usually
@@ -217,11 +219,10 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative determines whether the robot is field centric
    * @param rateLimit     applys rate limiting to the robot
    */
-  public void driveFromController(double leftX, double leftY, double rightX, double rightY, double boostMode,
-      boolean fieldRelative, boolean rateLimit) {
+  public void driveFromController(double leftY, double leftX, double rightX, double rightY, double boostMode, boolean fieldRelative, boolean rateLimit) {
 
-    double turnJoystickMagnitude = Math.sqrt(Math.pow(rightX, 2) + Math.pow(rightY, 2));
     double turnJoystickOrientation = Math.atan2(rightY, rightX);
+    double turnJoystickMagnitude = Math.sqrt( Math.pow(rightX,2) + Math.pow(rightY,2) );
 
     if (Math.abs(rightY) > 0.8) {
       if (!useOrientationTarget) {
@@ -231,6 +232,10 @@ public class DriveSubsystem extends SubsystemBase {
         baseJoystickOrientation = turnJoystickOrientation;
         targetOrientationController.reset();
       }
+    }
+
+    if (turnJoystickMagnitude < 0.3) {
+      useOrientationTarget = false;
     }
 
     // Curve the inputs for easier more precise driving (don't curve rotation for
@@ -267,7 +272,7 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         // realigns the PID controller
-        rotSpeedCommanded = orientationLockController.calculate(gyro.getRotation2d().getRadians(), orientationLock);
+        rotSpeedCommanded = 0; //orientationLockController.calculate(gyro.getRotation2d().getRadians(), orientationLock);
 
       } else {
 
@@ -295,16 +300,13 @@ public class DriveSubsystem extends SubsystemBase {
    * @param rateLimit     limits the rate of the robot
    * @param fieldRelative enables field centricity
    */
-  public void drive(double xSpeed, double ySpeed, double rot, double boostMode, boolean rateLimit,
-      boolean fieldRelative) {
+  public void drive(double xSpeed, double ySpeed, double rot, double boostMode, boolean rateLimit, boolean fieldRelative) {
 
     double xSpeedCommanded;
     double ySpeedCommanded;
 
     double newMaxSpeed = DriveConstants.MAX_SPEED_METERS_PER_SECOND + boostMode
         * (DriveConstants.BOOST_MODE_MAX_SPEED_METERS_PER_SECOND - DriveConstants.MAX_SPEED_METERS_PER_SECOND);
-
-    magLimiter.scalePrev(currentMaxSpeed / newMaxSpeed);
 
     // greater than to correct for precision errors
     boolean useBoostMode = boostMode > 1e-4;
@@ -351,8 +353,7 @@ public class DriveSubsystem extends SubsystemBase {
         }
       } else {
         if (enableGrip) {
-          directionSlewRate = Math
-              .abs(DriveConstants.GRIP_BOOST_MODE_DIRECTION_SLEW_RATE / currentTranslationMag);
+          directionSlewRate = Math.abs(DriveConstants.GRIP_BOOST_MODE_DIRECTION_SLEW_RATE / currentTranslationMag);
         } else {
           directionSlewRate = Math.abs(DriveConstants.BOOST_MODE_DIRECTION_SLEW_RATE / currentTranslationMag);
         }
