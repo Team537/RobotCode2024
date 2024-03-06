@@ -74,6 +74,8 @@ public class Arm extends SubsystemBase {
 
     m_arm1.setControl(m_request);
     m_arm2.setControl(m_follower);
+    System.out.println("RAN END ARM");
+
   }
   @Override
   public void periodic() {

@@ -29,6 +29,7 @@ import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -39,7 +40,7 @@ import frc.robot.Constants.CameraConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
-import frc.robot.subsystems.cameras.RobotVision;
+// import frc.robot.subsystems.cameras.RobotVision;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -51,9 +52,9 @@ public class RobotContainer {
 
     // The robot's subsystems
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(true);
-    private final RobotVision robotVision = new RobotVision.Builder()
-        .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.OBJECT_DETECTION_PIPELINE)
-        .build();
+    // private final RobotVision robotVision = new RobotVision.Builder()
+    //     .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.OBJECT_DETECTION_PIPELINE)
+    //     .build();
   private final Arm Arm = new Arm();
   private final Intake Intake = new Intake();
   private final Shooter Shooter = new Shooter();
@@ -127,23 +128,23 @@ public class RobotContainer {
       backButton.onTrue(new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop, Shooter));
       backButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop, Shooter));
 
-      startButton.onTrue(new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake));
-      startButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
+      // startButton.onTrue(new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake).until(driverController.getStartButtonPressed()));
+      // // startButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)); TEST
 
-      // dPadUpButton.onTrue(new StartEndCommand(Arm::ArmShoot, Arm::ArmShoot, Arm));
-      // dPadDownButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp, Arm));
+      dPadUpButton.onTrue(new StartEndCommand(Arm::ArmShoot, Arm::ArmManualStop, Arm));
+      dPadDownButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmManualStop, Arm));
 
-      dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManual1, Arm::ArmManualStop, Arm));
-      dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManual2, Arm::ArmManualStop, Arm));
+      dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManual1, Arm::ArmManualStop, Arm));
+      dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManual2, Arm::ArmManualStop, Arm));
 
 
-      dPadDownButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
-      dPadUpButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
-      dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+      // dPadDownButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+      // dPadUpButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
       dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+      dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
 
-        // Configure the button bindings
-        configureButtonBindings();
+      // Configure the button bindings
+      configureButtonBindings();
 
 
     // Adjust the dafult command based on which controler the driver ants to use.
@@ -166,13 +167,13 @@ public class RobotContainer {
   private void configureButtonBindings() {
 
         // Move the robot's wheels into an X to prevent movement.
-        // starButton1.whileTrue(new RunCommand(
+        // startButton.whileTrue(new RunCommand(
         //                 // () -> driveSubsystem.setX(),
         //                 // driveSubsystem));
 
-        backButton.onTrue(new RunCommand(
-                        () -> driveSubsystem.zeroHeading(),
-                        driveSubsystem));
+        // backButton.onTrue(new RunCommand(
+        //                 () -> driveSubsystem.zeroHeading(),
+        //                 driveSubsystem));
     }
 
   /**

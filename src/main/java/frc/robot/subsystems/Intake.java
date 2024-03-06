@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import java.util.function.BooleanSupplier;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.Constants.*;
@@ -22,16 +24,23 @@ public class Intake extends SubsystemBase {
     m_intake.set(0.4);
   }
 
-  public void IntakeMax() {
+  public boolean IntakeMax() {
     m_intake.set(1);
+
+    return false;
   }
 
   public void IntakeOff() {
     m_intake.set(0);
+    System.out.println("RAN END");
+
   }
 
   public void IntakeReverse() {
     m_intake.set(-0.2);
+  }
+  public void IntakeOnEND() {
+    System.out.println("RAN END");
   }
 
   @Override

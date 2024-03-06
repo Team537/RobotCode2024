@@ -108,7 +108,7 @@ public class DriveSubsystem extends SubsystemBase {
     private SwerveDrivePoseEstimator poseEstimator;
 
     // Create a supplier to make it possible for this DriveSubsystem to gain acsess to the cameras' estimated position.
-    private Supplier<Pose2d> visionMeasurementSupplier;
+    // private Supplier<Pose2d> visionMeasurementSupplier;
 
     /**
      * Creates a new {@code DriveSubsystem} object with the specified paramaters.
@@ -167,16 +167,16 @@ public class DriveSubsystem extends SubsystemBase {
         }
 
         // Retrieve the estimated position from the robot's vision system.
-        Pose2d estimatedPose2d = visionMeasurementSupplier.get();
+        // Pose2d estimatedPose2d = visionMeasurementSupplier.get();
 
         // Add the robot's estimated vision measurments to the pose estimator if they are not null.
-        if (estimatedPose2d != null) {
+        // if (estimatedPose2d != null) {
 
-            // Incorporate the robot's estimated vision measurements into this DriveSubsystem's poseEstimator.
-            poseEstimator.addVisionMeasurement(
-                visionMeasurementSupplier.get(), 
-                Timer.getFPGATimestamp());
-        }
+        //     // Incorporate the robot's estimated vision measurements into this DriveSubsystem's poseEstimator.
+        //     poseEstimator.addVisionMeasurement(
+        //         visionMeasurementSupplier.get(), 
+        //         Timer.getFPGATimestamp());
+        // }
 
         // Update t `he robot's position on the field.
         poseEstimator.update(
@@ -201,7 +201,7 @@ public class DriveSubsystem extends SubsystemBase {
                  0, 
                  targetPose.getRotation())));
 
-        System.out.println(getPose());
+        // System.out.println(getPose());
     }
 
     /**
@@ -383,7 +383,7 @@ public class DriveSubsystem extends SubsystemBase {
         backRight.setDesiredState(swerveModuleStates[3]);
 
         // System.out.println("gyro: " + gyro.getRotation2d().getDegrees());
-        System.out.println(swerveModuleStates[0].angle);
+        // System.out.println(swerveModuleStates[0].angle);
     }
 
     /**
