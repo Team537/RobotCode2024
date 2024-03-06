@@ -84,8 +84,8 @@ public class BTOutakeSubsytem extends SubsystemBase{
         // leftPIDController.setReference(-5700, CANSparkMax.ControlType.kSmartVelocity);
         // rightPIDController.setReference(5700, CANSparkMax.ControlType.kSmartVelocity);
 
-        leftMotorSparkMax.set(-1);
-        rightMotorSparkMax.set(1);
+        leftMotorSparkMax.set(1);
+        rightMotorSparkMax.set(-1);
 
     }
 
@@ -104,13 +104,23 @@ public class BTOutakeSubsytem extends SubsystemBase{
 
     }
 
-    public void outakeCommand(boolean outake) {
+    
 
-        if (outake){
+    public void outakeCommand(boolean outake, boolean ampScoring) {
+
+        if (ampScoring && outake){
+
+            RunMotorAtSpeed(4700);
+            
+
+        }
+
+        else if (outake){
 
             RunAtMaxSpeed();
 
         }
+
         else{
             StopMotor();
         }
