@@ -65,18 +65,18 @@ public class RobotContainer {
 
   //Subsystems
 
-  //Black Team's Subsytems
-  private final BTIntakeSubsytem intakeSubsystem = new BTIntakeSubsytem();
-  private final BTOutakeSubsytem outakeSubsystem = new BTOutakeSubsytem();
-  private final BTRaisingSubsystem raisingSubsystem = new BTRaisingSubsystem();
-  private final BTAngleChangingSubsystem anglingSubsytem = new BTAngleChangingSubsystem();
-
   // Mobility Subsytems
   private final DriveSubsystem driveSubsystem = new DriveSubsystem();
   private final RobotVision robotVision = new RobotVision.Builder()
         .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.OBJECT_DETECTION_PIPELINE)
         .addLimelightCamera(CameraConstants.LIMELIGHT_NAME, 0, 0, 0, 0)
         .build();
+
+  //Black Team's Subsytems
+  private final BTIntakeSubsytem intakeSubsystem = new BTIntakeSubsytem();
+  private final BTOutakeSubsytem outakeSubsystem = new BTOutakeSubsytem();
+  private final BTRaisingSubsystem raisingSubsystem = new BTRaisingSubsystem();
+  private final BTAngleChangingSubsystem anglingSubsystem = new BTAngleChangingSubsystem(robotVision);
 
 
   // The Driver's Controller
@@ -112,32 +112,31 @@ public class RobotContainer {
 
 
    //'Left Bumper' Intakes
-   //'A' Toggles intaking and outtaking
-
+   // 'Left Trigger' Outtakes
   
   private final RunCommand intakeCommand = new RunCommand(
      () -> intakeSubsystem.intakeCommand(driverController.getLeftBumper(),(driverController.getLeftTriggerAxis()>0)),
       intakeSubsystem
   );
-
     
   //'Left Trigger' runs outtake
+  // 'Button Y' outtakes for the amp
   private final RunCommand outakeCommand = new RunCommand(
-      () -> outakeSubsystem.outakeCommand((driverController.getLeftTriggerAxis() > 0)),
+      () -> outakeSubsystem.outakeCommand((driverController.getLeftTriggerAxis() > 0), driverController.getYButton()),
       outakeSubsystem
   );
 
   // A Toggles Between Raising and Lowering
-  // Y Goes to the Amp Position
   private final RunCommand raisingCommand = new RunCommand(
-    () -> raisingSubsystem.raisingCommand(driverController.getYButton(), driverController.getAButton()),
+    () -> raisingSubsystem.raisingCommand(driverController.getAButton(), driverController.getYButton()),
     raisingSubsystem
   );
 
-  // 
+  // Dpad Up increases the angle
+  // Dpad Down decreases the angle
   private final RunCommand anglingCommand = new RunCommand(
-    () -> anglingSubsytem.defaultAnglingCommand(dpadUpButton1.getAsBoolean(), dpadDownButton1.getAsBoolean()), 
-    anglingSubsytem
+    () -> anglingSubsystem.defaultAnglingCommand(dpadUpButton1.getAsBoolean(), dpadDownButton1.getAsBoolean(), driverController.getYButton()), 
+    anglingSubsystem
   );
   
 
@@ -197,7 +196,7 @@ public class RobotContainer {
         intakeSubsystem.setDefaultCommand(intakeCommand);
         outakeSubsystem.setDefaultCommand(outakeCommand);
         raisingSubsystem.setDefaultCommand(raisingCommand);
-        anglingSubsytem.setDefaultCommand(anglingCommand);
+        anglingSubsystem.setDefaultCommand(anglingCommand);
 
     }
 

@@ -67,13 +67,13 @@ public class BTIntakeSubsytem extends SubsystemBase{
     // Runs Intake At Max Speed
     public void RunAtMaxSpeed(){
 
-        intakePIDController.setReference(5000, CANSparkMax.ControlType.kVelocity);
+        intakePIDController.setReference(2500, CANSparkMax.ControlType.kVelocity);
 
     }
 
     public void ReverseRun(){
 
-        //intakePIDController.setReference(-11000, CANSparkMax.ControlType.kVelocity);
+        //intakePIDController.setReference(-2200, CANSparkMax.ControlType.kVelocity);
         intakeSparkMax.set(-1);
 
     }
@@ -102,6 +102,7 @@ public class BTIntakeSubsytem extends SubsystemBase{
     public void periodic(){
 
         SmartDashboard.putBoolean("Note is In: ", limitSwitchActivated());
+        
     }
 
     public void intakeCommand(boolean activate, boolean outtake) {
@@ -121,6 +122,7 @@ public class BTIntakeSubsytem extends SubsystemBase{
         }
 
         // This runs when the limit switch is activated.
+        // So, it can only outtake and if it isn't told to outtake, it stops the motor.
         else{
 
             if (outtake){

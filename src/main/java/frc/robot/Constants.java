@@ -280,15 +280,32 @@ public final class Constants {
 
       }
 
+      // These are the PID Control Constants for the Angle Changing Subsystem
+      public static final class AngleChangingConstants{
+
+        public static final int MAX_VELOCITY = 8000;
+        public static final int MIN_VELOCITY = 0;
+        public static final int MAX_ACCELERATION = 4000;
+
+      }
+
 
     }
 
     // Constants for the Intake Position
     public static final class IntakePositions{
 
-      public static final double ampScoringPosition = -(1-0.807)*25; // Measured using absolute encoders
+      public static final double ampScoringPosition = -(0.205)*25; // Measured using absolute encoders
       public static final double intakePosition = -12.65;
       public static final double releasePosition = 0;
+
+    }
+
+    public static final class AnglingConstants{
+
+      public static final double ampScoringOuttakeAngle = 65;
+      public static final double scoreFarAngle = 45;
+      public static final double scoreCloseAngle = 60;
 
     }
 

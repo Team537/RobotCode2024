@@ -1,5 +1,6 @@
 package frc.robot;
 import java.lang.Math;
+import frc.robot.subsystems.cameras.RobotVision;
 
 public class OuttakeAngleCalculator {
     
@@ -10,9 +11,10 @@ public class OuttakeAngleCalculator {
     private final double L;
     private final double K;
     private final double r;
+    RobotVision robotVisionObject;
 
 
-    public OuttakeAngleCalculator(){
+    public OuttakeAngleCalculator(RobotVision robotVisionObj){
 
         // These constants used for the math were measured in CAD, but will be remeasured in
         // real life
@@ -22,6 +24,13 @@ public class OuttakeAngleCalculator {
         L = 8.5236; // This is the length of the longer arm
         K = 5.5; // This is the length of the shorter arm
         r = 2; // This is the radius of turnage
+
+        // This assigns the robot vision object from the robot container to the classes fields
+        // to be used
+        // The robot vision object is used to get the x distance to calculate the shooter's angle.
+        robotVisionObject = robotVisionObj;
+
+        //Constants to be used in calculations for desired angle
 
 
     }
@@ -85,6 +94,13 @@ public class OuttakeAngleCalculator {
         return radiansToDegrees(outtakeAngleinRadians(gamma));
 
     } 
+
+    public double desiredShooterAngle(){
+
+        double desiredAngle = 60;
+        return desiredAngle;
+
+    }
 
 
 }

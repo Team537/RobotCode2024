@@ -24,8 +24,6 @@ public class BTRaisingSubsystem extends SubsystemBase{
     private SparkPIDController intakeRaiserPIDController;
     private IntakePosition intakePosition = IntakePosition.UP;
     private Timer newTimer = new Timer();
-    private CANSparkMax intakeSparkMax;
-    private SparkLimitSwitch limitSwitch;
 
     /*
      * Constructs a New Intake Raiser Subsystem
@@ -42,9 +40,6 @@ public class BTRaisingSubsystem extends SubsystemBase{
         // Inititalization of Spark Max Object
         intakeRaiserSparkMax = new CANSparkMax(Constants.BTConstants.CANIdConstants.PIVOT_MOTOR_CAN_ID, MotorType.kBrushless);
         intakeRaiserSparkMax.restoreFactoryDefaults();
-        intakeSparkMax = new CANSparkMax(Constants.BTConstants.CANIdConstants.INTAKE_MOTOR_CAN_ID, MotorType.kBrushless);
-
-        limitSwitch = intakeSparkMax.getForwardLimitSwitch(SparkLimitSwitch.Type.kNormallyOpen);
         
 
         // Initialization of Encoder & PID Controller Objects
@@ -85,12 +80,12 @@ public class BTRaisingSubsystem extends SubsystemBase{
     public void periodic(){
 
         // SmartDashboard.putNumber("Intake Raiser Position: ", intakeRaiserAbsoluteEncoder.getPosition());
-        SmartDashboard.putString("Intake Position", intakePosition.toString());
+        SmartDashboard.putString("Intake Position: ", intakePosition.toString());
 
 
     }
 
-    // This was used during testing to find the position of the intake
+    // This was used during testing to find the the angles for different positions of the intake
     private double intakePosition(){
 
         return intakeRaiserAbsoluteEncoder.getPosition();
@@ -104,14 +99,11 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
     }
 
-    public void raisingCommand(boolean ampScoring, boolean raise) {
-
-        if (ampScoring){
-
-            goToAmpPosition();
-
+    public void raisingCommand( boolean raise, boolean ampPos) {
+        
+        if (ampPos){
+            intakeRaiserPIDController.setReference(BTConstants.IntakePositions.ampScoringPosition, CANSparkMax.ControlType.kSmartMotion);
         }
-
         else if (raise){
 
             if (intakePosition == IntakePosition.UP){
@@ -127,11 +119,7 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
         }
 
-        // Automatically intakes once limit switch is activated
-        else if (limitSwitch.isPressed()){
+        
 
-            goUp();
-
-        }
     }
 }

@@ -5,6 +5,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.OuttakeAngleCalculator;
+import frc.robot.Constants.BTConstants;
+import frc.robot.subsystems.cameras.RobotVision;
 
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.CANSparkMax;
@@ -28,21 +30,21 @@ public class BTAngleChangingSubsystem extends SubsystemBase{
     private AbsoluteEncoder angleChangerAbsoluteEncoder;
     private RelativeEncoder angleChangerRelativeEncoder;
     private SparkPIDController angleChangerPIDController;
-    private OuttakeAngleCalculator angleCalc = new OuttakeAngleCalculator();
+    private OuttakeAngleCalculator angleCalc;
 
     /*
-    This is the system used to get the outtake angle to change
+    This is the system used to get the shooter angle to change
     * Since we use kSmartMotion to change our angle, our reference value is in rotations from starting
     * The increaseAngle() method increases the new reference rotation by the rotationStep  
     * everytime it's called. This causes the number of rotations of the MOTOR
     * to increase by the rotation step.
-    * The decreaseAngle() method works in reverse
+    * The decreaseAngle() method works the same way in reverse
     */
     private double angle = 0;
     private double rotationStep = 0.1;
 
     // Constructor which initializes the objects
-    public BTAngleChangingSubsystem(){
+    public BTAngleChangingSubsystem(RobotVision robotVisionObject){
 
         // This sparkmax controls the outtake angle motor
         angleChangerSparkMax = new CANSparkMax(Constants.BTConstants.CANIdConstants.ANGLE_CHANGER_CAN_ID, MotorType.kBrushless);
@@ -66,20 +68,30 @@ public class BTAngleChangingSubsystem extends SubsystemBase{
         angleChangerPIDController.setSmartMotionMaxAccel(Constants.BTConstants.PIDControllerConstants.AngleChangingConstants.MAX_ACCELERATION, 0);
         angleChangerPIDController.setSmartMotionAllowedClosedLoopError(Constants.BTConstants.PIDControllerConstants.ALLOWED_ERROR, 0);
 
+        // This assigns a robot vision object to the angle calculator robot to use for
+        // calulations
+        angleCalc = new OuttakeAngleCalculator(robotVisionObject);
+
     }
 
     // These methods increase and decrease the angle when called.
-    public void increaseAngle(){
+    public void decreaseAngle(){
 
         angle += rotationStep;
         angleChangerPIDController.setReference(angle, CANSparkMax.ControlType.kSmartMotion);
 
     }
 
-    public void decreaseAngle(){
+    public void increaseAngle(){
 
-        angle -= rotationStep;
-        angleChangerPIDController.setReference(angle, CANSparkMax.ControlType.kSmartMotion);
+        // The if statement makes sure that the angle never goes below zero
+        if (angle - rotationStep > 0){
+
+            angle -= rotationStep;
+            angleChangerPIDController.setReference(angle, CANSparkMax.ControlType.kSmartMotion);
+
+        }
+
 
     }
 
@@ -87,7 +99,7 @@ public class BTAngleChangingSubsystem extends SubsystemBase{
 
 
     // This will be used to automatically set the angle when we get distance data from vision.
-    public void approachAngle(int desiredAngle){
+    public void approachAngle(double desiredAngle){
 
         double difference = desiredAngle - outtakeAngleInDegrees();
         double allowedError = 2; // this is in degrees
@@ -105,8 +117,10 @@ public class BTAngleChangingSubsystem extends SubsystemBase{
 
     public void periodic(){
 
-        SmartDashboard.putNumber("Angle Changer Angle Turned: ", encoderOutputInDegrees() );
-        SmartDashboard.putNumber("Shooter Angle: ", outtakeAngleInDegrees() );
+        // SmartDashboard.putNumber("Angle Changer Angle Turned: ", encoderOutputInDegrees() );
+        // SmartDashboard.putNumber("Shooter Angle: ", outtakeAngleInDegrees() );
+        // SmartDashboard.putBoolean("SCORE FAR: ", ( Math.abs(outtakeAngleInDegrees() - BTConstants.AnglingConstants.scoreFarAngle) <= 2 ));
+        // SmartDashboard.putBoolean("SCORE CLOSE: ",  Math.abs(outtakeAngleInDegrees() - BTConstants.AnglingConstants.scoreCloseAngle) <= 2 );
 
     }
 
@@ -128,16 +142,26 @@ public class BTAngleChangingSubsystem extends SubsystemBase{
 
     }
 
+
     // This runs as the default command for the angling subsystem
 
-    public void defaultAnglingCommand(boolean raiseShooter, boolean lowerShooter){
+    public void defaultAnglingCommand(boolean closeScore, boolean farScore, boolean ampScoring){
 
-        if (raiseShooter){
-            increaseAngle();
+        if (closeScore){
+            angleChangerPIDController.setReference((0), CANSparkMax.ControlType.kSmartMotion);
         }
-        else if (lowerShooter){
-            decreaseAngle();
+        else if (farScore){
+
+            angleChangerPIDController.setReference(5, CANSparkMax.ControlType.kSmartMotion);
         }
+
+        else if(ampScoring){
+
+            angleChangerPIDController.setReference(0 , CANSparkMax.ControlType.kSmartMotion);
+
+        }
+
+    
 
     }
 
