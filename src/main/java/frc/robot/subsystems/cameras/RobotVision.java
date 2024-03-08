@@ -1,6 +1,7 @@
 package frc.robot.subsystems.cameras;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
@@ -10,7 +11,7 @@ import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CameraConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.utils.geometry.RobotPose3d;
 import frc.utils.geometry.TagPose3d;
 
@@ -274,7 +275,7 @@ public class RobotVision extends SubsystemBase {
 
         // Make sure the tag's ambiguous is lower than the maximum allowed ambiguity. This helps ensure that our robot
         // doesn't get confused by ambiguous position data.
-        if (target.getPoseAmbiguity() > CameraConstants.MAX_AMBIGUITY) {
+        if (target.getPoseAmbiguity() > VisionConstants.MAX_AMBIGUITY) {
             return null;
         }
 
@@ -288,9 +289,7 @@ public class RobotVision extends SubsystemBase {
      * @param cameraName The name of the camera you want to have take a snapshot.
      */
     public void snapshot(String cameraName) {
-        
-        System.out.println("Snap!");
-        
+                
         // Check if any of the PhotonVisionCameras have the desired name. If one does, then
         // take a snapshot and return.
         for (PhotonVisionCamera camera : photonVisionCameras) {
@@ -326,5 +325,59 @@ public class RobotVision extends SubsystemBase {
         for (LimelightCamera camera : limelightCameras) {
             camera.snapshot();
         }
+    }
+
+    /**
+     * Returns a {@code PhotonVisionCamera} object with the speicfied name.
+     * 
+     * @param cameraName The name of the {@code PhotonVisionCamera} you want to get.
+     * @return A {@code PhotonVisionCamera} with the specified name. (Or null if no camera with the specified
+     *         name can be found).
+     */
+    public PhotonVisionCamera getPhotonVisionCamera(String cameraName) {
+
+        /*
+         * Loop through all of this RobotVision's PhotonVisionCameras and attempt to find a camera with 
+         * the specified name. If a camera with the specified anme can be found, then return it. Otherwise 
+         * look through the limelight cameras and try to find the camera there.
+         */
+        for (PhotonVisionCamera camera : photonVisionCameras) {
+
+            // Check if the camera has the specified name and return it if it does.
+            if (camera.getCameraName() == cameraName) {
+                return camera;
+            }
+        }
+
+        // Tell the user that no cameras with the given name could be found.
+        System.err.println("Error: No camera found with name " + cameraName + ".");
+        return null;
+    }
+
+    /**
+     * Returns a {@code LimelightCamera} object with the speicfied name.
+     * 
+     * @param cameraName The name of the {@code LimelightCamera} you want to get.
+     * @return A {@code LimelightCamera} with the specified name. (Or null if no camera with the specified
+     *         name can be found).
+     */
+    public LimelightCamera getLimelightCamera(String cameraName) {
+
+        /*
+         * Loop through all of this RobotVision's LimelightCameras and attempt to find a camera with 
+         * the specified name. If a camera with the specified name can be found, then return it. If 
+         * no camera can be found then alert the return null.
+         */
+        for (LimelightCamera camera : limelightCameras) {
+
+            // Check if the camera has the specified name and return it if it does.
+            if (camera.getCameraName() == cameraName) {
+                return camera;
+            }
+        }
+
+        // Tell the user that no cameras with the given name could be found.
+        System.err.println("Error: No camera found with name " + cameraName + ".");
+        return null;
     }
 }

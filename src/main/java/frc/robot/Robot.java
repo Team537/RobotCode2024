@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.Constants.CameraConstants;
+import frc.robot.Constants.VisionConstants;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -37,7 +37,7 @@ public class Robot extends TimedRobot {
     snapshotTimer.start();
 
     // Make it possible to view the photonvision dashboard over the internet
-    // PortForwarder.add(5800, "photonvision.local", 5800);
+    PortForwarder.add(5800, "photonvision.local", 5800);
   }
 
   /**
@@ -86,7 +86,7 @@ public class Robot extends TimedRobot {
   public void autonomousPeriodic() {
 
      // Take a screenshot every 250ms.
-     if (snapshotTimer.get() >= CameraConstants.SNAPSHOT_RATE) {
+     if (snapshotTimer.get() >= VisionConstants.SNAPSHOT_RATE) {
       snapshotTimer.reset();
       robotContainer.snapshot();
     }
@@ -108,7 +108,7 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
      // Take a screenshot every 250ms.
-     if (snapshotTimer.get() >= CameraConstants.SNAPSHOT_RATE) {
+     if (snapshotTimer.get() >= VisionConstants.SNAPSHOT_RATE) {
       snapshotTimer.reset();
       robotContainer.snapshot();
     }
