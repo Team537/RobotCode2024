@@ -12,6 +12,10 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.FieldConstants;
+
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Translation2d;
 
 public class Arm extends SubsystemBase {
 
@@ -77,6 +81,23 @@ public class Arm extends SubsystemBase {
     System.out.println("RAN END ARM");
 
   }
+
+  /**
+   * sets the pitch to target the speaker
+   * @param robotPose the current pose of the robot
+   */
+  public void targetSpeaker(Pose2d robotPose) {
+
+    //get the distance from the robot to the speaker and subtract the offset of the arm (it is 6.75 inches closer)
+    double distance = -ArmConstants.ARM_OFFSET + Math.sqrt( Math.pow(robotPose.getX() - FieldConstants.SPEAKER_POSE.getX(),2) + Math.pow(robotPose.getY() - FieldConstants.SPEAKER_POSE.getY(),2) );
+    double angle = Math.atan2(FieldConstants.SPEAKER_HEIGHT - ArmConstants.ARM_HEIGHT,distance);
+    double target = angle * (100 / Math.PI);
+    final PositionVoltage m_request = new PositionVoltage(target).withSlot(0).withEnableFOC(true);
+    m_arm1.setControl(m_request);
+    m_arm2.setControl(m_follower);
+
+  }
+
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ARM POS", m_arm1.getPosition().getValue());
