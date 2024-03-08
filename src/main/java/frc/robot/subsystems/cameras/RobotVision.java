@@ -7,7 +7,6 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
-import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -142,7 +141,20 @@ public class RobotVision extends SubsystemBase {
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
+
+        /*
+         * Try and estimate where the robot is on the field. Then, if we are able to sucsessfully
+         * estimate th erobot's position, dispay the results on SmartDashboard so that we can determine
+         * how accurate our estimation is.
+         */
+        Pose2d estimatedRobotPose = estimateRobotPose();
+        if (estimatedRobotPose != null) { 
+            SmartDashboard.putNumber("RobotVision's Estimated Robot X: ", estimatedRobotPose.getX());
+            SmartDashboard.putNumber("RobotVision's Estimated Robot Y: ", estimatedRobotPose.getY());
+            SmartDashboard.putNumber("RobotVision's Estimated Robot Heading: ", estimatedRobotPose.getRotation().getRadians());
+        }
+    }
 
     /**
      * Estimates the robot's positon on the field using by using the position data gathered from

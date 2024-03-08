@@ -77,6 +77,8 @@ public class PhotonVisionCamera extends SubsystemBase {
      * @return An estimante of the robot's positon on the field.
      */
     public Optional<EstimatedRobotPose> estimateRobotPose() {
+
+        // Update the robot's estimate position and return the results.
         return photonPoseEstimator.update();
     }
 

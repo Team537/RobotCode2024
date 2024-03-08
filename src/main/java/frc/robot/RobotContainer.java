@@ -91,13 +91,6 @@ public class RobotContainer {
     // SmartDashboard options
     private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
 
-    // Alternative Command Options
-    private final RunCommand targetPositionCommand = new RunCommand(() -> driveSubsystem.position(
-            new Pose2d(-5 * driverController.getLeftX(),
-                    5 * driverController.getLeftY(),
-                    new Rotation2d(0))),
-            driveSubsystem);
-
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
@@ -119,15 +112,7 @@ public class RobotContainer {
         driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
     }
 
-    /**
-     * Use this method to define your button->command mappings. Buttons can be
-     * created by
-     * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
-     * subclasses ({@link
-     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
-     * passing it to a
-     * {@link JoystickButton}.
-     */
+
     private void configureButtonBindings() {
 
         // Move the robot's wheels into an X to prevent movement.

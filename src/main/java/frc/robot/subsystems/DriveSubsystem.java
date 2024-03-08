@@ -26,6 +26,7 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
@@ -153,6 +154,15 @@ public class DriveSubsystem extends SubsystemBase {
 
         // Periodically update the robot's position data to keep track of its location.
         updateRobotPose();
+
+        // Obtain the robot's position form the pose estimator
+        Pose2d robotPose = poseEstimator.getEstimatedPosition();
+        
+        // Display the current estimated position of the robot
+        SmartDashboard.putNumber("Robot X: ", robotPose.getX());
+        SmartDashboard.putNumber("Robot Y: ", robotPose.getX());
+        SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getDegrees());
+
     }
     
     /**
@@ -186,22 +196,6 @@ public class DriveSubsystem extends SubsystemBase {
                 frontRight.getPosition(),
                 backLeft.getPosition(),
                 backRight.getPosition()});
-    }
-
-    // NOTE: Please change the name of this method to make it's purpose more clear
-    /**
-     * basic layout for targeting a position
-     * 
-     * @param targetPose robot for pose to target
-     */
-    public void position(Pose2d targetPose) {
-
-        setModuleStates(DriveConstants.DRIVE_KINEMATICS
-                .toSwerveModuleStates(driveController.calculate(getPose(), targetPose,
-                 0, 
-                 targetPose.getRotation())));
-
-        System.out.println(getPose());
     }
 
     /**
@@ -410,7 +404,9 @@ public class DriveSubsystem extends SubsystemBase {
         backRight.setDesiredState(desiredStates[3]);
     }
 
-    /** Resets the drive encoders to currently read a position of 0. */
+    /** 
+     * Resets the drive encoders to currently read a position of 0. 
+     */
     public void resetEncoders() {
         frontLeft.resetEncoders();
         backLeft.resetEncoders();
@@ -434,7 +430,9 @@ public class DriveSubsystem extends SubsystemBase {
             pose);
     }
 
-    /** Zeroes the heading of the robot. */
+    /** 
+     * Zeroes the heading of the robot. 
+     */
     public void zeroHeading() {
         gyro.reset();
     }
