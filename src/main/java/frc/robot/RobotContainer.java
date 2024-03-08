@@ -42,9 +42,9 @@ public class RobotContainer {
 
     // The robot's subsystems
     private final DriveSubsystem driveSubsystem = new DriveSubsystem();
-    private final RobotVision robotVision = new RobotVision.Builder()
-        .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.OBJECT_DETECTION_PIPELINE)
-        .build();
+    //private final RobotVision robotVision = new RobotVision.Builder()
+      //  .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.OBJECT_DETECTION_PIPELINE)
+        //.build();
 
    // The driver's controller
    private final XboxController driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
@@ -69,8 +69,8 @@ public class RobotContainer {
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
     () -> driveSubsystem.driveFromController(
-        -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(driverController.getRightY(), OIConstants.DRIVE_DEADBAND),
         driverController.getRightTriggerAxis(),
@@ -143,7 +143,7 @@ public class RobotContainer {
      * Takes a photongraph using all of the cameras.
      */
     public void snapshot() {
-        robotVision.snapshotAll();
+        // robotVision.snapshotAll();
     }
 
   /**

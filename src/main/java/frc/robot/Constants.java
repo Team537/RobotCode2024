@@ -206,5 +206,7 @@ public final class Constants {
 
   public static final class FieldConstants {
     public static final Pose2d SPEAKER_POSE = new Pose2d(0, 0, new Rotation2d());
+    public static final double SPEAKER_HEIGHT = 81;
   }
+
 }

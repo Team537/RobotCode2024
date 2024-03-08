@@ -162,6 +162,13 @@ public class DriveSubsystem extends SubsystemBase {
         Double.toString((backLeft.getPosition().distanceMeters - currentBackLeftMeters) / elapsedTime));
     SmartDashboard.putString("Back Right Recorded Speed",
         Double.toString((backRight.getPosition().distanceMeters - currentBackRightMeters) / elapsedTime));
+
+    currentFrontLeftMeters = frontLeft.getPosition().distanceMeters;
+    currentFrontRightMeters = frontRight.getPosition().distanceMeters;
+    currentBackLeftMeters = backLeft.getPosition().distanceMeters;
+    currentBackRightMeters = backRight.getPosition().distanceMeters;
+    
+
   }
 
   /**
@@ -207,10 +214,10 @@ public class DriveSubsystem extends SubsystemBase {
   /**
    * drives robot from inputs
    * 
-   * @param leftY         the linear input for the y direction, usually the left
-   *                      joystick y
    * @param leftX         the linear input for the x direction, usually the left
    *                      joystick x
+   * @param leftY         the linear input for the y direction, usually the left
+   *                      joystick y
    * @param rightX        the rotation input for the robot, usually the right
    *                      joystick x, also used for orientation targeting
    * @param rightY        used for rotation targeting along with rightX, usually
@@ -219,7 +226,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param fieldRelative determines whether the robot is field centric
    * @param rateLimit     applys rate limiting to the robot
    */
-  public void driveFromController(double leftY, double leftX, double rightX, double rightY, double boostMode, boolean fieldRelative, boolean rateLimit) {
+  public void driveFromController(double leftX, double leftY, double rightX, double rightY, double boostMode, boolean fieldRelative, boolean rateLimit) {
 
     double turnJoystickOrientation = Math.atan2(rightY, rightX);
     double turnJoystickMagnitude = Math.sqrt( Math.pow(rightX,2) + Math.pow(rightY,2) );
