@@ -14,7 +14,21 @@ public enum AutonomousOption {
 
     private final Pose2d STARTING_LOCATION;
 
+    /**
+     * Initialize the STARTING_LOCATION variable for each of the enum values.
+     * 
+     * @param startingLocation The starting position of the robot.
+     */
     AutonomousOption(Pose2d startingLocation) {
         this.STARTING_LOCATION = startingLocation;
+    }
+
+    /**
+     * Returns the starting position of the robot.
+     * 
+     * @return The starting position of the robot as a {@code Pose2d}.
+     */
+    public Pose2d getStartingPosition() {
+        return this.STARTING_LOCATION;
     }
 }
