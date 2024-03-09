@@ -29,6 +29,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.CameraConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.vision.ResetImuWithVisionCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.cameras.RobotVision;
 
@@ -43,7 +44,7 @@ public class RobotContainer {
     // The robot's subsystems
     private final RobotVision robotVision = new RobotVision.Builder()
             .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET,
-                    CameraConstants.OBJECT_DETECTION_PIPELINE)
+                    CameraConstants.APRIL_TAG_PIPELINE)
             .build();
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(true, robotVision::estimateRobotPose);
 
@@ -119,10 +120,8 @@ public class RobotContainer {
         starButton.whileTrue(new RunCommand(
                 () -> driveSubsystem.setX(),
                 driveSubsystem));
-
-        backButton.onTrue(new RunCommand(
-                () -> driveSubsystem.zeroHeading(),
-                driveSubsystem));
+                
+        backButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem, robotVision));
     }
 
     /**

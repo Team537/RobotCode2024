@@ -110,6 +110,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     // Create a supplier to make it possible for this DriveSubsystem to gain acsess to the cameras' estimated position.
     private Supplier<Pose2d> visionMeasurementSupplier;
+    private Timer elapsedTime = new Timer();
 
     /**
      * Creates a new {@code DriveSubsystem} object with the specified paramaters.
@@ -123,6 +124,9 @@ public class DriveSubsystem extends SubsystemBase {
         if (resetOrientation) {
             zeroHeading();
         }
+
+        // Stert the time so that we are able to get time stamped vision measurments.
+        elapsedTime.start();
 
         /* 
          * Initialze up the visionMeasurementSupplier so that this DriveSubsystem is able to get
@@ -141,7 +145,7 @@ public class DriveSubsystem extends SubsystemBase {
                 frontRight.getPosition(),
                 backLeft.getPosition(),
                 backRight.getPosition()},
-            new Pose2d(new Translation2d(0, 0), new Rotation2d(0, 0))); // Note: See how accurate this turns out to be. Change if need be.
+            new Pose2d(new Translation2d(8.945, 7.815), new Rotation2d(0, 0))); // Note: See how accurate this turns out to be. Change if need be.
 
         // Configure alternative drive mode PID controllers.
         orientationLockController.enableContinuousInput(0, Math.PI * 2);
@@ -160,9 +164,8 @@ public class DriveSubsystem extends SubsystemBase {
         
         // Display the current estimated position of the robot
         SmartDashboard.putNumber("Robot X: ", robotPose.getX());
-        SmartDashboard.putNumber("Robot Y: ", robotPose.getX());
+        SmartDashboard.putNumber("Robot Y: ", robotPose.getY());
         SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getDegrees());
-
     }
     
     /**
@@ -185,7 +188,7 @@ public class DriveSubsystem extends SubsystemBase {
             // Incorporate the robot's estimated vision measurements into this DriveSubsystem's poseEstimator.
             poseEstimator.addVisionMeasurement(
                 visionMeasurementSupplier.get(), 
-                Timer.getFPGATimestamp());
+                elapsedTime.get());
         }
 
         // Update the robot's position on the field.
@@ -347,8 +350,7 @@ public class DriveSubsystem extends SubsystemBase {
                 }
 
                 // realigns the PID controller
-                currentRotation = orientationLockController.calculate(gyro.getRotation2d().getRadians(),
-                        orientationLock);
+                currentRotation = 0;// orientationLockController.calculate(gyro.getRotation2d().getRadians(), orientationLock);
             } else {
                 orientationLockToggle = false;
             }
@@ -430,6 +432,15 @@ public class DriveSubsystem extends SubsystemBase {
             pose);
     }
 
+    /**
+     * Sets the direciton that the robot is facing to the sepecified value.
+     * 
+     * @param newYaw The direciton you want the robot to think it's facing, in degrees.
+     */
+    public void setYaw(double newYaw) {
+        gyro.setYaw(newYaw);
+    }
+    
     /** 
      * Zeroes the heading of the robot. 
      */

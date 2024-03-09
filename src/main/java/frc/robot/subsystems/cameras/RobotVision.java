@@ -152,7 +152,7 @@ public class RobotVision extends SubsystemBase {
         if (estimatedRobotPose != null) { 
             SmartDashboard.putNumber("RobotVision's Estimated Robot X: ", estimatedRobotPose.getX());
             SmartDashboard.putNumber("RobotVision's Estimated Robot Y: ", estimatedRobotPose.getY());
-            SmartDashboard.putNumber("RobotVision's Estimated Robot Heading: ", estimatedRobotPose.getRotation().getRadians());
+            SmartDashboard.putNumber("RobotVision's Estimated Robot Heading: ", estimatedRobotPose.getRotation().getDegrees());
         }
     }
 
@@ -263,14 +263,6 @@ public class RobotVision extends SubsystemBase {
          */
         tagPosition.flipYaw();
         
-        // Display values on dashboard
-        SmartDashboard.putNumber("TagX", tagPosition.getX());
-        SmartDashboard.putNumber("TagY", tagPosition.getY());
-        SmartDashboard.putNumber("TagZ", tagPosition.getZ());
-        SmartDashboard.putNumber("roll", tagPosition.getRotation().getX());
-        SmartDashboard.putNumber("pitch", tagPosition.getRotation().getY());
-        SmartDashboard.putNumber("yaw", tagPosition.getRotation().getZ());
-
         // Return the tag's location relative to the camera.
         return tagPosition;
     }
