@@ -79,7 +79,7 @@ public class BTRaisingSubsystem extends SubsystemBase{
     // Gives the driver information about the Intake Position
     public void periodic(){
 
-        // SmartDashboard.putNumber("Intake Raiser Position: ", intakeRaiserAbsoluteEncoder.getPosition());
+        // SmartDashboard.putNumber("Intake Raiser Position: ", intakePosition());
         SmartDashboard.putString("Intake Position: ", intakePosition.toString());
 
 
@@ -99,12 +99,9 @@ public class BTRaisingSubsystem extends SubsystemBase{
 
     }
 
-    public void raisingCommand( boolean raise, boolean ampPos) {
+    public void defaultRaisingCommand( boolean raise) {
         
-        if (ampPos){
-            intakeRaiserPIDController.setReference(BTConstants.IntakePositions.ampScoringPosition, CANSparkMax.ControlType.kSmartMotion);
-        }
-        else if (raise){
+        if (raise){
 
             if (intakePosition == IntakePosition.UP){
 
