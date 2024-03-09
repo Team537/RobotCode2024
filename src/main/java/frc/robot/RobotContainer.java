@@ -6,8 +6,6 @@ package frc.robot;
 
 import java.util.List;
 
-import org.apache.commons.lang3.ObjectUtils.Null;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -30,7 +28,9 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.sensors.PhotoElectric;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
@@ -109,13 +109,15 @@ public class RobotContainer {
         5 * driverController.getLeftY(),
         new Rotation2d(0))), 
         driveSubsystem);
+
    
   /**
     * The container for the robot. Contains subsystems, OI devices, and commands.
     */
     public RobotContainer() {
-
-      //intake 
+      
+      /*     
+       //intake 
       rightBumper.onTrue(new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake));
       rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
       
@@ -163,45 +165,46 @@ public class RobotContainer {
       dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
       dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
 
+      // */
 
 
 
 
 
       //---------new button binding 
-      /* 
+      
       
       //Bumpers
-      leftBumper.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter), 
-      new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake)));
+      leftBumper.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
+      new StartEndCommand(Intake::IntakeOff, Intake::IntakeMax, Intake).withTimeout(1)));
 
       leftBumper.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
       new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
 
 
-      rightBumper.onTrue(new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake));
+      rightBumper.toggleOnTrue(new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake).until(()-> Intake.GetSwitchHit()));
 
-      rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
+      // rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
 
 
       //ABXY
 
-      aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm));
+      aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
 
       // aButton.onFalse(null);
 
 
-      bButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm));
+      bButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
 
       // bButton.onFalse(null);
 
 
-      xButton.onTrue(new StartEndCommand(Arm::ArmMid, Arm::ArmMid, Arm));
+      xButton.onTrue(new StartEndCommand(Arm::ArmMid, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
 
       // xButton.onFalse(null);
 
 
-      yButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp, Arm));
+      yButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
 
       // yButton.onFalse(null);
 
@@ -229,16 +232,18 @@ public class RobotContainer {
       //Start and Back
 
       startButton.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterAmp, Shooter::ShooterAmp,Shooter), 
-      new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake)));
+      new StartEndCommand(Intake::IntakeAmp, Intake::IntakeOff, Intake)));
 
       startButton.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
       new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
 
 
-      // backButton.onTrue(set forward direction of gyro/);
+      backButton.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop,Shooter), 
+      new StartEndCommand(Intake::IntakeReverse, Intake::IntakeOff, Intake)));
 
-      // backButton.onFalse(null); */
-
+      backButton.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
+      new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
+      // */      
 
       // Configure the button bindings
       configureButtonBindings();

@@ -11,11 +11,19 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.Constants.*;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class Intake extends SubsystemBase {
 
   TalonFX m_intake = new TalonFX(IntakeConstants.INTAKE);
+  DigitalInput m_photoelectric = new DigitalInput(0);
+
+  
+
+  boolean sensorBool; 
+  boolean skip = false;
 
   /** Creates a new Intake. */
   public Intake() {
@@ -37,29 +45,41 @@ public class Intake extends SubsystemBase {
   }
 
   public void IntakeForward() {
-    m_intake.set(0.4);
+    m_intake.set(0.3);
   }
 
-  public boolean IntakeMax() {
-    System.out.println("intake max");
+  public void IntakeAmp() {
+    m_intake.set(0.4);
+    skip = false;
+  }
+  
+
+  public void IntakeMax() {
     m_intake.set(1);
-    return true;
+    skip = false;
   }
 
   public void IntakeOff() {
     m_intake.set(0);
-    System.out.println("RAN END");
   }
 
   public void IntakeReverse() {
     m_intake.set(-0.2);
   }
   public void IntakeOnEND() {
-    System.out.println("RAN END");
+
+  }
+
+  public boolean GetSwitchHit() {
+    return m_photoelectric.get();
   }
 
   @Override
   public void periodic() {
+    SmartDashboard.putBoolean("Photoelectric Sensor Value", m_photoelectric.get());
+    SmartDashboard.putBoolean("Skip Bool", skip);
+    SmartDashboard.putBoolean("Photoelectric Bool intake", sensorBool);
+
     // This method will be called once per scheduler run
   }
 }

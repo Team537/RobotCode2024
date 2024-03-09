@@ -37,7 +37,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void ShooterForward() {    
-    m_shooter.setControl(SetSpeed(100, 0));
+    m_shooter.setControl(SetSpeed(-100, 0));
   }
 
   public void ShooterStop() {
