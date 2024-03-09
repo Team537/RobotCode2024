@@ -206,6 +206,8 @@ public final class Constants {
 
   public static final class FieldConstants {
     public static final Pose2d SPEAKER_POSE = new Pose2d(0, 0, new Rotation2d());
+
+    public static final int SPEAKER_HEIGHT = 0;
   }
 
   public static final class IntakeConstants {
@@ -219,5 +221,7 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int ARM1 = 11;
     public static final int ARM2 = 12;
+    public static final int ARM_HEIGHT = 0;
+    public static final int ARM_OFFSET = 0;
   }
 }

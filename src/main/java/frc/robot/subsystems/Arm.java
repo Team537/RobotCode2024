@@ -22,6 +22,8 @@ public class Arm extends SubsystemBase {
   TalonFX m_arm1 = new TalonFX(ArmConstants.ARM1);
   TalonFX m_arm2 = new TalonFX(ArmConstants.ARM2);
 
+  private double targetVal = 0;
+
   final Follower m_follower = new Follower(11,false);
 
   /** Creates a new Arm. */
@@ -92,15 +94,20 @@ public class Arm extends SubsystemBase {
     double distance = -ArmConstants.ARM_OFFSET + Math.sqrt( Math.pow(robotPose.getX() - FieldConstants.SPEAKER_POSE.getX(),2) + Math.pow(robotPose.getY() - FieldConstants.SPEAKER_POSE.getY(),2) );
     double angle = Math.atan2(FieldConstants.SPEAKER_HEIGHT - ArmConstants.ARM_HEIGHT,distance);
     double target = angle * (100 / Math.PI);
+    
     final PositionVoltage m_request = new PositionVoltage(target).withSlot(0).withEnableFOC(true);
     m_arm1.setControl(m_request);
     m_arm2.setControl(m_follower);
+
+    //makes the estimated target position a class variable so it can be sent to smart dashboard
+    targetVal = target;
 
   }
 
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ARM POS", m_arm1.getPosition().getValue());
+    SmartDashboard.putNumber("TARGET POS", targetVal);
 
     // This method will be called once per scheduler run
   }
