@@ -31,6 +31,7 @@ public class BTAngleChangingSubsystem extends SubsystemBase{
     private RelativeEncoder angleChangerRelativeEncoder;
     private SparkPIDController angleChangerPIDController;
     private OuttakeAngleCalculator angleCalc;
+    private boolean inDangerousRange;
 
     /*
     This is the system used to get the shooter angle to change
@@ -147,17 +148,27 @@ public class BTAngleChangingSubsystem extends SubsystemBase{
 
     public void defaultAnglingCommand(boolean closeScore, boolean farScore, boolean ampScoring){
 
-        if (closeScore){
-            angleChangerPIDController.setReference((0), CANSparkMax.ControlType.kSmartMotion);
+        // inDangerousRange tells you if you've gone past the limit
+        inDangerousRange = ( angleChangerAbsoluteEncoder.getPosition() >= 0.5 ) && ( angleChangerAbsoluteEncoder.getPosition() <= 0.95 );
+
+        if (inDangerousRange){
+
+            angleChangerPIDController.setReference(2.083, CANSparkMax.ControlType.kSmartMotion);
+
+        }
+
+        else if (closeScore){
+
+            angleChangerPIDController.setReference((2.083), CANSparkMax.ControlType.kSmartMotion);
+
         }
         else if (farScore){
 
             angleChangerPIDController.setReference(5, CANSparkMax.ControlType.kSmartMotion);
         }
-
         else if(ampScoring){
 
-            angleChangerPIDController.setReference(0 , CANSparkMax.ControlType.kSmartMotion);
+            angleChangerPIDController.setReference(2.083 , CANSparkMax.ControlType.kSmartMotion);
 
         }
 
