@@ -1,0 +1,39 @@
+{
+  "HALProvider": {
+    "Other Devices": {
+      "Pigeon 2 (v6)[42]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [2]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [7]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [8]": {
+        "header": {
+          "open": true
+        }
+      }
+    }
+  },
+  "NTProvider": {
+    "types": {
+      "/FMSInfo": "FMSInfo"
+    }
+  },
+  "NetworkTables": {
+    "Retained Values": {
+      "open": false
+    }
+  },
+  "NetworkTables Info": {
+    "visible": true
+  }
+}
