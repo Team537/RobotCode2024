@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.List;
 
+import org.apache.commons.lang3.ObjectUtils.Null;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -113,35 +115,130 @@ public class RobotContainer {
     */
     public RobotContainer() {
 
+      //intake 
       rightBumper.onTrue(new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake));
       rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
-    
-      leftBumper.onTrue(new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter));
-      leftBumper.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
+      
+      //shooting
+      leftBumper.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter), 
+      new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake)));
+      leftBumper.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter), 
+      new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake)));
 
+      //Arm ground
+      //abutton
+
+      
+      //subwoofer position (overrides the amp scoring pos)
       bButton.onTrue(new StartEndCommand(Intake::IntakeReverse, Intake::IntakeOff, Intake));
       bButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
 
+      // amp scoring arm pos
       yButton.onTrue(new StartEndCommand(Shooter::ShooterAmp, Shooter::ShooterStop,Shooter));
       yButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
 
+      //Xbutton
+      // mid shooting or where notes are in autonomous
+
+      //reset field gyro
       backButton.onTrue(new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop, Shooter));
       backButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop, Shooter));
 
-      // startButton.onTrue(new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake).until(driverController.getStartButtonPressed()));
-      // // startButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)); TEST
+      //nothing binded to 
+      startButton.onTrue(new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake));
+      startButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
 
-      dPadUpButton.onTrue(new StartEndCommand(Arm::ArmShoot, Arm::ArmManualStop, Arm));
-      dPadDownButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmManualStop, Arm));
+      //arm up
+      dPadUpButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm));
 
-      dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManual1, Arm::ArmManualStop, Arm));
-      dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManual2, Arm::ArmManualStop, Arm));
+      //arm down
+      dPadDownButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp, Arm));
 
+      //climb up
+      dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManualDown, Arm::ArmManualStop, Arm));
 
-      // dPadDownButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
-      // dPadUpButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+      //climb down
+      dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManualUp, Arm::ArmManualStop, Arm));
+
       dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
       dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+
+
+
+
+
+
+      //---------new button binding 
+      /* 
+      
+      //Bumpers
+      leftBumper.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter), 
+      new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake)));
+
+      leftBumper.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
+      new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
+
+
+      rightBumper.onTrue(new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake));
+
+      rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
+
+
+      //ABXY
+
+      aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm));
+
+      // aButton.onFalse(null);
+
+
+      bButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm));
+
+      // bButton.onFalse(null);
+
+
+      xButton.onTrue(new StartEndCommand(Arm::ArmMid, Arm::ArmMid, Arm));
+
+      // xButton.onFalse(null);
+
+
+      yButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp, Arm));
+
+      // yButton.onFalse(null);
+
+      //D-PAD
+
+      dPadUpButton.onTrue(new StartEndCommand(Arm::ArmClimbUp, Arm::ArmClimbUp, Arm));
+
+      // dPadUpButton.onFalse(null);
+
+
+      dPadDownButton.onTrue(new StartEndCommand(Arm::ArmClimbDown, Arm::ArmClimbDown, Arm));
+
+      // dPadDownButton.onFalse(null);
+
+
+      dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManualUp, Arm::ArmManualUp, Arm));
+
+      dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+
+
+      dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManualDown, Arm::ArmManualDown, Arm));
+
+      dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+
+      //Start and Back
+
+      startButton.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterAmp, Shooter::ShooterAmp,Shooter), 
+      new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake)));
+
+      startButton.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
+      new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
+
+
+      // backButton.onTrue(set forward direction of gyro/);
+
+      // backButton.onFalse(null); */
+
 
       // Configure the button bindings
       configureButtonBindings();

@@ -21,12 +21,8 @@ public class Arm extends SubsystemBase {
   final Follower m_follower = new Follower(11,false);
 
   /** Creates a new Arm. */
-  public Arm() {
-    // m_arm2.setInverted(true);
-    
+  public Arm() {    
     var slot0Configs = new Slot0Configs();
-    // slot0Configs.kV = 0.5;
-    // slot0Configs.kS = 0.5;
     slot0Configs.kP = 1;
     slot0Configs.kI = 1;
     slot0Configs.kD = .01;
@@ -35,47 +31,51 @@ public class Arm extends SubsystemBase {
     m_arm2.getConfigurator().apply(slot0Configs);
   }
 
-  
+  private PositionVoltage TalonfxPIDControl(double pos) {
+    // pos is the desired location of the falcon in rotations
+    final PositionVoltage m_request = new PositionVoltage(pos).withSlot(0).withEnableFOC(true);
+    return m_request;
+  }
 
-  public void ArmShoot() {
-    
-
-    
-    final PositionVoltage m_request = new PositionVoltage(-20).withSlot(0).withEnableFOC(true);
-
-    m_arm1.setControl(m_request);
+  private void SetMotorsPID(double pos) {
+    m_arm1.setControl(TalonfxPIDControl(pos));
     m_arm2.setControl(m_follower);
+  }
+
+  public void ArmSubwoofer() {
+   SetMotorsPID(-20);
   }
 
   public void ArmIntake() {
-
+    // SetMotorsPID(0);
   }
   
   public void ArmAmp() {
-
-    final PositionVoltage m_request = new PositionVoltage(0).withSlot(0).withEnableFOC(true);
-
-    m_arm1.setControl(m_request);
-    m_arm2.setControl(m_follower);
+    SetMotorsPID(0);
   }
 
-  public void ArmManual1() {
+  public void ArmMid() {
+    // SetMotorsPID(0);
+  }
+
+  public void ArmClimbUp() {
+    // SetMotorsPID(0);
+  }
+
+  public void ArmClimbDown() {
+    // SetMotorsPID(0);
+  }
+
+  public void ArmManualDown() {
     m_arm1.set(0.2);
     m_arm2.set(0.2);
   }
-  public void ArmManual2() {
+  public void ArmManualUp() {
     m_arm1.set(-0.3);
     m_arm2.set(-0.3);
   }
   public void ArmManualStop() {
-    double pos = m_arm1.getPosition().getValue();
-    final PositionVoltage m_request = new PositionVoltage(pos).withSlot(0).withEnableFOC(true);
-
-
-    m_arm1.setControl(m_request);
-    m_arm2.setControl(m_follower);
-    System.out.println("RAN END ARM");
-
+    SetMotorsPID(m_arm1.getPosition().getValue());
   }
   @Override
   public void periodic() {

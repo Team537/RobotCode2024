@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import java.util.function.BooleanSupplier;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.Constants.*;
@@ -17,7 +19,21 @@ public class Intake extends SubsystemBase {
 
   /** Creates a new Intake. */
   public Intake() {
-    //put spark defaults here
+    var slot0Configs = new Slot0Configs();
+    slot0Configs.kS = 0.05; // V to overcome static friction
+    slot0Configs.kV = 0.12; // 1 rps = 0.12V output
+    slot0Configs.kP = 0.11; // An error of 1 rps results in 0.11 V output
+
+    m_intake.getConfigurator().apply(slot0Configs);
+  }
+
+  private VelocityVoltage SetSpeed(double velocity, double feedforward) {
+    //.withVelocity( input is RPS, 6380 is max Falcon rpm which converts to 106 and 1/3 rps)
+    //.withFeedForward(input is V to overcome gravity)
+
+    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+
+    return m_request.withVelocity(velocity).withFeedForward(feedforward);
   }
 
   public void IntakeForward() {
@@ -25,15 +41,14 @@ public class Intake extends SubsystemBase {
   }
 
   public boolean IntakeMax() {
+    System.out.println("intake max");
     m_intake.set(1);
-
-    return false;
+    return true;
   }
 
   public void IntakeOff() {
     m_intake.set(0);
     System.out.println("RAN END");
-
   }
 
   public void IntakeReverse() {
