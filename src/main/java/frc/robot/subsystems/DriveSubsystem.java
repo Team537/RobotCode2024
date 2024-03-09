@@ -24,6 +24,7 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.AutoConstants;
@@ -79,6 +80,15 @@ public class DriveSubsystem extends SubsystemBase {
     private SlewRateLimiter rotLimiter = new SlewRateLimiter(DriveConstants.ROTATIONAL_SLEW_RATE);
     private double prevTime = WPIUtilJNI.now() * 1e-6;
 
+    // other "prevTime" used for displaying motor outputs
+    private double prevTimeForEncoder = WPIUtilJNI.now() * 1e-6;
+
+    // variables for storing past motor postions
+    private double currentFrontLeftMeters = 0;
+    private double currentFrontRightMeters = 0;
+    private double currentBackLeftMeters = 0;
+    private double currentBackRightMeters = 0;
+
     ProfiledPIDController thetaController = new ProfiledPIDController(
             AutoConstants.THETA_CONTROLLER_KP, 0, 0, AutoConstants.kThetaControllerConstraints);
 
@@ -131,15 +141,36 @@ public class DriveSubsystem extends SubsystemBase {
                         backLeft.getPosition(),
                         backRight.getPosition()
                 });
-    }
 
-    /**
-     * Returns the currently-estimated pose of the robot.
-     *
-     * @return The pose.
-     */
-    public Pose2d getPose() {
-        return odometry.getPoseMeters();
+        SmartDashboard.putString("gyro", gyro.getRotation2d().toString());
+
+        SmartDashboard.putString("Front Left Commanded Speed",
+                Double.toString(frontLeft.getState().speedMetersPerSecond));
+        SmartDashboard.putString("Front Right Commanded Speed",
+                Double.toString(frontRight.getState().speedMetersPerSecond));
+        SmartDashboard.putString("Back Left Commanded Speed",
+                Double.toString(backLeft.getState().speedMetersPerSecond));
+        SmartDashboard.putString("Back Right Commanded Speed",
+                Double.toString(backRight.getState().speedMetersPerSecond));
+
+        double currentTime = WPIUtilJNI.now() * 1e-6;
+        double elapsedTime = currentTime - prevTimeForEncoder;
+        prevTimeForEncoder = currentTime;
+
+        SmartDashboard.putString("Front Left Recorded Speed",
+                Double.toString((frontLeft.getPosition().distanceMeters - currentFrontLeftMeters) / elapsedTime));
+        SmartDashboard.putString("Front Right Recorded Speed",
+                Double.toString((frontRight.getPosition().distanceMeters - currentFrontRightMeters) / elapsedTime));
+        SmartDashboard.putString("Back Left Recorded Speed",
+                Double.toString((backLeft.getPosition().distanceMeters - currentBackLeftMeters) / elapsedTime));
+        SmartDashboard.putString("Back Right Recorded Speed",
+                Double.toString((backRight.getPosition().distanceMeters - currentBackRightMeters) / elapsedTime));
+
+        currentFrontLeftMeters = frontLeft.getPosition().distanceMeters;
+        currentFrontRightMeters = frontRight.getPosition().distanceMeters;
+        currentBackLeftMeters = backLeft.getPosition().distanceMeters;
+        currentBackRightMeters = backRight.getPosition().distanceMeters;
+
     }
 
     /**
@@ -174,48 +205,61 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Method to drive the robot using joystick info.
+     * Returns the currently-estimated pose of the robot.
      *
-     * @param xSpeed        Speed of the robot in the x direction (forward).
-     * @param ySpeed        Speed of the robot in the y direction (sideways).
-     * @param rot           Angular rate of the robot.
-     * @param fieldRelative Whether the provided x and y speeds are relative to the
-     *                      field.
-     * @param rateLimit     Whether to enable rate limiting for smoother control.
+     * @return The pose.
      */
-    public void drive(double xSpeed, double ySpeed, double rot, double orientationRoll, double boostMode,
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
+    }
+
+    /**
+     * drives robot from inputs
+     * 
+     * @param leftX         the linear input for the x direction, usually the left
+     *                      joystick x
+     * @param leftY         the linear input for the y direction, usually the left
+     *                      joystick y
+     * @param rightX        the rotation input for the robot, usually the right
+     *                      joystick x, also used for orientation targeting
+     * @param rightY        used for rotation targeting along with rightX, usually
+     *                      the right joystick y
+     * @param boostMode     controls the robot's max speed
+     * @param fieldRelative determines whether the robot is field centric
+     * @param rateLimit     applys rate limiting to the robot
+     */
+    public void driveFromController(double leftX, double leftY, double rightX, double rightY, double boostMode,
             boolean fieldRelative, boolean rateLimit) {
 
-        double turnJoystickMagnitude = Math.sqrt(Math.pow(rot, 2) + Math.pow(orientationRoll, 2));
-        double turnJoystickOrientation = Math.atan2(orientationRoll, rot);
+        double turnJoystickOrientation = Math.atan2(rightY, rightX);
+        double turnJoystickMagnitude = Math.sqrt(Math.pow(rightX, 2) + Math.pow(rightY, 2));
 
-        if (Math.abs(orientationRoll) > 0.8) {
+        if (Math.abs(rightY) > 0.8) {
             if (!useOrientationTarget) {
                 useOrientationTarget = true;
                 baseRobotOrientation = gyro.getRotation2d().getRadians(); // need to negate this so it matches with
-                                                                          // joystick orientation
+                                                                          // joystick
+                                                                          // orientation
                 baseJoystickOrientation = turnJoystickOrientation;
                 targetOrientationController.reset();
             }
         }
 
-        if (turnJoystickMagnitude < 1e-4) {
+        if (turnJoystickMagnitude < 0.3) {
             useOrientationTarget = false;
         }
 
         // Curve the inputs for easier more precise driving (don't curve rotation for
         // orientation rolling)
-        double linearCurveMultiplier = Math.pow(Math.sqrt(Math.pow(xSpeed, 2) + Math.pow(ySpeed, 2)),
+        double linearCurveMultiplier = Math.pow(Math.sqrt(Math.pow(leftX, 2) + Math.pow(leftY, 2)),
                 Constants.OIConstants.INPUT_CURVE_POWER - 1);
-        double angularCurveMultiplier = Math.pow(Math.abs(rot), Constants.OIConstants.INPUT_CURVE_POWER - 1);
-        xSpeed *= linearCurveMultiplier;
-        ySpeed *= linearCurveMultiplier;
+        double angularCurveMultiplier = Math.pow(Math.abs(rightX), Constants.OIConstants.INPUT_CURVE_POWER - 1);
+        leftX *= linearCurveMultiplier;
+        leftY *= linearCurveMultiplier;
         if (useOrientationTarget) {
-            rot *= angularCurveMultiplier;
+            rightX *= angularCurveMultiplier;
         }
 
-        double xSpeedCommanded;
-        double ySpeedCommanded;
         double rotSpeedCommanded;
 
         // target orientation
@@ -223,8 +267,56 @@ public class DriveSubsystem extends SubsystemBase {
             rotSpeedCommanded = targetOrientationController.calculate(gyro.getRotation2d().getRadians(),
                     -turnJoystickOrientation + baseJoystickOrientation + baseRobotOrientation);
         } else {
-            rotSpeedCommanded = rot;
+
+            // if orientation speed is zero, begin storing the orientation lock
+            if (Math.abs(currentRotation) < 1e-4 && Math.abs(rightX) < 1e-4) {
+
+                // only activate on the rising edge
+                if (!orientationLockToggle) {
+
+                    orientationLockToggle = true;
+                    orientationLock = gyro.getRotation2d().getRadians();
+
+                    // resets integral value on PID controller
+                    orientationLockController.reset();
+
+                }
+
+                // realigns the PID controller
+                rotSpeedCommanded = 0; // orientationLockController.calculate(gyro.getRotation2d().getRadians(),
+                                       // orientationLock);
+
+            } else {
+
+                // reset toggle and just input speed normally
+                orientationLockToggle = false;
+                System.out.println("taking turns");
+                rotSpeedCommanded = rightX;
+
+            }
+
         }
+
+        // applys driving to the robot
+        drive(leftX, leftY, rotSpeedCommanded, boostMode, true, true);
+
+    }
+
+    /**
+     * drives the robot
+     * 
+     * @param xSpeed        linear speed in the x direction
+     * @param ySpeed        linear speed in the y direction
+     * @param rot           rotation speed
+     * @param boostMode     max speed and acceleration controls
+     * @param rateLimit     limits the rate of the robot
+     * @param fieldRelative enables field centricity
+     */
+    public void drive(double xSpeed, double ySpeed, double rot, double boostMode, boolean rateLimit,
+            boolean fieldRelative) {
+
+        double xSpeedCommanded;
+        double ySpeedCommanded;
 
         double newMaxSpeed = DriveConstants.MAX_SPEED_METERS_PER_SECOND + boostMode
                 * (DriveConstants.BOOST_MODE_MAX_SPEED_METERS_PER_SECOND - DriveConstants.MAX_SPEED_METERS_PER_SECOND);
@@ -305,33 +397,12 @@ public class DriveSubsystem extends SubsystemBase {
 
             xSpeedCommanded = currentTranslationMag * Math.cos(currentTranslationDir);
             ySpeedCommanded = currentTranslationMag * Math.sin(currentTranslationDir);
-            currentRotation = rotLimiter.calculate(rotSpeedCommanded);
-
-            // if orientation is zero, begin storing the orientation lock
-            if (Math.abs(currentRotation) < 1e-4 && !useOrientationTarget) {
-
-                // only activate on the rising edge
-                if (!orientationLockToggle) {
-
-                    orientationLockToggle = true;
-                    orientationLock = gyro.getRotation2d().getRadians();
-
-                    // resets integral value on PID controller
-                    orientationLockController.reset();
-
-                }
-
-                // realigns the PID controller
-                currentRotation = orientationLockController.calculate(gyro.getRotation2d().getRadians(),
-                        orientationLock);
-            } else {
-                orientationLockToggle = false;
-            }
+            currentRotation = rotLimiter.calculate(rot);
 
         } else {
             xSpeedCommanded = xSpeed;
             ySpeedCommanded = ySpeed;
-            currentRotation = rotSpeedCommanded;
+            currentRotation = rot;
         }
 
         // Convert the commanded speeds into the correct units for the drivetrain
@@ -351,8 +422,6 @@ public class DriveSubsystem extends SubsystemBase {
         backLeft.setDesiredState(swerveModuleStates[2]);
         backRight.setDesiredState(swerveModuleStates[3]);
 
-        // System.out.println("gyro: " + gyro.getRotation2d().getDegrees());
-        System.out.println(swerveModuleStates[0].angle);
     }
 
     /**
