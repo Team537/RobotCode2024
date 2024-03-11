@@ -100,9 +100,16 @@ public class RobotContainer {
 
         // Setup all the neccicery SmartDashboard elements
         setupDashboard();
-        
+
         // Configure the button bindings
         configureButtonBindings();
+    }
+
+    /**
+     * Configures the robot so that the controlls match what was configured on SMartDashboard. (e.g 
+     * whether the robot is being controlled with a flightstick or an xbox controller).
+     */
+    public void configureDriverPrefferences() {
 
         // Get the drive command for the selected controller.(Note that the
         // getSelected() method returns the command assosiated with each option, which
@@ -132,7 +139,8 @@ public class RobotContainer {
     }
 
     /**
-     * This method contains the logic for everything relating to the set up of SmartDashboard. Currently, this
+     * This method contains the logic for everything relating to the set up of
+     * SmartDashboard. Currently, this
      * covers things like auto and controller selection.
      */
     private void setupDashboard() {
@@ -142,7 +150,8 @@ public class RobotContainer {
         controllerSelection.addOption("Flightstick", flightstickCommand);
 
         // Setup autonomous selection.
-        // Loop through all of the available auto options and add each of them as a seperate autonomous option 
+        // Loop through all of the available auto options and add each of them as a
+        // seperate autonomous option
         // in SmartDashboard.
         for (AutonomousOption autonomousOption : AutonomousOption.values()) {
             autonomousSelection.addOption(autonomousOption.toString(), autonomousOption);
@@ -166,6 +175,9 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+
+        // Get the selected auto
+        AutonomousOption selectedAuto = autonomousSelection.getSelected();
 
         // Create config for trajectory
         TrajectoryConfig config = new TrajectoryConfig(

@@ -94,6 +94,10 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
+
+    // Update the robot's settings so that they match what was configured on SmartDashboard.
+    robotContainer.configureDriverPrefferences();
+
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
