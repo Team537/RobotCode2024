@@ -110,20 +110,20 @@ public class RobotContainer {
    // 'Left Trigger' Outtakes
   
   private final RunCommand intakeCommand = new RunCommand(
-     () -> intakeSubsystem.intakeCommand(driverController.getLeftBumper(),(driverController.getLeftTriggerAxis()>0)),
+     () -> intakeSubsystem.defaultIntakeCommand(driverController.getLeftBumper(),(driverController.getLeftTriggerAxis()>0)),
       intakeSubsystem
   );
     
   //'Left Trigger' runs outtake
   // 'Button Y' outtakes for the amp
   private final RunCommand outakeCommand = new RunCommand(
-      () -> outakeSubsystem.outakeCommand((driverController.getLeftTriggerAxis() > 0), driverController.getYButton()),
+      () -> outakeSubsystem.defaultOuttakeCommand((driverController.getLeftTriggerAxis() > 0), driverController.getYButton()),
       outakeSubsystem
   );
 
   // A Toggles Between Raising and Lowering
   private final RunCommand raisingCommand = new RunCommand(
-    () -> raisingSubsystem.raisingCommand(driverController.getAButton(), driverController.getYButton()),
+    () -> raisingSubsystem.defaultRaisingCommand(driverController.getAButton()),
     raisingSubsystem
   );
 
