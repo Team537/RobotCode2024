@@ -29,6 +29,7 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.vision.ResetImuWithVisionCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.cameras.RobotVision;
 import frc.utils.Autonomous.AutonomousOption;
@@ -42,37 +43,37 @@ import frc.utils.Autonomous.AutonomousOption;
 public class RobotContainer {
 
     // The robot's subsystems
-    private final DriveSubsystem driveSubsystem = new DriveSubsystem();
     private final RobotVision robotVision = new RobotVision.Builder()
-            .addPhotonVisionCamera(VisionConstants.COLOR_CAMERA_NAME, VisionConstants.BACK_CAMERA_OFFSET,
-                    VisionConstants.OBJECT_DETECTION_PIPELINE)
+            .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET,
+                    CameraConstants.APRIL_TAG_PIPELINE)
+    private final DriveSubsystem driveSubsystem = new DriveSubsystem(true, robotVision::estimateRobotPose);
             .build();
 
-    // The driver's controllerst
+    // The driver's controller
     private final XboxController driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
     private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
 
-    // Setup each button on each controller
-    JoystickButton starButton1 = new JoystickButton(driverController, Button.kStart.value);
-    JoystickButton backButton1 = new JoystickButton(driverController, Button.kBack.value);
-    JoystickButton rightStick1 = new JoystickButton(driverController, Button.kRightStick.value);
-    JoystickButton leftStick1 = new JoystickButton(driverController, Button.kLeftStick.value);
-    JoystickButton rightBumper1 = new JoystickButton(driverController, Button.kRightBumper.value);
-    JoystickButton leftBumper1 = new JoystickButton(driverController, Button.kLeftBumper.value);
-    JoystickButton aButton1 = new JoystickButton(driverController, Button.kA.value);
-    JoystickButton bButton1 = new JoystickButton(driverController, Button.kB.value);
-    JoystickButton yButton1 = new JoystickButton(driverController, Button.kY.value);
-    JoystickButton xButton1 = new JoystickButton(driverController, Button.kX.value);
-    POVButton dpadUpButton1 = new POVButton(driverController, 0);
-    POVButton dpadDownButton1 = new POVButton(driverController, 180);
-    POVButton dpadRightButton1 = new POVButton(driverController, 90);
-    POVButton dpadLeftButton1 = new POVButton(driverController, 270);
+    // Setup all possible controller inputs to make creating commands easier.
+    JoystickButton starButton = new JoystickButton(driverController, Button.kStart.value);
+    JoystickButton backButton = new JoystickButton(driverController, Button.kBack.value);
+    JoystickButton rightStick = new JoystickButton(driverController, Button.kRightStick.value);
+    JoystickButton leftStick = new JoystickButton(driverController, Button.kLeftStick.value);
+    JoystickButton rightBumper = new JoystickButton(driverController, Button.kRightBumper.value);
+    JoystickButton leftBumper = new JoystickButton(driverController, Button.kLeftBumper.value);
+    JoystickButton aButton = new JoystickButton(driverController, Button.kA.value);
+    JoystickButton bButton = new JoystickButton(driverController, Button.kB.value);
+    JoystickButton yButton = new JoystickButton(driverController, Button.kY.value);
+    JoystickButton xButton = new JoystickButton(driverController, Button.kX.value);
+    POVButton dpadUpButton = new POVButton(driverController, 0);
+    POVButton dpadDownButton = new POVButton(driverController, 180);
+    POVButton dpadRightButton = new POVButton(driverController, 90);
+    POVButton dpadLeftButton = new POVButton(driverController, 270);
 
     // Controller commands
     private final RunCommand xBoxControllerCommand = new RunCommand(
-            () -> driveSubsystem.driveFromController(
-                    -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
+            () -> driveSubsystem.drive(
                     -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
+                    -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
                     -MathUtil.applyDeadband(driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
                     -MathUtil.applyDeadband(driverController.getRightY(), OIConstants.DRIVE_DEADBAND),
                     driverController.getRightTriggerAxis(),
@@ -80,9 +81,9 @@ public class RobotContainer {
             driveSubsystem);
 
     private final RunCommand flightstickCommand = new RunCommand(
-            () -> driveSubsystem.driveFromController(
+            () -> driveSubsystem.drive(
                     -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
-                    -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
+                    -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
                     -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
                     0,
                     0,
