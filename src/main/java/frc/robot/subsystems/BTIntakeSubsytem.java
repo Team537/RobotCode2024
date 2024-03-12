@@ -105,12 +105,15 @@ public class BTIntakeSubsytem extends SubsystemBase{
         
     }
 
-    public void intakeCommand(boolean activate, boolean outtake) {
+    // This default intake command is created as a method and is called inside robot container
+    // to be set as the default command for the intake subsystem
+    public void defaultIntakeCommand(boolean intake, boolean outtake) {
 
-        // This activates the different methods based on the toggle and when the limit switch is off
+        // This activates the different functions when the limit switch is off
 
         if (!(limitSwitchActivated())){
-            if (activate){
+
+            if (intake){
                 RunAtMaxSpeed();
             }
             else if (outtake){
@@ -119,6 +122,7 @@ public class BTIntakeSubsytem extends SubsystemBase{
             else{
                 StopMotor();
             }
+            
         }
 
         // This runs when the limit switch is activated.

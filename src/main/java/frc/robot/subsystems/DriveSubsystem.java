@@ -118,8 +118,8 @@ public class DriveSubsystem extends SubsystemBase {
         orientationLockController.enableContinuousInput(0, Math.PI * 2);
         targetOrientationController.enableContinuousInput(0, Math.PI * 2);
         thetaController.enableContinuousInput(-Math.PI, Math.PI);
-        frontRight.drivingSparkMax.setInverted(true);
-        backLeft.drivingSparkMax.setInverted(true);
+        frontRight.setInverted(true);
+        backLeft.setInverted(true);
     }
 
     @Override
