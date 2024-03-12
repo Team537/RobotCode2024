@@ -9,6 +9,7 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -19,8 +20,9 @@ public class Arm extends SubsystemBase {
 
   TalonFX m_arm1 = new TalonFX(ArmConstants.ARM1);
   TalonFX m_arm2 = new TalonFX(ArmConstants.ARM2);
-
-  boolean boostButton;
+  
+  Pigeon2 m_pigeon = new Pigeon2(ArmConstants.PIGEON);
+  
   double targetPos = m_arm1.getPosition().getValue();
 
   final Follower m_follower = new Follower(11,false);
@@ -28,6 +30,15 @@ public class Arm extends SubsystemBase {
   /** Creates a new Arm. */
   public Arm() {    
 
+  }
+
+  private double ConvertAngleToRot() {
+    double rotations = (m_pigeon.getAngle()/360)*200;
+    return rotations;
+  }
+    private double ConvertRotToAngle() {
+    double angle = (m_arm1.getPosition().getValue()/200)*360;
+    return angle;
   }
 
   private void TalonfxMotionMagicSlots(double targetPos) {
@@ -72,9 +83,9 @@ public class Arm extends SubsystemBase {
     double velocity = 0;
     if (targetPos < currentPos) {
       //up
-      velocity = 35;
+      velocity = 45;
     } else if (targetPos > currentPos) {
-      velocity = 20;
+      velocity = 25;
     } else if (targetPos == currentPos) {
       velocity = 0;
     }
@@ -104,25 +115,24 @@ public class Arm extends SubsystemBase {
     m_arm2.setControl(m_follower);
   }
 
-  public void ArmSubwoofer() {
-  //  SetMotorsPID(-7); //good
-    SetMotorsMotionMagic(-7);
-    targetPos = -7;
+  public void ArmSubwoofer() { 
+    // -7 on one sprocket
+    SetMotorsMotionMagic(-9);
+    targetPos = -9;
   }
 
   public void ArmIntake() {
-    // SetMotorsPID(0);
     SetMotorsMotionMagic(0);
     targetPos = 0;
   }
   
   public void ArmAmp() {
-    SetMotorsMotionMagic(-50);
+    SetMotorsMotionMagic(-55);
     targetPos = -50;
   }
 
   public void ArmMid() {
-    // SetMotorsMotionMagic(0);
+    SetMotorsMotionMagic(-23.6);
   }
 
   public void ArmPIDStop() {
@@ -152,7 +162,7 @@ public class Arm extends SubsystemBase {
   } 
   
   public boolean targetPid() {
-    if ((targetPos - 0.1) < m_arm1.getPosition().getValue() && m_arm1.getPosition().getValue() < targetPos+0.1) {
+    if ((targetPos - 0.2) < m_arm1.getPosition().getValue() && m_arm1.getPosition().getValue() < targetPos+0.2) {
       // return true;
       return true; 
     } else {
@@ -160,17 +170,13 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public void getVals(boolean boost) {
-
-    boostButton = boost;
-  }
-
-
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("arm angle", m_pigeon.getAngle());
     SmartDashboard.putBoolean("withinPosRange", targetPid());
     SmartDashboard.putNumber("targetpos", targetPos);
     SmartDashboard.putNumber("ARM POS", m_arm1.getPosition().getValue());
+    
 
     // This method will be called once per scheduler run
   }

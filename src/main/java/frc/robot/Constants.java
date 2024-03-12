@@ -219,5 +219,6 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int ARM1 = 11;
     public static final int ARM2 = 12;
+    public static final int PIGEON = 15;
   }
 }

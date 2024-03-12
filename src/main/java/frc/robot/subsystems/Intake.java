@@ -20,11 +20,6 @@ public class Intake extends SubsystemBase {
   TalonFX m_intake = new TalonFX(IntakeConstants.INTAKE);
   DigitalInput m_photoelectric = new DigitalInput(0);
 
-  
-
-  boolean sensorBool; 
-  boolean skip = false;
-
   /** Creates a new Intake. */
   public Intake() {
     var slot0Configs = new Slot0Configs();
@@ -50,13 +45,11 @@ public class Intake extends SubsystemBase {
 
   public void IntakeAmp() {
     m_intake.set(0.4);
-    skip = false;
   }
   
 
   public void IntakeMax() {
     m_intake.set(1);
-    skip = false;
   }
 
   public void IntakeOff() {
@@ -77,8 +70,6 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("Photoelectric Sensor Value", m_photoelectric.get());
-    SmartDashboard.putBoolean("Skip Bool", skip);
-    SmartDashboard.putBoolean("Photoelectric Bool intake", sensorBool);
 
     // This method will be called once per scheduler run
   }

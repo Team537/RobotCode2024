@@ -28,11 +28,11 @@ import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
-import frc.robot.subsystems.sensors.PhotoElectric;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -115,62 +115,6 @@ public class RobotContainer {
     * The container for the robot. Contains subsystems, OI devices, and commands.
     */
     public RobotContainer() {
-      
-      /*     
-       //intake 
-      rightBumper.onTrue(new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake));
-      rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
-      
-      //shooting
-      leftBumper.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter), 
-      new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake)));
-      leftBumper.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter), 
-      new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake)));
-
-      //Arm ground
-      //abutton
-
-      
-      //subwoofer position (overrides the amp scoring pos)
-      bButton.onTrue(new StartEndCommand(Intake::IntakeReverse, Intake::IntakeOff, Intake));
-      bButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
-
-      // amp scoring arm pos
-      yButton.onTrue(new StartEndCommand(Shooter::ShooterAmp, Shooter::ShooterStop,Shooter));
-      yButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter));
-
-      //Xbutton
-      // mid shooting or where notes are in autonomous
-
-      //reset field gyro
-      backButton.onTrue(new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop, Shooter));
-      backButton.onFalse(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop, Shooter));
-
-      //nothing binded to 
-      startButton.onTrue(new StartEndCommand(Intake::IntakeMax, Intake::IntakeOff, Intake));
-      startButton.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
-
-      //arm up
-      dPadUpButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm));
-
-      //arm down
-      dPadDownButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp, Arm));
-
-      //climb up
-      dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManualDown, Arm::ArmManualStop, Arm));
-
-      //climb down
-      dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManualUp, Arm::ArmManualStop, Arm));
-
-      dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
-      dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
-
-      // */
-
-
-
-
-
       //---------new button binding 
       
       
@@ -182,7 +126,8 @@ public class RobotContainer {
       new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
 
 
-      rightBumper.toggleOnTrue(new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake).until(()-> Intake.GetSwitchHit()));
+      rightBumper.toggleOnTrue(new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake).until(()-> Intake.GetSwitchHit()), 
+      new StartEndCommand(Arm::ArmManualStop, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit())));
 
       // rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
 
@@ -322,6 +267,14 @@ public class RobotContainer {
     driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
 
     // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, 0,false, false));
+    // return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, 0,false, false));
+    return new SequentialCommandGroup(
+      new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).withTimeout(1),//.until(() -> Arm.targetPid()),
+      new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
+      new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
+      new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1)
+
+    );
+
   }
 }
