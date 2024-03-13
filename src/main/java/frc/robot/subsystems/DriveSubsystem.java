@@ -9,7 +9,6 @@ import java.util.function.Supplier;
 
 import com.ctre.phoenix6.hardware.Pigeon2;
 
-import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
@@ -21,9 +20,6 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.util.WPIUtilJNI;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -95,25 +91,6 @@ public class DriveSubsystem extends SubsystemBase {
     ProfiledPIDController thetaController = new ProfiledPIDController(
             AutoConstants.THETA_CONTROLLER_KP, 0, 0, AutoConstants.kThetaControllerConstraints);
 
-    private HolonomicDriveController driveController = new HolonomicDriveController(
-            new PIDController(AutoConstants.X_CONTROLLER_KP, 0, 0),
-            new PIDController(AutoConstants.Y_CONTROLLER_KP, 0, 0), thetaController);
-
-    // Create config for trajectory
-    private TrajectoryConfig config = new TrajectoryConfig(
-            AutoConstants.MAX_SPEED_METERS_PER_SECOND,
-            AutoConstants.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.DRIVE_KINEMATICS);
-    private Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
-            config);
-
     // SwerveDrivePoseEstimator object to keep track of the robot's position on the field.
     private SwerveDrivePoseEstimator poseEstimator;
 
@@ -164,17 +141,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        // Update the odometry in the periodic block
-        odometry.update(
-                gyro.getRotation2d(),
-                new SwerveModulePosition[] {
-                        frontLeft.getPosition(),
-                        frontRight.getPosition(),
-                        backLeft.getPosition(),
-                        backRight.getPosition()
-                });
-    }
-
+        
         // Periodically update the robot's position data to keep track of its location.
         updateRobotPose();
         SmartDashboard.putString("gyro", gyro.getRotation2d().toString());
@@ -189,32 +156,30 @@ public class DriveSubsystem extends SubsystemBase {
                 Double.toString(backRight.getState().speedMetersPerSecond));
 
         double currentTime = WPIUtilJNI.now() * 1e-6;
-        double elapsedTime = currentTime - prevTimeForEncoder;
+        double deltaTime = currentTime - prevTimeForEncoder;
         prevTimeForEncoder = currentTime;
 
         SmartDashboard.putString("Front Left Recorded Speed",
-                Double.toString((frontLeft.getPosition().distanceMeters - currentFrontLeftMeters) / elapsedTime));
+                Double.toString((frontLeft.getPosition().distanceMeters - currentFrontLeftMeters) / deltaTime));
         SmartDashboard.putString("Front Right Recorded Speed",
-                Double.toString((frontRight.getPosition().distanceMeters - currentFrontRightMeters) / elapsedTime));
+                Double.toString((frontRight.getPosition().distanceMeters - currentFrontRightMeters) / deltaTime));
         SmartDashboard.putString("Back Left Recorded Speed",
-                Double.toString((backLeft.getPosition().distanceMeters - currentBackLeftMeters) / elapsedTime));
+                Double.toString((backLeft.getPosition().distanceMeters - currentBackLeftMeters) / deltaTime));
         SmartDashboard.putString("Back Right Recorded Speed",
-                Double.toString((backRight.getPosition().distanceMeters - currentBackRightMeters) / elapsedTime));
+                Double.toString((backRight.getPosition().distanceMeters - currentBackRightMeters) / deltaTime));
 
         currentFrontLeftMeters = frontLeft.getPosition().distanceMeters;
         currentFrontRightMeters = frontRight.getPosition().distanceMeters;
         currentBackLeftMeters = backLeft.getPosition().distanceMeters;
         currentBackRightMeters = backRight.getPosition().distanceMeters;
 
-    }
-
-        // Obtain the robot's position form the pose estimator
-        Pose2d robotPose = poseEstimator.getEstimatedPosition();
+         // Obtain the robot's position form the pose estimator
+         Pose2d robotPose = poseEstimator.getEstimatedPosition();
         
-        // Display the current estimated position of the robot
-        SmartDashboard.putNumber("Robot X: ", robotPose.getX());
-        SmartDashboard.putNumber("Robot Y: ", robotPose.getY());
-        SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getDegrees());
+         // Display the current estimated position of the robot
+         SmartDashboard.putNumber("Robot X: ", robotPose.getX());
+         SmartDashboard.putNumber("Robot Y: ", robotPose.getY());
+         SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getDegrees());
     }
     
     /**
@@ -248,15 +213,6 @@ public class DriveSubsystem extends SubsystemBase {
                 frontRight.getPosition(),
                 backLeft.getPosition(),
                 backRight.getPosition()});
-    }
-
-    /**
-     * Returns the currently-estimated pose of the robot.
-     *
-     * @return The pose.
-     */
-    public Pose2d getPose() {
-        return odometry.getPoseMeters();
     }
 
     /**

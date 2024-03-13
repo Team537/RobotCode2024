@@ -49,7 +49,7 @@ public class ResetImuWithVisionCommand extends Command {
         isFinished = false;
 
         // Determine whether or not the driver wants to use vision to reset the robot's gyro. 
-        // This is done by checking if we pressed the back button within the last 750 milleseconds.
+        // This is done by checking if we pressed the back button within the last 750 milliseconds.
         if (timer.get() > 0.75) {
             resetGyro(); // We don't want to use vision to rset the robot's gyro.
         }
@@ -71,18 +71,18 @@ public class ResetImuWithVisionCommand extends Command {
 
     /**
      * Attemps to reset the robot's heading using the various april tags located around the field. If 
-     * the robot is unable acomplish this in under 250ms, then in
+     * the robot is unable acomplish this in under 250 milliseconds, then in
      */
     private void resetGyroWithVision() {
         
         // Try and get an estimante of the robot's position. If we are unable to get a good estimante,
         // then wait until we are able to get a good estimante of the robot's position. After that, then 
-        // see if it has taken more than 250 milleseconds have passed since we started trying to reset the IMU
+        // see if it has taken more than 250 milliseconds have passed since we started trying to reset the IMU
         // with vision.
         Pose2d estimatedRobotPose = robotVision.estimateRobotPose();
         if (estimatedRobotPose == null) {
 
-            // If more then 250 milleseconds have passed then resore the robot's previous orientation and 
+            // If more then 250 milliseconds have passed then resore the robot's previous orientation and 
             // print out an error.
             if (timer.get() > .25) {
 

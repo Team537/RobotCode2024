@@ -10,7 +10,7 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.CameraConstants;
+import frc.robot.Constants.VisionConstants;
 import frc.utils.geometry.EstimatedRobotPose3d;
 import frc.utils.geometry.TagPose3d;
 

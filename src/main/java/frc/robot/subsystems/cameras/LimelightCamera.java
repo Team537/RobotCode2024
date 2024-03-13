@@ -55,26 +55,6 @@ public class LimelightCamera extends SubsystemBase {
 
     @Override
     public void periodic() {}
-
-     /**
-     * This method returns the position on the field that the robot thinks the robot is 
-     * located at as a <code> Pose3d </code>.
-     * 
-     * @return The robot's position on the field as a <code> Pose3d </code>.
-     */
-    public RobotPose3d estimateRobotPose3d() {
-
-        // Get an array containing the values of the robot's calculated position on the field.
-        double[] botposeValues = getValue("botpose").getDoubleArray(new double[6]);
-
-        // Convert the botposeValues array into translation3d and rotation3d objects so that we can figure out where
-        // the robot is on the field.
-        Translation3d robotTranslation = new Translation3d(botposeValues[0], botposeValues[1], botposeValues[2]);
-        Rotation3d robotRotation = new Rotation3d(botposeValues[3], botposeValues[4], botposeValues[5]);
-
-        // Return a Pose3d value containing the above calculated translation3d and Rotation3d. (Robot's position)
-        return new RobotPose3d(robotTranslation, robotRotation);
-    }
     
     /**
      * Sets this limelight's LED's mode.

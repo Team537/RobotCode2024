@@ -44,10 +44,10 @@ public class RobotContainer {
 
     // The robot's subsystems
     private final RobotVision robotVision = new RobotVision.Builder()
-            .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET,
-                    CameraConstants.APRIL_TAG_PIPELINE)
+        .addPhotonVisionCamera(VisionConstants.COLOR_CAMERA_NAME, VisionConstants.BACK_CAMERA_OFFSET,
+            VisionConstants.APRIL_TAG_PIPELINE)
+        .build();
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(true, robotVision::estimateRobotPose);
-            .build();
 
     // The driver's controller
     private final XboxController driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
@@ -71,7 +71,7 @@ public class RobotContainer {
 
     // Controller commands
     private final RunCommand xBoxControllerCommand = new RunCommand(
-            () -> driveSubsystem.drive(
+            () -> driveSubsystem.driveFromController(
                     -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
                     -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
                     -MathUtil.applyDeadband(driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
@@ -81,7 +81,7 @@ public class RobotContainer {
             driveSubsystem);
 
     private final RunCommand flightstickCommand = new RunCommand(
-            () -> driveSubsystem.drive(
+            () -> driveSubsystem.driveFromController(
                     -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
                     -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
                     -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
@@ -130,13 +130,11 @@ public class RobotContainer {
     private void configureButtonBindings() {
 
         // Move the robot's wheels into an X to prevent movement.
-        starButton1.whileTrue(new RunCommand(
+        starButton.whileTrue(new RunCommand(
                 () -> driveSubsystem.setX(),
                 driveSubsystem));
 
-        backButton1.onTrue(new RunCommand(
-                () -> driveSubsystem.zeroHeading(),
-                driveSubsystem));
+        backButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem, robotVision));
     }
 
     /**
