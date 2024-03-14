@@ -58,6 +58,7 @@ public class DriveSubsystem extends SubsystemBase {
     private final Pigeon2 gyro = new Pigeon2(42);
 
     private boolean orientationLockToggle = false;
+    private boolean useOrientationLock = false;
     private double orientationLock = 0;
     private PIDController orientationLockController = new PIDController(DriveConstants.ORIENTATION_LOCK_KP,
             DriveConstants.ORIENTATION_LOCK_KI, DriveConstants.ORIENTATION_LOCK_KD);
@@ -89,27 +90,17 @@ public class DriveSubsystem extends SubsystemBase {
     private double currentBackLeftMeters = 0;
     private double currentBackRightMeters = 0;
 
-    ProfiledPIDController thetaController = new ProfiledPIDController(
-            AutoConstants.THETA_CONTROLLER_KP, 0, 0, AutoConstants.kThetaControllerConstraints);
+    PIDController thetaController = new PIDController(
+            AutoConstants.THETA_CONTROLLER_KP, 0, AutoConstants.THETA_CONTROLLER_KD);
 
-    HolonomicDriveController driveController = new HolonomicDriveController(
-            new PIDController(AutoConstants.X_CONTROLLER_KP, 0, 0),
-            new PIDController(AutoConstants.Y_CONTROLLER_KP, 0, 0), thetaController);
+    PIDController xController = new PIDController(AutoConstants.X_CONTROLLER_KP,0,0);
+    PIDController yController = new PIDController(AutoConstants.Y_CONTROLLER_KP,0,0);
 
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-            AutoConstants.MAX_SPEED_METERS_PER_SECOND,
-            AutoConstants.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
-            // Add kinematics to ensure max speed is actually obeyed
-            .setKinematics(DriveConstants.DRIVE_KINEMATICS);
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-            // Start at the origin facing the +X direction
-            new Pose2d(0, 0, new Rotation2d(0)),
-            // Pass through these two interior waypoints, making an 's' curve path
-            List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-            // End 3 meters straight ahead of where we started, facing forward
-            new Pose2d(3, 0, new Rotation2d(0)),
-            config);
+    List<Pose2d> trajectory = List.of();
+    private int waypoint = 0;
+
+    //the rotational offset from where the driver is facing to where the robot considers forward. This is so we can standardize position data for both alliances
+    private double driverRotationalOffset = 0;
 
     // Odometry class for tracking robot pose
     SwerveDriveOdometry odometry = new SwerveDriveOdometry(
@@ -127,7 +118,7 @@ public class DriveSubsystem extends SubsystemBase {
         zeroHeading();
         orientationLockController.enableContinuousInput(0, Math.PI * 2);
         targetOrientationController.enableContinuousInput(0, Math.PI * 2);
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        thetaController.enableContinuousInput(0, Math.PI * 2);
     }
 
     @Override
@@ -142,7 +133,9 @@ public class DriveSubsystem extends SubsystemBase {
                         backRight.getPosition()
                 });
 
-        SmartDashboard.putString("gyro", gyro.getRotation2d().toString());
+        SmartDashboard.putString("heading", Double.toString(gyro.getRotation2d().getRadians()));
+        SmartDashboard.putString("x", Double.toString(getPose().getX()));
+        SmartDashboard.putString("y", Double.toString(getPose().getY()));
 
         SmartDashboard.putString("Front Left Commanded Speed",
                 Double.toString(frontLeft.getState().speedMetersPerSecond));
@@ -174,6 +167,14 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
+     * sets the rotational offset for the driver
+     * @param offset the offset to set to
+     */
+    public void setDriverRotationalOffset(double offset) {
+        driverRotationalOffset = offset;
+    }
+
+    /**
      * Resets the odometry to the specified pose.
      *
      * @param pose The pose to which to set the odometry.
@@ -195,14 +196,60 @@ public class DriveSubsystem extends SubsystemBase {
      * 
      * @param targetPose robot for pose to target
      */
-    public void position(Pose2d targetPose) {
+    public void driveToPosition(Pose2d targetPose) {
 
-        setModuleStates(DriveConstants.DRIVE_KINEMATICS
-                .toSwerveModuleStates(driveController.calculate(getPose(), targetPose, 0, targetPose.getRotation())));
+        double thetaSpeed = thetaController.calculate(getPose().getRotation().getRadians(),targetPose.getRotation().getRadians());
+        double xSpeed = xController.calculate(getPose().getX(),targetPose.getX());
+        double ySpeed = yController.calculate(getPose().getY(),targetPose.getY());
 
-        System.out.println(getPose());
+        drive(xSpeed,ySpeed,thetaSpeed,0,true,true);
 
     }
+
+    /**
+     * resets the trajectory to follow it from the beginning
+     */
+    public void resetTrajectory() {
+        waypoint = 0;
+    }
+
+    /**
+     * sets the trajectory to follow
+     * @param trajectory the trajectory to follow
+     */
+    public void setTrajectory(List<Pose2d> trajectory) {
+        this.trajectory = trajectory;
+        resetTrajectory();
+    }
+
+    /**
+     * follows a trajectory
+     */
+    public void followTrajectory() {
+        if (waypoint < trajectory.size()) {
+                if (getPose().getTranslation().getDistance(trajectory.get(waypoint).getTranslation()) < AutoConstants.TRAJECOTRY_THRESHOLD) {
+                        waypoint += 1;
+                } else {
+                        driveToPosition(trajectory.get(waypoint));
+                }
+        } else {
+                driveToPosition(trajectory.get(waypoint - 1));
+        }
+    }
+
+    /**
+     * gets whether or not the trajcetory is finished
+     * @return whether or not the trajectory is finished
+     */
+    public boolean isTrajectoryFinished() {
+        if (waypoint < trajectory.size()) {
+                return false;
+        } else {
+                return true;
+        }
+    }
+
+
 
     /**
      * Returns the currently-estimated pose of the robot.
@@ -228,8 +275,13 @@ public class DriveSubsystem extends SubsystemBase {
      * @param fieldRelative determines whether the robot is field centric
      * @param rateLimit     applys rate limiting to the robot
      */
-    public void driveFromController(double leftX, double leftY, double rightX, double rightY, double boostMode,
-            boolean fieldRelative, boolean rateLimit) {
+    public void driveFromController(double leftX, double leftY, double rightX, double rightY, double boostMode,boolean fieldRelative, boolean rateLimit) {
+
+        //rotates the commanded linear speed
+        double oldX = leftX;
+        double oldY = leftY;
+        leftX = oldX * Math.cos(driverRotationalOffset) - oldY * Math.sin(driverRotationalOffset);
+        leftX = oldY * Math.sin(driverRotationalOffset) + oldY * Math.cos(driverRotationalOffset);
 
         double turnJoystickOrientation = Math.atan2(rightY, rightX);
         double turnJoystickMagnitude = Math.sqrt(Math.pow(rightX, 2) + Math.pow(rightY, 2));
@@ -264,15 +316,27 @@ public class DriveSubsystem extends SubsystemBase {
 
         // target orientation
         if (useOrientationTarget) {
-            rotSpeedCommanded = targetOrientationController.calculate(gyro.getRotation2d().getRadians(),
+            rotSpeedCommanded = thetaController.calculate(gyro.getRotation2d().getRadians(),
                     -turnJoystickOrientation + baseJoystickOrientation + baseRobotOrientation);
         } else {
 
+        
+            if (Math.abs(rightX) < 1e-4 && currentRotation == 0) {
+                 useOrientationLock = true;
+            }
+
+            if (useOrientationLock) {
+                if (!(Math.abs(rightX) < 1e-4)) {
+                        useOrientationLock = false;
+                }
+            }
             // if orientation speed is zero, begin storing the orientation lock
-            if (Math.abs(currentRotation) < 1e-4 && Math.abs(rightX) < 1e-4) {
+            if (useOrientationLock) {
 
                 // only activate on the rising edge
                 if (!orientationLockToggle) {
+
+                    orientationLockToggle = true;
 
                     orientationLockToggle = true;
                     orientationLock = gyro.getRotation2d().getRadians();
@@ -283,14 +347,12 @@ public class DriveSubsystem extends SubsystemBase {
                 }
 
                 // realigns the PID controller
-                rotSpeedCommanded = 0; // orientationLockController.calculate(gyro.getRotation2d().getRadians(),
-                                       // orientationLock);
+                rotSpeedCommanded = thetaController.calculate(gyro.getRotation2d().getRadians(), orientationLock);
 
             } else {
 
                 // reset toggle and just input speed normally
                 orientationLockToggle = false;
-                System.out.println("taking turns");
                 rotSpeedCommanded = rightX;
 
             }
@@ -317,6 +379,18 @@ public class DriveSubsystem extends SubsystemBase {
 
         double xSpeedCommanded;
         double ySpeedCommanded;
+
+        if (Math.abs(rot) > 1) {
+                rot /= Math.abs(rot);
+        }
+
+        if (Math.abs(xSpeed) > 1) {
+                xSpeed /= Math.abs(xSpeed);
+        }
+
+        if (Math.abs(ySpeed) > 1) {
+                ySpeed /= Math.abs(ySpeed);
+        }
 
         double newMaxSpeed = DriveConstants.MAX_SPEED_METERS_PER_SECOND + boostMode
                 * (DriveConstants.BOOST_MODE_MAX_SPEED_METERS_PER_SECOND - DriveConstants.MAX_SPEED_METERS_PER_SECOND);
@@ -409,6 +483,12 @@ public class DriveSubsystem extends SubsystemBase {
         double xSpeedDelivered = xSpeedCommanded * currentMaxSpeed;
         double ySpeedDelivered = ySpeedCommanded * currentMaxSpeed;
         double rotDelivered = currentRotation * DriveConstants.MAX_ANGULAR_SPEED;
+
+        if (!(Double.isFinite(xSpeedDelivered) && Double.isFinite(ySpeedDelivered) && Double.isFinite(rotDelivered))) {
+                xSpeedDelivered = 0;
+                ySpeedDelivered = 0;
+                rotDelivered = 0;
+        }
 
         var swerveModuleStates = DriveConstants.DRIVE_KINEMATICS.toSwerveModuleStates(
                 fieldRelative

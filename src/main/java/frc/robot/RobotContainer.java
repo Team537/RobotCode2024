@@ -21,6 +21,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
@@ -53,7 +54,7 @@ public class RobotContainer {
     private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
 
     // Setup each button on each controller
-    JoystickButton starButton1 = new JoystickButton(driverController, Button.kStart.value);
+    JoystickButton startButton1 = new JoystickButton(driverController, Button.kStart.value);
     JoystickButton backButton1 = new JoystickButton(driverController, Button.kBack.value);
     JoystickButton rightStick1 = new JoystickButton(driverController, Button.kRightStick.value);
     JoystickButton leftStick1 = new JoystickButton(driverController, Button.kLeftStick.value);
@@ -71,8 +72,8 @@ public class RobotContainer {
     // Controller commands
     private final RunCommand xBoxControllerCommand = new RunCommand(
             () -> driveSubsystem.driveFromController(
-                    -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
                     -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
+                    -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
                     -MathUtil.applyDeadband(driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
                     -MathUtil.applyDeadband(driverController.getRightY(), OIConstants.DRIVE_DEADBAND),
                     driverController.getRightTriggerAxis(),
@@ -88,6 +89,20 @@ public class RobotContainer {
                     0,
                     true, true),
             driveSubsystem);
+
+     /**
+      * an alternative command used for testing PID Controllers
+      */
+     private final RunCommand driveToPosition = new RunCommand(
+        () -> driveSubsystem.driveToPosition(new Pose2d(
+                driverController.getLeftX(),
+                driverController.getLeftY(),
+                new Rotation2d(Math.atan2(
+                        driverController.getRightY(),
+                        driverController.getRightX()
+                ))
+        )),driveSubsystem
+     );
 
     // SmartDashboard options
     private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
@@ -108,6 +123,7 @@ public class RobotContainer {
         // getSelected() method returns the command assosiated with each option, which
         // is set above).
         driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
+
     }
 
     /**
@@ -122,13 +138,12 @@ public class RobotContainer {
     private void configureButtonBindings() {
 
         // Move the robot's wheels into an X to prevent movement.
-        starButton1.whileTrue(new RunCommand(
+        startButton1.whileTrue(new RunCommand(
                 () -> driveSubsystem.setX(),
                 driveSubsystem));
 
-        backButton1.onTrue(new RunCommand(
-                () -> driveSubsystem.zeroHeading(),
-                driveSubsystem));
+        backButton1.onTrue(new InstantCommand(
+                () -> driveSubsystem.zeroHeading()));
     }
 
     /**
@@ -140,6 +155,7 @@ public class RobotContainer {
         // Setup controller selection.
         controllerSelection.setDefaultOption("Xbox Controller", xBoxControllerCommand);
         controllerSelection.addOption("Flightstick", flightstickCommand);
+        controllerSelection.addOption("Drive To Position Test", driveToPosition);
 
         // Setup autonomous selection.
         // Loop through all of the available auto options and add each of them as a seperate autonomous option 
@@ -151,6 +167,13 @@ public class RobotContainer {
         // Add all of the configured SmartDashboard elrments to the GUI.
         SmartDashboard.putData("Controller Selection", controllerSelection);
         SmartDashboard.putData("Autonomous Selection", autonomousSelection);
+    }
+
+    /**
+     * rests the default commands for the robot to the selected smart dashboard values
+     */
+    public void updateCommands() {
+        driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
     }
 
     /**
@@ -166,44 +189,18 @@ public class RobotContainer {
      * @return the command to run in autonomous
      */
     public Command getAutonomousCommand() {
+        
+        RunCommand autonomousCommand =  new RunCommand(
+                () -> auto()
+        );
 
-        // Create config for trajectory
-        TrajectoryConfig config = new TrajectoryConfig(
-                AutoConstants.MAX_SPEED_METERS_PER_SECOND,
-                AutoConstants.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
-                // Add kinematics to ensure max speed is actually obeyed
-                .setKinematics(DriveConstants.DRIVE_KINEMATICS);
-
-        // An example trajectory to follow. All units in meters.
-        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-                // Start at the origin facing the +X direction
-                new Pose2d(0, 0, new Rotation2d(0)),
-                // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-                // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(3, 0, new Rotation2d(0)),
-                config);
-
-        var thetaController = new ProfiledPIDController(
-                AutoConstants.THETA_CONTROLLER_KP, 0, 0, AutoConstants.kThetaControllerConstraints);
-        thetaController.enableContinuousInput(-Math.PI, Math.PI);
-
-        SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-                exampleTrajectory,
-                driveSubsystem::getPose, // Functional interface to feed supplier
-                DriveConstants.DRIVE_KINEMATICS,
-
-                // Position controllers
-                new PIDController(AutoConstants.X_CONTROLLER_KP, 0, 0),
-                new PIDController(AutoConstants.Y_CONTROLLER_KP, 0, 0),
-                thetaController,
-                driveSubsystem::setModuleStates,
-                driveSubsystem);
-
-        // Reset odometry to the starting pose of the trajectory.
-        driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
+        driveSubsystem.setTrajectory(AutoConstants.BLUE_3_TRAJECTORY);
 
         // Run path following command, then stop at the end.
-        return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false));
+        return autonomousCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false));
+    }
+
+    private void auto() {
+        driveSubsystem.followTrajectory();
     }
 }
