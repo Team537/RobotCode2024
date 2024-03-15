@@ -9,22 +9,22 @@ import frc.robot.Constants.AutoConstants;
 public enum AutonomousOption {
 
     RED_1  (AutoConstants.RED_1_TRAJECTORY, 
-            new Pose2d(0, 0, new Rotation2d()), 
+            AutoConstants.RED_1_STARTING_POSE, 
             new Rotation2d(Math.PI)),
     RED_2  (AutoConstants.RED_2_TRAJECTORY, 
-            new Pose2d(0, 0, new Rotation2d()),
+            AutoConstants.RED_2_STARTING_POSE, 
             new Rotation2d(Math.PI)),
     RED_3  (AutoConstants.RED_3_TRAJECTORY, 
-            new Pose2d(0, 0, new Rotation2d()), 
-           new Rotation2d(Math.PI)),
+            AutoConstants.RED_3_STARTING_POSE, 
+            new Rotation2d(Math.PI)),
     BLUE_1 (AutoConstants.BLUE_1_TRAJECTORY, 
-            new Pose2d(0, 0, new Rotation2d()), 
+            AutoConstants.BLUE_1_STARTING_POSE,
             new Rotation2d(0)),
     BLUE_2 (AutoConstants.BLUE_2_TRAJECTORY, 
-            new Pose2d(0, 0, new Rotation2d()), 
+            AutoConstants.BLUE_2_STARTING_POSE,
             new Rotation2d(0)),
     BLUE_3 (AutoConstants.BLUE_3_TRAJECTORY, 
-            new Pose2d(0, 0, new Rotation2d()), 
+            AutoConstants.BLUE_3_STARTING_POSE,
             new Rotation2d(0));
 
     private final Pose2d STARTING_LOCATION;
