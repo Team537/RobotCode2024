@@ -1,13 +1,18 @@
 package frc.robot.subsystems.cameras;
 
-import edu.wpi.first.math.geometry.Rotation3d;
-import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.utils.geometry.RobotPose3d;
+import frc.utils.geometry.EstimatedRobotPose3d;
 
+/**
+ * A Limelight 3 camera. 
+ * 
+ * @author Cameron Myhre
+ * @version 2.0
+ * @category Computer Vision
+ */
 public class LimelightCamera extends SubsystemBase {
     
     private NetworkTable table;
@@ -39,6 +44,8 @@ public class LimelightCamera extends SubsystemBase {
      */
     public LimelightCamera(String networktableName, int ledMode, int camMode, int pipeline, int streamMode) {
         table = NetworkTableInstance.getDefault().getTable(networktableName);
+
+        // Configure settings
         name = networktableName;
         setLedMode(ledMode);
         setCameraMode(camMode);
@@ -48,7 +55,7 @@ public class LimelightCamera extends SubsystemBase {
 
     @Override
     public void periodic() {}
-
+    
     /**
      * Sets this limelight's LED's mode.
      *  
@@ -189,20 +196,18 @@ public class LimelightCamera extends SubsystemBase {
      * This method returns the position on the field that the robot thinks the robot is 
      * located at as a <code> Pose3d </code>.
      * 
-     * @return The robot's position on the field as a <code> Pose3d </code>.
+     * @return The robot's position on the field as a {@code EstimatedRobotPose3d}.
      */
-    public RobotPose3d estimateRobotPose3d() {
+    public EstimatedRobotPose3d estimateRobotPose3d() {
 
         // Get an array containing the values of the robot's calculated position on the field.
         double[] botposeValues = getValue("botpose").getDoubleArray(new double[6]);
 
-        // Convert the botposeValues array into translation3d and rotation3d objects so that we can figure out where
-        // the robot is on the field.
-        Translation3d robotTranslation = new Translation3d(botposeValues[0], botposeValues[1], botposeValues[2]);
-        Rotation3d robotRotation = new Rotation3d(botposeValues[3], botposeValues[4], botposeValues[5]);
-
-        // Return a Pose3d value containing the above calculated translation3d and Rotation3d. (Robot's position)
-        return new RobotPose3d(robotTranslation, robotRotation);
+        // Return an EstimatedRobotPose3d containing the caera's estimante of the robot's position on the field.
+        return new EstimatedRobotPose3d(
+            botposeValues[0], botposeValues[1], botposeValues[2], // Robot's position on the filed (x, y, z) in meters.
+            botposeValues[3], botposeValues[4], botposeValues[5]  // Robot's rotation (roll, pitch, yaw) in radians.
+            );
     }
 
     /**

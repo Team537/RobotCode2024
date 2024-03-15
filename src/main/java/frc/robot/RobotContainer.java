@@ -4,22 +4,13 @@
 
 package frc.robot;
 
-import java.util.List;
-
 import edu.wpi.first.math.MathUtil;
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.math.trajectory.Trajectory;
-import edu.wpi.first.math.trajectory.TrajectoryConfig;
-import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
-import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
@@ -37,6 +28,10 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 // import frc.robot.subsystems.cameras.RobotVision;
+import frc.robot.Constants.VisionConstants;
+import frc.robot.commands.vision.ResetImuWithVisionCommand;
+import frc.robot.subsystems.cameras.RobotVision;
+import frc.utils.Autonomous.AutonomousOption;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -47,17 +42,18 @@ import edu.wpi.first.wpilibj2.command.button.POVButton;
 public class RobotContainer {
 
     // The robot's subsystems
-    private final DriveSubsystem driveSubsystem = new DriveSubsystem(true);
-    // private final RobotVision robotVision = new RobotVision.Builder()
-    //     .addPhotonVisionCamera(CameraConstants.COLOR_CAMERA_NAME, CameraConstants.BACK_CAMERA_OFFSET, CameraConstants.OBJECT_DETECTION_PIPELINE)
-    //     .build();
   private final Arm Arm = new Arm();
   private final Intake Intake = new Intake();
   private final Shooter Shooter = new Shooter();
+    private final RobotVision robotVision = new RobotVision.Builder()
+        .addPhotonVisionCamera(VisionConstants.COLOR_CAMERA_NAME, VisionConstants.BACK_CAMERA_OFFSET,
+            VisionConstants.APRIL_TAG_PIPELINE)
+        .build();
+    private final DriveSubsystem driveSubsystem = new DriveSubsystem(true, robotVision::estimateRobotPose);
 
-   // The driver's controller
-   private final XboxController driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
-   private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
+    // The driver's controller
+    private final XboxController driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
+    private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
 
    // Setup each button on each driverController
    JoystickButton aButton = new JoystickButton(driverController, Button.kA.value);
@@ -75,7 +71,7 @@ public class RobotContainer {
 
   // Controller commands
   private final RunCommand xBoxControllerCommand = new RunCommand(
-    () -> driveSubsystem.drive(
+    () -> driveSubsystem.driveFromController(
         -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
         -MathUtil.applyDeadband(driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
@@ -90,15 +86,25 @@ public class RobotContainer {
           -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
           -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
           0,
-          0,
           true, true),
           driveSubsystem);
 
-  // SmartDashboard options
-  private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
+     /**
+      * an alternative command used for testing PID Controllers
+      */
+     private final RunCommand driveToPosition = new RunCommand(
+        () -> driveSubsystem.driveToPosition(new Pose2d(
+                driverController.getLeftX(),
+                driverController.getLeftY(),
+                new Rotation2d(Math.atan2(
+                        driverController.getRightY(),
+                        driverController.getRightX()
+                ))
+        )),driveSubsystem
+     );
 
   // Alternative Command Options
-  private final RunCommand targetPositionCommand = new RunCommand(() -> driveSubsystem.position(
+  private final RunCommand targetPositionCommand = new RunCommand(() -> driveSubsystem.driveToPosition(
         new Pose2d(-5 * driverController.getLeftX(),
         5 * driverController.getLeftY(),
         new Rotation2d(0))), 
@@ -108,6 +114,13 @@ public class RobotContainer {
   /**
     * The container for the robot. Contains subsystems, OI devices, and commands.
     */
+    // SmartDashboard options
+    private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
+    private final SendableChooser<AutonomousOption> autonomousSelection = new SendableChooser<>();
+
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
     public RobotContainer() {
       //---------new button binding 
       
@@ -187,88 +200,125 @@ public class RobotContainer {
       // Configure the button bindings
       configureButtonBindings();
 
-
     // Adjust the dafult command based on which controler the driver ants to use.
     if (SmartDashboard.getBoolean("useXBoxController", true)) {
       driveSubsystem.setDefaultCommand(xBoxControllerCommand);
     } else {
       driveSubsystem.setDefaultCommand(flightstickCommand);
-    }
-  }
+        // Setup all the neccicery SmartDashboard elements
+        setupDashboard();
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
-   * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
-   * subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
-   * passing it to a
-   * {@link JoystickButton}.
-   */
-  private void configureButtonBindings() {
+        // Configure the button bindings
+        configureButtonBindings();
+    } 
+    
+    }
+
+    /**
+     * Configures the robot so that the controlls match what was configured on SMartDashboard. (e.g 
+     * whether the robot is being controlled with a flightstick or an xbox controller).
+     */
+    public void configureDriverPrefferences() {
+
+        // Get the drive command for the selected controller.(Note that the
+        // getSelected() method returns the command assosiated with each option, which
+        // is set above).
+        driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
+
+    }
+
+    /**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by
+     * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
+     * subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
+     * passing it to a
+     * {@link JoystickButton}.
+     */
+    private void configureButtonBindings() {
 
         // Move the robot's wheels into an X to prevent movement.
-        // startButton.whileTrue(new RunCommand(
-        //                 // () -> driveSubsystem.setX(),
-        //                 // driveSubsystem));
+        startButton.whileTrue(new RunCommand(
+                () -> driveSubsystem.setX(),
+                driveSubsystem));
 
-        // backButton.onTrue(new RunCommand(
-        //                 () -> driveSubsystem.zeroHeading(),
-        //                 driveSubsystem));
+        backButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem, robotVision));
     }
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
-  public Command getAutonomousCommand() {
+    /**
+     * This method contains the logic for everything relating to the set up of
+     * SmartDashboard. Currently, this
+     * covers things like auto and controller selection.
+     */
+    private void setupDashboard() {
 
-    // Create config for trajectory
-    TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.MAX_SPEED_METERS_PER_SECOND,
-        AutoConstants.MAX_ACCELERATION_METERS_PER_SECOND_SQUARED)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.DRIVE_KINEMATICS);
+        // Setup controller selection.
+        controllerSelection.setDefaultOption("Xbox Controller", xBoxControllerCommand);
+        controllerSelection.addOption("Flightstick", flightstickCommand);
+        controllerSelection.addOption("Drive To Position Test", driveToPosition);
 
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        config);
+        // Setup autonomous selection.
+        // Loop through all of the available auto options and add each of them as a
+        // seperate autonomous option
+        // in SmartDashboard.
+        autonomousSelection.setDefaultOption("RED_1", AutonomousOption.RED_1);
+        for (AutonomousOption autonomousOption : AutonomousOption.values()) {
+            autonomousSelection.addOption(autonomousOption.toString(), autonomousOption);
+        }
 
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.THETA_CONTROLLER_KP, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+        // Add all of the configured SmartDashboard elrments to the GUI.
+        SmartDashboard.putData("Controller Selection", controllerSelection);
+        SmartDashboard.putData("Autonomous Selection", autonomousSelection);
+    }
 
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-        driveSubsystem::getPose, // Functional interface to feed supplier
-        DriveConstants.DRIVE_KINEMATICS,
+    /**
+     * rests the default commands for the robot to the selected smart dashboard values
+     */
+    public void updateCommands() {
+        driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
+    }
 
-        // Position controllers
-        new PIDController(AutoConstants.X_CONTROLLER_KP, 0, 0),
-        new PIDController(AutoConstants.Y_CONTROLLER_KP, 0, 0),
-        thetaController,
-        driveSubsystem::setModuleStates,
-        driveSubsystem);
+    /**
+     * Takes a photongraph using all of the cameras.
+     */
+    public void snapshot() {
+        robotVision.snapshotAll();
+    }
 
-    // Reset odometry to the starting pose of the trajectory.
-    driveSubsystem.resetOdometry(exampleTrajectory.getInitialPose());
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+     *
+     * @return the command to run in autonomous
+     */
+    public Command getAutonomousCommand() {
+        
+        // Get the selected auto
+        AutonomousOption selectedAuto = autonomousSelection.getSelected();
+        
+        // Start making the robot follow a trajectory
+        RunCommand autonomousCommand =  new RunCommand(
+                () -> auto()
+        );
 
-    // Run path following command, then stop at the end.
-    // return swerveControllerCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, 0,false, false));
-    return new SequentialCommandGroup(
-      new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).withTimeout(1),//.until(() -> Arm.targetPid()),
-      new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
-      new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
-      new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1)
+        // Configure the robot's settings so that it will be optimized for the selected command.
+        driveSubsystem.setAutonomous(selectedAuto);
 
-    );
+        // Run path following command, then stop at the end.
+    //     return new SequentialCommandGroup(
+    //   new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).withTimeout(1),//.until(() -> Arm.targetPid()),
+    //   new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
+    //   new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
+    //   new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1)
 
-  }
+    // );
+        return autonomousCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false));
+    }
+
+    /**
+     * Start making the robot follow the selected auto path.
+     */
+    private void auto() {
+        driveSubsystem.followTrajectory();
+    }
 }

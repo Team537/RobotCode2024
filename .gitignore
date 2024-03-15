@@ -176,4 +176,7 @@ logs/
 
 # Folder that has CTRE Phoenix Sim device config storage
 ctre_sim/
-RobotCode2024/
+
+simgui-ds.json
+
+simgui.json
