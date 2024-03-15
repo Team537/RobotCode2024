@@ -5,6 +5,7 @@ import org.photonvision.estimation.RotTrlTransform3d;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.cameras.RobotVision;
@@ -26,7 +27,7 @@ public class ResetImuWithVisionCommand extends Command {
      * position than the initial state. By storing the robot's previous heading, we ensure a fallback 
      * option and maintain awareness of potential challenges.
      */
-    private double previousHeading = 0;
+    private double previousHeading = -999999999;
 
     // Keep track of whether or not the command has finished running.
     private boolean isFinished = false;
@@ -42,6 +43,9 @@ public class ResetImuWithVisionCommand extends Command {
         // Gain acsess to the robot's subsystems so that we are able to interact with them.
         this.driveSubsystem = driveSubsystem;
         this.robotVision = robotVision;
+
+        // Start the timer
+        timer.start();
     }
 
     @Override
@@ -50,10 +54,11 @@ public class ResetImuWithVisionCommand extends Command {
         // Make it possible to run the comand again. If we don't set isFinished to false every tine
         // this command is run, then the command will only sucsessfully run once, since once it completes 
         isFinished = false;
-
+        
         // Determine whether or not the driver wants to use vision to reset the robot's gyro. 
         // This is done by checking if we pressed the back button within the last 750 milliseconds.
-        if (timer.get() > 0.75) {
+        if (timer.get() > 0.75 || previousHeading == -999999999) {
+            System.out.println("------------------------------------------------");
             resetGyro(); // We don't want to use vision to rset the robot's gyro.
         }
 
@@ -120,7 +125,7 @@ public class ResetImuWithVisionCommand extends Command {
 
         // Store the robot's current heading in case we need to revert back to it later.
         previousHeading = driveSubsystem.getHeading();
-
+        
         // Reset the robot's gyro.
         driveSubsystem.setYaw(driveSubsystem.getDriverRotationalOffset());
 
