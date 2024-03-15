@@ -1,20 +1,26 @@
 package frc.robot.subsystems.cameras;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 
 import org.photonvision.EstimatedRobotPose;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
-import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
-import frc.utils.geometry.RobotPose3d;
+import frc.utils.geometry.EstimatedRobotPose3d;
 import frc.utils.geometry.TagPose3d;
 
+/**
+ * An object used to manage and use data from cameras present on the robot.
+ * 
+ * @author Cameron Myhre
+ * @version 1.0
+ * @category Computer Vision
+ */
 public class RobotVision extends SubsystemBase {
     
     private final ArrayList<PhotonVisionCamera> photonVisionCameras;
@@ -135,19 +141,32 @@ public class RobotVision extends SubsystemBase {
     }
 
     @Override
-    public void periodic() {}
+    public void periodic() {
+
+        /*
+         * Try and estimate where the robot is on the field. Then, if we are able to sucsessfully
+         * estimate th erobot's position, dispay the results on SmartDashboard so that we can determine
+         * how accurate our estimation is.
+         */
+        Pose2d estimatedRobotPose = estimateRobotPose();
+        if (estimatedRobotPose != null) { 
+            SmartDashboard.putNumber("RobotVision's Estimated Robot X: ", estimatedRobotPose.getX());
+            SmartDashboard.putNumber("RobotVision's Estimated Robot Y: ", estimatedRobotPose.getY());
+            SmartDashboard.putNumber("RobotVision's Estimated Robot Heading: ", estimatedRobotPose.getRotation().getDegrees());
+        }
+    }
 
     /**
      * Estimates the robot's positon on the field using by using the position data gathered from
      * visible AprilTags and returns the value. If the robot can't see any AprilTags, then this
      * method will return null.
      * 
-     * @return The estimated position of the robot on the field.
+     * @return The estimated position of the robot on the field as a {@code Pose2d}.
      */
-    public Pose3d estimateRobotPose() {
+    public Pose2d estimateRobotPose() {
 
         // Create a new ArrayList to store all of the estimated robot positions.
-        RobotPose3d estimatedRobotPosition = new RobotPose3d();
+        EstimatedRobotPose3d estimatedRobotPosition = new EstimatedRobotPose3d();
         int numEstimatedPositons = 0;
 
         // Loop through all of this RobotVision's PhotonVisionCameras and get their estimated robot position 
@@ -163,9 +182,9 @@ public class RobotVision extends SubsystemBase {
             // Get the EstimatedRobotPose from optionalEstimatedPosition since we know the value isn't null.  
             EstimatedRobotPose estimateddRobotPose = optionalEstimatedPose.get();
 
-            // Get the estimated position and convert it to a RobotPose3d. Then add it to estimatedRobotPosition
+            // Get the estimated position and convert it to a EstimatedRobotPose3d. Then add it to estimatedRobotPosition
             // so that we can average out each camera's estimated position and get a more accurate estimante.
-            RobotPose3d estimateddRobotPose3d = new RobotPose3d(estimateddRobotPose.estimatedPose);
+            EstimatedRobotPose3d estimateddRobotPose3d = new EstimatedRobotPose3d(estimateddRobotPose.estimatedPose);
             estimatedRobotPosition.add(estimateddRobotPose3d);
 
             // Add 1 to the numEstimatedPositons so that we can keep track of the total number of positions used in
@@ -178,7 +197,7 @@ public class RobotVision extends SubsystemBase {
 
             // Get the camera's estimante of the robot's positon on the field. If the camera was unable to estimate a
             // positon, then skip over to the next camera.
-            RobotPose3d estimatedRobotPose3d = camera.estimateRobotPose3d();
+            EstimatedRobotPose3d estimatedRobotPose3d = camera.estimateRobotPose3d();
             if (estimatedRobotPose3d == null) {
                 continue;
             }
@@ -200,7 +219,7 @@ public class RobotVision extends SubsystemBase {
         // Average out all of the estimated values
         estimatedRobotPosition.div(numEstimatedPositons);
 
-        return estimatedRobotPosition.toPose3d();
+        return estimatedRobotPosition.toPose3d().toPose2d();
     }
 
     /**
@@ -244,14 +263,6 @@ public class RobotVision extends SubsystemBase {
          */
         tagPosition.flipYaw();
         
-        // Display values on dashboard
-        SmartDashboard.putNumber("TagX", tagPosition.getX());
-        SmartDashboard.putNumber("TagY", tagPosition.getY());
-        SmartDashboard.putNumber("TagZ", tagPosition.getZ());
-        SmartDashboard.putNumber("roll", tagPosition.getRotation().getX());
-        SmartDashboard.putNumber("pitch", tagPosition.getRotation().getY());
-        SmartDashboard.putNumber("yaw", tagPosition.getRotation().getZ());
-
         // Return the tag's location relative to the camera.
         return tagPosition;
     }
