@@ -153,6 +153,9 @@ public class RobotContainer {
         controllerSelection.addOption("Flightstick", flightstickCommand);
         controllerSelection.addOption("Drive To Position Test", driveToPosition);
 
+        // Determines whether or not we want to run autonomous.
+        SmartDashboard.putBoolean("Run Auto", false);
+
         // Setup autonomous selection.
         // Loop through all of the available auto options and add each of them as a
         // seperate autonomous option
@@ -199,8 +202,13 @@ public class RobotContainer {
         // Configure the robot's settings so that it will be optimized for the selected command.
         driveSubsystem.setAutonomous(selectedAuto);
 
-        // Run path following command, then stop at the end.
-        return autonomousCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false));
+        // If we want to run autonomous, then follow the trajectory. Otherwise don't run the auto.
+        if (SmartDashboard.getBoolean("Run Auto", false)) {
+
+             // Run path following command, then stop at the end.
+            return autonomousCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false));
+        }
+        return null;
     }
 
     /**
