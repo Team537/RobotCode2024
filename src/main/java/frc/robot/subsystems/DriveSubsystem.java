@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -96,8 +97,8 @@ public class DriveSubsystem extends SubsystemBase {
     List<Pose2d> trajectory = List.of();
     private int waypoint = 0;
         
-            //the rotational offset from where the driver is facing to where the robot considers forward. This is so we can standardize position data for both alliances
-            private double driverRotationalOffset = 0;
+    //the rotational offset from where the driver is facing to where the robot considers forward. This is so we can standardize position data for both alliances
+    private Rotation2d driverRotationalOffset = new Rotation2d();
 
     // SwerveDrivePoseEstimator object to keep track of the robot's position on the field.
     private SwerveDrivePoseEstimator poseEstimator;
@@ -116,7 +117,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         // Reset the IMU if told to do so.
         if (resetOrientation) {
-            zeroHeading();
+           zeroHeading();;
         }
 
         // Stert the time so that we are able to get time stamped vision measurments.
@@ -189,7 +190,7 @@ public class DriveSubsystem extends SubsystemBase {
          SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getDegrees());
 
          // Output the current driver controlelr offset to check whether or not our code works.
-         SmartDashboard.putNumber("Rotation Offset: ", driverRotationalOffset);
+         SmartDashboard.putNumber("Rotation Offset: ", driverRotationalOffset.getDegrees());
 
     }
     
@@ -230,8 +231,16 @@ public class DriveSubsystem extends SubsystemBase {
      * sets the rotational offset for the driver
      * @param offset the offset to set to
      */
-    public void setDriverRotationalOffset(double offset) {
+    public void setDriverRotationalOffset(Rotation2d offset) {
         driverRotationalOffset = offset;
+    }
+
+    /**
+     * gets the rotational offset of the driver
+     * @return the rotational offset
+     */
+    public Rotation2d getDriverRotationalOffset() {
+        return driverRotationalOffset;
     }
 
 
@@ -266,6 +275,8 @@ public class DriveSubsystem extends SubsystemBase {
     public void setAutonomous(AutonomousOption selectedAuto) {
         setDriverRotationalOffset(selectedAuto.getTeleopRotationalOffset());
         setTrajectory(selectedAuto.getTrajectory());
+        resetOdometry(selectedAuto.getStartingPosition());
+        setYaw(selectedAuto.getStartingPosition().getRotation());
     }
 
     /**
@@ -327,8 +338,8 @@ public class DriveSubsystem extends SubsystemBase {
         //rotates the commanded linear speed
         double oldX = leftX;
         double oldY = leftY;
-        leftX = oldX * Math.cos(driverRotationalOffset) - oldY * Math.sin(driverRotationalOffset);
-        leftX = oldY * Math.sin(driverRotationalOffset) + oldY * Math.cos(driverRotationalOffset);
+        leftX = oldX * driverRotationalOffset.getCos() - oldY * driverRotationalOffset.getSin();
+        leftX = oldY * driverRotationalOffset.getSin() + driverRotationalOffset.getCos();
 
         double turnJoystickOrientation = Math.atan2(rightY, rightX);
         double turnJoystickMagnitude = Math.sqrt(Math.pow(rightX, 2) + Math.pow(rightY, 2));
@@ -599,14 +610,14 @@ public class DriveSubsystem extends SubsystemBase {
     /**
      * Sets the direciton that the robot is facing to the sepecified value.
      * 
-     * @param newYaw The direciton you want the robot to think it's facing, in degrees.
+     * @param newYaw The direciton you want the robot to think it's facing
      */
-    public void setYaw(double newYaw) {
-        gyro.setYaw(newYaw);
+    public void setYaw(Rotation2d newYaw) {
+        gyro.setYaw(newYaw.getDegrees());
     }
     
-    /** 
-     * Zeroes the heading of the robot. 
+    /**
+     * resets the heading of the robot
      */
     public void zeroHeading() {
         gyro.reset();
