@@ -21,7 +21,6 @@ public class Arm extends SubsystemBase {
 
   public static TalonFX m_arm1 = new TalonFX(ArmConstants.ARM1);
   public static TalonFX m_arm2 = new TalonFX(ArmConstants.ARM2);
-
   
   Pigeon2 m_pigeon = new Pigeon2(ArmConstants.PIGEON);
 
