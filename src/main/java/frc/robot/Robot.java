@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Shooter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -45,10 +46,7 @@ public class Robot extends TimedRobot {
     // Make it possible to view the photonvision dashboard over the internet
     PortForwarder.add(5800, "photonvision.local", 5800);
     timer = 0;
-    MotorOutputConfigs m_configs = new MotorOutputConfigs();
-      m_configs.NeutralMode = NeutralModeValue.Coast;
-      Arm.m_arm2.getConfigurator().apply(m_configs);
-      Arm.m_arm1.getConfigurator().apply(m_configs);
+
     
   }
 
@@ -65,26 +63,29 @@ public class Robot extends TimedRobot {
     // commands, running already-scheduled commands, removing finished or interrupted commands,
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
-    // if (timer <= 10000) {
-    //   timer += 20;
-      
-    //   MotorOutputConfigs m_configs = new MotorOutputConfigs();
-    //   m_configs.NeutralMode = NeutralModeValue.Coast;
-    //   Arm.m_arm2.getConfigurator().apply(m_configs);
-    //   Arm.m_arm1.getConfigurator().apply(m_configs);
-    // } else {
-    //       MotorOutputConfigs m_configs = new MotorOutputConfigs();
-    // m_configs.NeutralMode = NeutralModeValue.Brake;
-    // Arm.m_arm2.getConfigurator().apply(m_configs);
-    // Arm.m_arm1.getConfigurator().apply(m_configs);
-
-    // }
+    if (timer <= 15000) {
+      timer += 20;
+      System.out.println(timer);
+      final MotorOutputConfigs m_coastConfig = new MotorOutputConfigs();
+      m_coastConfig.NeutralMode = NeutralModeValue.Coast;
+      Arm.m_arm2.getConfigurator().apply(m_coastConfig);
+      Arm.m_arm1.getConfigurator().apply(m_coastConfig);
+    } else {
+      final MotorOutputConfigs m_brakeConfig = new MotorOutputConfigs();
+      m_brakeConfig.NeutralMode = NeutralModeValue.Brake;
+      Arm.m_arm2.getConfigurator().apply(m_brakeConfig);
+      Arm.m_arm1.getConfigurator().apply(m_brakeConfig);
+    }
     CommandScheduler.getInstance().run();
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
   @Override
   public void disabledInit() {
+    MotorOutputConfigs m_configs = new MotorOutputConfigs();
+    m_configs.NeutralMode = NeutralModeValue.Brake;
+    Arm.m_arm2.getConfigurator().apply(m_configs);
+    Arm.m_arm1.getConfigurator().apply(m_configs);
   }
 
   @Override

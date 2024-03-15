@@ -84,9 +84,9 @@ public class Arm extends SubsystemBase {
     double velocity = 0;
     if (targetPos < currentPos) {
       //up
-      velocity = 45;
+      velocity = 60;
     } else if (targetPos > currentPos) {
-      velocity = 25;
+      velocity = 40;
     } else if (targetPos == currentPos) {
       velocity = 0;
     }
@@ -118,8 +118,8 @@ public class Arm extends SubsystemBase {
 
   public void ArmSubwoofer() { 
     // -7 on one sprocket
-    SetMotorsMotionMagic(-9);
-    targetPos = -9;
+    SetMotorsMotionMagic(-8);
+    targetPos = -8;
   }
 
   public void ArmIntake() {
@@ -129,7 +129,7 @@ public class Arm extends SubsystemBase {
   
   public void ArmAmp() {
     SetMotorsMotionMagic(-55);
-    targetPos = -50;
+    targetPos = -55;
   }
 
   public void ArmMid() {

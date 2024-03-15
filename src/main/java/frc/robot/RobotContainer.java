@@ -183,17 +183,15 @@ public class RobotContainer {
 
       //Start and Back
 
-      startButton.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterAmp, Shooter::ShooterAmp,Shooter), 
-      new StartEndCommand(Intake::IntakeAmp, Intake::IntakeOff, Intake)));
+      startButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem, robotVision));
 
-      startButton.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
-      new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
+    //   startButton.onFalse(null);
 
 
       backButton.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop,Shooter), 
       new StartEndCommand(Intake::IntakeReverse, Intake::IntakeOff, Intake)));
 
-      backButton.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
+      backButton.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
       new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
       // */      
 
@@ -243,7 +241,7 @@ public class RobotContainer {
                 () -> driveSubsystem.setX(),
                 driveSubsystem));
 
-        backButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem, robotVision));
+        // backButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem, robotVision));
     }
 
     /**
@@ -260,6 +258,8 @@ public class RobotContainer {
 
         // Determines whether or not we want to run autonomous.
         SmartDashboard.putBoolean("Run Auto", false);
+        SmartDashboard.putBoolean("Run Shoot Auto Alone", true);
+
 
         // Setup autonomous selection.
         // Loop through all of the available auto options and add each of them as a
@@ -308,18 +308,24 @@ public class RobotContainer {
         driveSubsystem.setAutonomous(selectedAuto);
 
          // Run path following command, then stop at the end.
-    //     return new SequentialCommandGroup(
-    //   new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()),
-    //   new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
-    //   new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
-    //   new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1)
-
         // If we want to run autonomous, then follow the trajectory. Otherwise don't run the auto.
         if (SmartDashboard.getBoolean("Run Auto", false)) {
 
              // Run path following command, then stop at the end.
-            return autonomousCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false));
-        }
+            return new SequentialCommandGroup(
+            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()),
+            new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
+         new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
+            new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1), 
+            autonomousCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false)));
+        } else if (SmartDashboard.getBoolean("Run Shoot Auto Alone", true)) {
+            return new SequentialCommandGroup(
+            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()),
+            new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
+         new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
+            new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1));
+
+        } 
         return null;
     }
 
