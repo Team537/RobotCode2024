@@ -58,6 +58,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     // The gyro sensor
     private final Pigeon2 gyro = new Pigeon2(42);
+    public static double driveYaw = 0;
 
     private boolean orientationLockToggle = false;
     private double orientationLock = 0;
@@ -153,6 +154,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         // Periodically update the robot's position data to keep track of its location.
         updateRobotPose();
+        driveYaw = gyro.getYaw().getValue();
     }
     
     /**

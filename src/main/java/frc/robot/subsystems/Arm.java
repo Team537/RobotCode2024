@@ -15,6 +15,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.robot.subsystems.DriveSubsystem;
 
 public class Arm extends SubsystemBase {
 
@@ -22,7 +23,8 @@ public class Arm extends SubsystemBase {
   TalonFX m_arm2 = new TalonFX(ArmConstants.ARM2);
   
   Pigeon2 m_pigeon = new Pigeon2(ArmConstants.PIGEON);
-  
+
+  double driveGyroYaw = 0;  
   double targetPos = m_arm1.getPosition().getValue();
 
   final Follower m_follower = new Follower(11,false);
@@ -170,9 +172,17 @@ public class Arm extends SubsystemBase {
     }
   }
 
+  private double findTargetDist(double angle) {
+    double currentPos = m_arm1.getPosition().getValue();
+    return 1;
+  }
+
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("arm angle", m_pigeon.getAngle());
+    driveGyroYaw = DriveSubsystem.driveYaw;
+    SmartDashboard.putNumber("DriveGyroYaw", driveGyroYaw);
+    SmartDashboard.putNumber("ArmPitch", m_pigeon.getPitch().getValue());
+    SmartDashboard.putNumber("ArmYaw", m_pigeon.getYaw().getValue());
     SmartDashboard.putBoolean("withinPosRange", targetPid());
     SmartDashboard.putNumber("targetpos", targetPos);
     SmartDashboard.putNumber("ARM POS", m_arm1.getPosition().getValue());
