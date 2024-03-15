@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
@@ -42,12 +44,12 @@ public final class Constants {
         public static final double GRIP_DIRECTION_SLEW_RATE = 5; // radians per second
         public static final double BOOST_MODE_DIRECTION_SLEW_RATE = 1.8; // radians per second
         public static final double GRIP_BOOST_MODE_DIRECTION_SLEW_RATE = 5; // radians per second
-        public static final double MAGNITUDE_POSITIVE_SLEW_RATE = 1.8; // percent per second (1 = 100%)
-        public static final double MAGNITUDE_NEGATIVE_SLEW_RATE = 2.4; // percent per second (1 = 100%)
-        public static final double GRIP_MAGNITUDE_POSITIVE_SLEW_RATE = 3.6; // percent per second (1 = 100%)
-        public static final double GRIP_MAGNITUDE_NEGATIVE_SLEW_RATE = 4; // percent per second (1 = 100%)
-        public static final double BOOST_MODE_MAGNITUDE_POSITIVE_SLEW_RATE = 1; // percent per second (1 = 100%)
-        public static final double BOOST_MODE_MAGNITUDE_NEGATIVE_SLEW_RATE = 1.8; // percent per second (1 = 100%)
+        public static final double MAGNITUDE_POSITIVE_SLEW_RATE = 3.6; // percent per second (1 = 100%)
+        public static final double MAGNITUDE_NEGATIVE_SLEW_RATE = 4.8; // percent per second (1 = 100%)
+        public static final double GRIP_MAGNITUDE_POSITIVE_SLEW_RATE = 7.2; // percent per second (1 = 100%)
+        public static final double GRIP_MAGNITUDE_NEGATIVE_SLEW_RATE = 6; // percent per second (1 = 100%)
+        public static final double BOOST_MODE_MAGNITUDE_POSITIVE_SLEW_RATE = 2; // percent per second (1 = 100%)
+        public static final double BOOST_MODE_MAGNITUDE_NEGATIVE_SLEW_RATE = 3.6; // percent per second (1 = 100%)
         public static final double ROTATIONAL_SLEW_RATE = 2.0; // percent per second (1 = 100%)
 
         // Chassis configuration
@@ -146,7 +148,7 @@ public final class Constants {
     public static final class VisionConstants {
 
         // Data gathering settings
-        public static final double SNAPSHOTS_PER_SECOND = 4; // How many snapshots are taken per second.
+        public static final double SNAPSHOTS_PER_SECOND = 12; // How many snapshots are taken per second.
         public static final double SNAPSHOT_RATE = 1 / SNAPSHOTS_PER_SECOND;
 
         // Pipeline settings
@@ -192,12 +194,50 @@ public final class Constants {
         public static final double MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED = Math.PI;
 
         public static final double X_CONTROLLER_KP = 1;
+        public static final double X_CONTROLLER_KI = 0;
+        public static final double X_CONTROLLER_KD = 0;
+
         public static final double Y_CONTROLLER_KP = 1;
+        public static final double Y_CONTROLLER_KI = 0;
+        public static final double Y_CONTROLLER_KD = 0;
+
         public static final double THETA_CONTROLLER_KP = 1;
+        public static final double THETA_CONTROLLER_KI = 0;
+        public static final double THETA_CONTROLLER_KD = 0.2;
 
         // Constraint for the motion profiled robot angle controller
+        // Value is a float because xyz
+        public static final double TRAJECOTRY_THRESHOLD = 0.1; //the maximum distance away from a waypoint before the robot moves onto the next one (meters)
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
                 MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
+
+        public static final List<Pose2d> BLUE_1_TRAJECTORY = List.of(
+                new Pose2d(2.926,7.563,new Rotation2d()),
+                new Pose2d(5.497,7.563,new Rotation2d())
+        );
+
+        public static final List<Pose2d> BLUE_2_TRAJECTORY = List.of(
+                new Pose2d(5.293,5.593,new Rotation2d())
+        );
+
+        public static final List<Pose2d> BLUE_3_TRAJECTORY = List.of(
+                new Pose2d(3.503,0.931,new Rotation2d()),
+                new Pose2d(4.440,0.931,new Rotation2d())
+        );
+
+        public static final List<Pose2d> RED_1_TRAJECTORY = List.of(
+                new Pose2d(15.036,7.671,new Rotation2d()),
+                new Pose2d(15.072,7.671,new Rotation2d())
+        );
+
+        public static final List<Pose2d> RED_2_TRAJECTORY = List.of(
+                new Pose2d(12.429,5.713,new Rotation2d())
+        );
+
+        public static final List<Pose2d> RED_3_TRAJECTORY = List.of(
+                new Pose2d(14.940,1.580,new Rotation2d()),
+                new Pose2d(13.475,1.195,new Rotation2d())
+        );
     }
 
     public static final class NeoMotorConstants {

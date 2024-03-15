@@ -25,25 +25,5 @@
       }
     },
   ],
-  "java.test.defaultConfig": "WPIlibUnitTests",
-  "workbench.colorCustomizations": {
-    "activityBar.activeBackground": "#f14b52",
-    "activityBar.background": "#f14b52",
-    "activityBar.foreground": "#e7e7e7",
-    "activityBar.inactiveForeground": "#e7e7e799",
-    "activityBarBadge.background": "#1ced12",
-    "activityBarBadge.foreground": "#15202b",
-    "commandCenter.border": "#e7e7e799",
-    "sash.hoverBorder": "#f14b52",
-    "statusBar.background": "#ed1c24",
-    "statusBar.foreground": "#e7e7e7",
-    "statusBarItem.hoverBackground": "#f14b52",
-    "statusBarItem.remoteBackground": "#ed1c24",
-    "statusBarItem.remoteForeground": "#e7e7e7",
-    "titleBar.activeBackground": "#ed1c24",
-    "titleBar.activeForeground": "#e7e7e7",
-    "titleBar.inactiveBackground": "#ed1c2499",
-    "titleBar.inactiveForeground": "#e7e7e799"
-  },
-  "peacock.color": "#ed1c24"
+  "java.test.defaultConfig": "WPIlibUnitTests"
 }

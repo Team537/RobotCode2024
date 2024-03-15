@@ -56,13 +56,9 @@ public class PhotonVisionCamera extends SubsystemBase {
         // the most recent data.
         result = camera.getLatestResult();
 
-        /*
-        ! fsadfasdfasdfadfasdfasdfasdfasd
-         
-         * Output values so that I, Cameron, can figure out how photonvision's Object
-         * Detection code
-         * works. This needs to be done because there isn't any documentation, and the
-         * people on the discord
+        /*         
+         * Output values so that I, Cameron, can figure out how photonvision's Object Detection code
+         * works. This needs to be done because there isn't any documentation, and the people on the discord
          * server effectibly told me to just figure it out.
          */
         if (result.hasTargets()) {
@@ -75,12 +71,11 @@ public class PhotonVisionCamera extends SubsystemBase {
     }
 
     /**
-     * Take a snapshot of the unprocessed camera feed. Useful for gathering training
-     * data for AI or
+     * Take a snapshot of the unprocessed camera feed. Useful for gathering training data for AI or
      * gathering interesting mid-match photographs.
      */
     public void takeInputSnapshot() {
-        // camera.takeInputSnapshot();
+        camera.takeInputSnapshot();
     }
 
     /**
@@ -88,7 +83,7 @@ public class PhotonVisionCamera extends SubsystemBase {
      * interesting mid-match photographs.
      */
     public void takeOutputSnapshot() {
-        // camera.takeOutputSnapshot();
+        camera.takeOutputSnapshot();
     }
 
     /**
@@ -115,14 +110,12 @@ public class PhotonVisionCamera extends SubsystemBase {
     }
 
     /**
-     * Returns a PhotonTrackedTarget with the desired ID if this camera can see it.
-     * Otherwise
-     * returns null.
+     * Returns a PhotonTrackedTarget with the desired ID if this camera can see it. 
+     * Otherwise returns null.
      * 
      * @param id The ID of the tag you want to see if this camera can see.
      * @return If this camera can see a tag with the desired ID then this method
-     *         returns a
-     *         PhotonTrackedTarget. Otherwise this method returns null.
+     *         returns a PhotonTrackedTarget. Otherwise this method returns null.
      */
     public PhotonTrackedTarget getDistanceToTag(int id) {
 
