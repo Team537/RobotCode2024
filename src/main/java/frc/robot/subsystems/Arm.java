@@ -9,18 +9,19 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
+
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
-import frc.robot.subsystems.DriveSubsystem;
 
 public class Arm extends SubsystemBase {
 
-  TalonFX m_arm1 = new TalonFX(ArmConstants.ARM1);
-  TalonFX m_arm2 = new TalonFX(ArmConstants.ARM2);
+  public static TalonFX m_arm1 = new TalonFX(ArmConstants.ARM1);
+  public static TalonFX m_arm2 = new TalonFX(ArmConstants.ARM2);
+
   
   Pigeon2 m_pigeon = new Pigeon2(ArmConstants.PIGEON);
 
@@ -30,10 +31,9 @@ public class Arm extends SubsystemBase {
   final Follower m_follower = new Follower(11,false);
 
   /** Creates a new Arm. */
-  public Arm() {    
-
+  public Arm() {
+    
   }
-
   private double ConvertAngleToRot() {
     double rotations = (m_pigeon.getAngle()/360)*200;
     return rotations;
