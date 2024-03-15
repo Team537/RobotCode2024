@@ -187,7 +187,7 @@ public class DriveSubsystem extends SubsystemBase {
          // Display the current estimated position of the robot
          SmartDashboard.putNumber("Robot X: ", robotPose.getX());
          SmartDashboard.putNumber("Robot Y: ", robotPose.getY());
-         SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getRadians());
+         SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getDegrees());
 
          // Output the current driver controlelr offset to check whether or not our code works.
          SmartDashboard.putNumber("Rotation Offset: ", driverRotationalOffset.getDegrees());
