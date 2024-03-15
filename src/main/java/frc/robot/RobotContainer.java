@@ -205,13 +205,10 @@ public class RobotContainer {
       driveSubsystem.setDefaultCommand(xBoxControllerCommand);
     } else {
       driveSubsystem.setDefaultCommand(flightstickCommand);
+    } 
+
         // Setup all the neccicery SmartDashboard elements
         setupDashboard();
-
-        // Configure the button bindings
-        configureButtonBindings();
-    } 
-    
     }
 
     /**
@@ -309,7 +306,7 @@ public class RobotContainer {
 
          // Run path following command, then stop at the end.
     //     return new SequentialCommandGroup(
-    //   new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).withTimeout(1),//.until(() -> Arm.targetPid()),
+    //   new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()),
     //   new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
     //   new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
     //   new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1)

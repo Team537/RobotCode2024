@@ -339,7 +339,7 @@ public class DriveSubsystem extends SubsystemBase {
         double oldX = leftX;
         double oldY = leftY;
         leftX = oldX * driverRotationalOffset.getCos() - oldY * driverRotationalOffset.getSin();
-        leftX = oldY * driverRotationalOffset.getSin() + driverRotationalOffset.getCos();
+        leftY = oldX * driverRotationalOffset.getSin() + oldY * driverRotationalOffset.getCos();
 
         double turnJoystickOrientation = Math.atan2(rightY, rightX);
         double turnJoystickMagnitude = Math.sqrt(Math.pow(rightX, 2) + Math.pow(rightY, 2));

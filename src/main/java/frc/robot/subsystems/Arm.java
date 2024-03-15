@@ -32,7 +32,7 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    
+
   }
   private double ConvertAngleToRot() {
     double rotations = (m_pigeon.getAngle()/360)*200;
@@ -135,6 +135,7 @@ public class Arm extends SubsystemBase {
 
   public void ArmMid() {
     SetMotorsMotionMagic(-23.6);
+    targetPos = -23.6;
   }
 
   public void ArmPIDStop() {
