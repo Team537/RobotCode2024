@@ -10,7 +10,6 @@ import java.util.function.Supplier;
 import com.ctre.phoenix6.hardware.Pigeon2;
 
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -187,7 +186,7 @@ public class DriveSubsystem extends SubsystemBase {
          // Display the current estimated position of the robot
          SmartDashboard.putNumber("Robot X: ", robotPose.getX());
          SmartDashboard.putNumber("Robot Y: ", robotPose.getY());
-         SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getDegrees());
+         SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getRadians());
 
          // Output the current driver controlelr offset to check whether or not our code works.
          SmartDashboard.putNumber("Rotation Offset: ", driverRotationalOffset.getDegrees());
@@ -275,8 +274,10 @@ public class DriveSubsystem extends SubsystemBase {
     public void setAutonomous(AutonomousOption selectedAuto) {
         setDriverRotationalOffset(selectedAuto.getTeleopRotationalOffset());
         setTrajectory(selectedAuto.getTrajectory());
-        resetOdometry(selectedAuto.getStartingPosition());
-        setYaw(selectedAuto.getStartingPosition().getRotation());
+
+        Pose2d startingLocaiton = selectedAuto.getStartingPosition();
+        setYaw(startingLocaiton.getRotation());
+        resetOdometry(startingLocaiton);
     }
 
     /**
@@ -314,9 +315,6 @@ public class DriveSubsystem extends SubsystemBase {
                 return true;
         }
     }
-
-
-
 
     /**
      * drives robot from inputs

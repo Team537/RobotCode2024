@@ -207,9 +207,12 @@ public class RobotContainer {
       driveSubsystem.setDefaultCommand(flightstickCommand);
     } 
 
-        // Setup all the neccicery SmartDashboard elements
-        setupDashboard();
-    }
+    // Setup all the neccicery SmartDashboard elements
+    setupDashboard();
+
+    // Configure the button bindings
+    configureButtonBindings();
+}
 
     /**
      * Configures the robot so that the controlls match what was configured on SMartDashboard. (e.g 
