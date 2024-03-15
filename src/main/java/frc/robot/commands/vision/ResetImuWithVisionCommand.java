@@ -1,6 +1,9 @@
 package frc.robot.commands.vision;
 
+import org.photonvision.estimation.RotTrlTransform3d;
+
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
@@ -32,7 +35,7 @@ public class ResetImuWithVisionCommand extends Command {
      * Creates a new {@code ResetImuWithVisionCommand} with acsess to the specified subsystems.
      * 
      * @param driveSubsystem The robot's drivetrain
-     * @param robotVision The robot's camera manager.
+     * @param robotVision The robot's camera manager
      */
     public ResetImuWithVisionCommand(DriveSubsystem driveSubsystem, RobotVision robotVision) {
 
@@ -100,7 +103,7 @@ public class ResetImuWithVisionCommand extends Command {
         }
 
         // Get the direction that we think the robot is facing from the estimated position.
-        double estimatedRobotYaw = estimatedRobotPose.getRotation().getDegrees();
+        Rotation2d estimatedRobotYaw = estimatedRobotPose.getRotation();
 
         // Correct the robot's IMU so that the direction the robot thinks that is is facing forwards when
         // it's facing the center of the field. 
@@ -119,7 +122,7 @@ public class ResetImuWithVisionCommand extends Command {
         previousHeading = driveSubsystem.getHeading();
 
         // Reset the robot's gyro.
-        driveSubsystem.zeroHeading();
+        driveSubsystem.setYaw(driveSubsystem.getDriverRotationalOffset());
 
         // Tell the robot that the command has finished running.
         isFinished = true;
@@ -142,7 +145,7 @@ public class ResetImuWithVisionCommand extends Command {
         double updatedPreviousHeading = previousHeading + driveSubsystem.getHeading();
 
         // Revert the robot's imu's zero position back to what it was previously.
-        driveSubsystem.setYaw(updatedPreviousHeading);
+        driveSubsystem.setYaw(Rotation2d.fromDegrees(updatedPreviousHeading));
     }
 
     @Override
