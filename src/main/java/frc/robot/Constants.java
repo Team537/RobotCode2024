@@ -219,31 +219,31 @@ public final class Constants {
         public static final Pose2d RED_3_STARTING_POSE =  new Pose2d(16.322, 4.367, Rotation2d.fromRadians((4.0/3.0) * Math.PI));
 
         public static final List<Pose2d> BLUE_1_TRAJECTORY = List.of(
-                new Pose2d(2.926,7.563,new Rotation2d()),
-                new Pose2d(5.497,7.563,new Rotation2d())
+                new Pose2d(2.926,7.563, BLUE_1_STARTING_POSE.getRotation()),
+                new Pose2d(5.497,7.563, BLUE_1_STARTING_POSE.getRotation())
         );
 
         public static final List<Pose2d> BLUE_2_TRAJECTORY = List.of(
-                new Pose2d(5.293,5.593,new Rotation2d())
+                new Pose2d(5.293,5.593, BLUE_2_STARTING_POSE.getRotation())
         );
 
         public static final List<Pose2d> BLUE_3_TRAJECTORY = List.of(
-                new Pose2d(3.503,0.931,new Rotation2d()),
-                new Pose2d(4.440,0.931,new Rotation2d())
+                new Pose2d(3.503,0.931, BLUE_3_STARTING_POSE.getRotation()),
+                new Pose2d(4.440,0.931, BLUE_3_STARTING_POSE.getRotation())
         );
 
         public static final List<Pose2d> RED_1_TRAJECTORY = List.of(
-                new Pose2d(15.036,7.671,new Rotation2d()),
-                new Pose2d(15.072,7.671,new Rotation2d())
+                new Pose2d(15.036,7.671, RED_1_STARTING_POSE.getRotation()),
+                new Pose2d(15.072,7.671, RED_1_STARTING_POSE.getRotation())
         );
 
         public static final List<Pose2d> RED_2_TRAJECTORY = List.of(
-                new Pose2d(12.429,5.713, Rotation2d.fromDegrees(180))
+                new Pose2d(12.429,5.713, RED_2_STARTING_POSE.getRotation())
         );
  
         public static final List<Pose2d> RED_3_TRAJECTORY = List.of(
-                new Pose2d(14.940,1.580,new Rotation2d()),
-                new Pose2d(13.475,1.195,new Rotation2d())
+                new Pose2d(14.940,1.580, RED_3_STARTING_POSE.getRotation()),
+                new Pose2d(13.475,1.195, RED_3_STARTING_POSE.getRotation())
         );
     }
 
