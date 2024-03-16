@@ -186,8 +186,8 @@ public class RobotContainer {
 
       // Reset the IMU when the start button is pressed.
 
-      startButton.onTrue(new ParallelCommandGroup(new ResetImuWithVisionCommand(driveSubsystem, robotVision),
-      new InstantCommand(Arm::resetEncoder, Arm)));
+      startButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));//,
+    //   new InstantCommand(Arm::resetEncoder, Arm)));
 
       //startButton.onFalse(null);
 

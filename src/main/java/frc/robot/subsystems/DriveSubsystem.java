@@ -152,7 +152,6 @@ public class DriveSubsystem extends SubsystemBase {
         updateRobotPose();
 
         driveYaw = gyro.getYaw().getValue();
-        SmartDashboard.putNumber("Gyro Yaw", gyro.getYaw().getValue());
 
         SmartDashboard.putString("Front Left Commanded Speed",
                 Double.toString(frontLeft.getState().speedMetersPerSecond));

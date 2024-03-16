@@ -189,7 +189,7 @@ public class Arm extends SubsystemBase {
 
     double distToTarget = (currentPos - currentEncoderPos) + m_arm1.getPosition().getValue();
 
-    targetPos = distToTarget;
+    // targetPos = distToTarget;
     
     return distToTarget;
   }
@@ -200,10 +200,9 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    driveGyroYaw = DriveSubsystem.driveYaw;
 
-    SmartDashboard.putNumber("ENCODERR RAW", m_encoder.getRaw());
-    SmartDashboard.putNumber("ENCODER DIST", m_encoder.getDistance());
+    // SmartDashboard.putNumber("ENCODERR RAW", m_encoder.getRaw());
+    // SmartDashboard.putNumber("ENCODER DIST", m_encoder.getDistance());
 
     SmartDashboard.putNumber("DriveGyroYaw", driveGyroYaw);
     SmartDashboard.putNumber("ArmPitch", m_pigeon.getPitch().getValue());
