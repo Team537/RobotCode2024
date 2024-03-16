@@ -184,6 +184,7 @@ public class DriveSubsystem extends SubsystemBase {
          SmartDashboard.putNumber("Robot X: ", robotPose.getX());
          SmartDashboard.putNumber("Robot Y: ", robotPose.getY());
          SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getDegrees());
+         SmartDashboard.putNumber("IMU Heading: ", gyro.getAngle());
 
          // Output the current driver controlelr offset to check whether or not our code works.
          SmartDashboard.putNumber("Rotation Offset: ", driverRotationalOffset.getDegrees());
@@ -271,8 +272,12 @@ public class DriveSubsystem extends SubsystemBase {
     public void setAutonomous(AutonomousOption selectedAuto) {
         setDriverRotationalOffset(selectedAuto.getTeleopRotationalOffset());
         setTrajectory(selectedAuto.getTrajectory());
-        resetOdometry(selectedAuto.getStartingPosition());
         setYaw(selectedAuto.getStartingPosition().getRotation());
+
+        // Set the robot's position to the starting location specified in the selected autonomous. We get
+        // this position independent of rotation, since the position's rotation is added to the IMU's rotation,
+        // which results in inaccurate readings
+        resetOdometry(new Pose2d(selectedAuto.getStartingPosition().getTranslation(), gyro.getRotation2d()));
     }
 
     /**
@@ -334,8 +339,8 @@ public class DriveSubsystem extends SubsystemBase {
         //rotates the commanded linear speed
         double oldX = leftX;
         double oldY = leftY;
-        leftX = oldX * driverRotationalOffset.getCos() - oldY * driverRotationalOffset.getSin();
-        leftX = oldY * driverRotationalOffset.getSin() + driverRotationalOffset.getCos();
+        leftX = (oldX * driverRotationalOffset.getCos()) - (oldY * driverRotationalOffset.getSin());
+        leftY = (oldX * driverRotationalOffset.getSin()) + (oldY * driverRotationalOffset.getCos());
 
         double turnJoystickOrientation = Math.atan2(rightY, rightX);
         double turnJoystickMagnitude = Math.sqrt(Math.pow(rightX, 2) + Math.pow(rightY, 2));
@@ -612,6 +617,15 @@ public class DriveSubsystem extends SubsystemBase {
         gyro.setYaw(newYaw.getDegrees());
     }
     
+    /**
+     * Sets the direciton that the robot is facing to the sepecified value.
+     * 
+     * @param newYaw The direciton you want the robot to think it's facing
+     */
+    public void setYaw(double newYaw) {
+        gyro.setYaw(newYaw);
+    }
+
     /**
      * resets the heading of the robot
      */
