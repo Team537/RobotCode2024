@@ -9,11 +9,10 @@ import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
-
 import com.ctre.phoenix6.hardware.Pigeon2;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
@@ -22,7 +21,7 @@ public class Arm extends SubsystemBase {
 
   public static TalonFX m_arm1 = new TalonFX(ArmConstants.ARM1);
   public static TalonFX m_arm2 = new TalonFX(ArmConstants.ARM2);
-  public static Encoder m_encoder = new Encoder(0,1); 
+  public static DutyCycleEncoder m_encoder = new DutyCycleEncoder(1);
   
   Pigeon2 m_pigeon = new Pigeon2(ArmConstants.PIGEON);
 
@@ -121,30 +120,30 @@ public class Arm extends SubsystemBase {
   }
 
   public void ArmSubwoofer() { 
-    SetMotorsMotionMagic(-8);
-    targetPos = -8;
-    varpublicsmartdash = findTargetDist(-8);
+    SetMotorsMotionMagic(-7);
+    targetPos = -7;
+    // varpublicsmartdash = findTargetDist(-8);
 
   }
 
   public void ArmIntake() {
     SetMotorsMotionMagic(0);
     targetPos = 0;
-    varpublicsmartdash = findTargetDist(0);
+    // varpublsicsmartdash = findTargetDist(0);
 
   }
   
   public void ArmAmp() {
     SetMotorsMotionMagic(-55);
     targetPos = -55;
-    varpublicsmartdash = findTargetDist(-55);
+    // varpubslicsmartdash = findTargetDist(-55);
 
   }
 
   public void ArmMid() {
     SetMotorsMotionMagic(-23.6);
     targetPos = -23.6;
-    varpublicsmartdash = findTargetDist(-23.6);
+    // varpublicsmartdash = findTargetDist(-23.6);
 
   }
 
@@ -183,28 +182,27 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  private double findTargetDist(double targetPos) {
-    double currentPos = m_arm1.getPosition().getValue();
-    double currentEncoderPos = (m_encoder.getDistance() - ArmConstants.ENCODER_OFFSET) *100;
+  // private double findTargetDist(double targetPos) {
+  //   double currentPos = m_arm1.getPosition().getValue();
+  //   double currentEncoderPos = (m_encoder.getDistance() - ArmConstants.ENCODER_OFFSET) *100;
 
-    double distToTarget = (currentPos - currentEncoderPos) + m_arm1.getPosition().getValue();
+  //   double distToTarget = (currentPos - currentEncoderPos) + m_arm1.getPosition().getValue();
 
-    // targetPos = distToTarget;
+  //   // targetPos = distToTarget;
     
-    return distToTarget;
-  }
+  //   return distToTarget;
+  // }
 
-  public void resetEncoder() {
-    m_encoder.reset();
-  }
+  // public void resetEncoder() {
+  //   m_encoder.reset();
+  // }
 
   @Override
   public void periodic() {
 
-    // SmartDashboard.putNumber("ENCODERR RAW", m_encoder.getRaw());
-    // SmartDashboard.putNumber("ENCODER DIST", m_encoder.getDistance());
+    SmartDashboard.putNumber("ABSOLUTE POS", m_encoder.getAbsolutePosition());
+    SmartDashboard.putNumber("ABSLT POS OFFSET", m_encoder.getPositionOffset());
 
-    SmartDashboard.putNumber("DriveGyroYaw", driveGyroYaw);
     SmartDashboard.putNumber("ArmPitch", m_pigeon.getPitch().getValue());
     SmartDashboard.putNumber("ArmYaw", m_pigeon.getYaw().getValue());
     SmartDashboard.putBoolean("withinPosRange", targetPid());

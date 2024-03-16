@@ -5,6 +5,8 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -37,6 +39,23 @@ public class Intake extends SubsystemBase {
     return m_request.withVelocity(velocity).withFeedForward(feedforward);
   }
 
+  private PositionVoltage TalonfxPIDControl(double pos) {
+    TalonfxPIDSlots();
+    // pos is the desired location of the falcon in rotations
+    final PositionVoltage m_request = new PositionVoltage(pos).withSlot(0).withEnableFOC(true);
+    return m_request;
+  }
+  private void TalonfxPIDSlots() {
+    var slot0Configs = new Slot0Configs();
+    slot0Configs.kP = 1;
+    slot0Configs.kI = 1;
+    slot0Configs.kD = .01;
+
+    m_intake.getConfigurator().apply(slot0Configs);
+
+    var talonFXConfigs = new TalonFXConfiguration();
+  }
+
   public void IntakeForward() {
     m_intake.set(0.3);
   }
@@ -52,6 +71,10 @@ public class Intake extends SubsystemBase {
 
   public void IntakeOff() {
     m_intake.set(0);
+  }
+
+  public void IntakePIDOff() {
+    m_intake.setControl(TalonfxPIDControl(m_intake.getPosition().getValue()));
   }
 
   public void IntakeReverse() {

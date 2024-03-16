@@ -238,9 +238,9 @@ public final class Constants {
         );
 
         public static final List<Pose2d> RED_2_TRAJECTORY = List.of(
-                new Pose2d(12.429,5.713,new Rotation2d())
+                new Pose2d(12.429,5.713, Rotation2d.fromDegrees(180))
         );
-
+ 
         public static final List<Pose2d> RED_3_TRAJECTORY = List.of(
                 new Pose2d(14.940,1.580,new Rotation2d()),
                 new Pose2d(13.475,1.195,new Rotation2d())

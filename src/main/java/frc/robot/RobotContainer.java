@@ -134,7 +134,7 @@ public class RobotContainer {
       new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
 
 
-      rightBumper.toggleOnTrue(new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakeOff, Intake).until(()-> Intake.GetSwitchHit()), 
+      rightBumper.toggleOnTrue(new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()), 
       new StartEndCommand(Arm::ArmManualStop, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit())));
 
       // rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
@@ -186,8 +186,11 @@ public class RobotContainer {
 
       // Reset the IMU when the start button is pressed.
 
-      startButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));//,
+    //   startButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));//,
     //   new InstantCommand(Arm::resetEncoder, Arm)));
+
+     startButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+    //    startButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem,robotVision));
 
       //startButton.onFalse(null);
 
@@ -310,6 +313,7 @@ public class RobotContainer {
 
              // Run path following command, then stop at the end.
             return new SequentialCommandGroup(
+            // new InstantCommand(driveSubsystem::zeroHeading),
             new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()),
             new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
          new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
