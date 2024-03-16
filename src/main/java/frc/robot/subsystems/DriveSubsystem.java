@@ -56,6 +56,8 @@ public class DriveSubsystem extends SubsystemBase {
     // The gyro sensor
     private final Pigeon2 gyro = new Pigeon2(42);
 
+    public static double driveYaw = 0;
+
     private boolean orientationLockToggle = false;
     private boolean useOrientationLock = false;
     private double orientationLock = 0;
@@ -149,6 +151,8 @@ public class DriveSubsystem extends SubsystemBase {
         // Periodically update the robot's position data to keep track of its location.
         updateRobotPose();
 
+        driveYaw = gyro.getYaw().getValue();
+
         SmartDashboard.putString("Front Left Commanded Speed",
                 Double.toString(frontLeft.getState().speedMetersPerSecond));
         SmartDashboard.putString("Front Right Commanded Speed",
@@ -183,7 +187,7 @@ public class DriveSubsystem extends SubsystemBase {
          SmartDashboard.putNumber("Robot X: ", robotPose.getX());
          SmartDashboard.putNumber("Robot Y: ", robotPose.getY());
          SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getDegrees());
-         SmartDashboard.putNumber("IMU Heading: ", gyro.getAngle());
+         SmartDashboard.putNumber("IMU Heading: ", gyro.getYaw().getValue());
 
          // Output the current driver controlelr offset to check whether or not our code works.
          SmartDashboard.putNumber("Rotation Offset: ", driverRotationalOffset.getDegrees());
@@ -314,9 +318,6 @@ public class DriveSubsystem extends SubsystemBase {
                 return true;
         }
     }
-
-
-
 
     /**
      * drives robot from inputs

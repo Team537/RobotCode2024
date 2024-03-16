@@ -12,14 +12,25 @@ import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.OIConstants;
+import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+// import frc.robot.subsystems.cameras.RobotVision;
 import frc.robot.Constants.VisionConstants;
-import frc.robot.Constants.OIConstants;
 import frc.robot.commands.vision.ResetImuWithVisionCommand;
-import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.cameras.RobotVision;
 import frc.utils.Autonomous.AutonomousOption;
 
@@ -32,6 +43,9 @@ import frc.utils.Autonomous.AutonomousOption;
 public class RobotContainer {
 
     // The robot's subsystems
+  private final Arm Arm = new Arm();
+  private final Intake Intake = new Intake();
+  private final Shooter Shooter = new Shooter();
     private final RobotVision robotVision = new RobotVision.Builder()
         .addPhotonVisionCamera(VisionConstants.COLOR_CAMERA_NAME, VisionConstants.BACK_CAMERA_OFFSET,
             VisionConstants.APRIL_TAG_PIPELINE)
@@ -42,42 +56,39 @@ public class RobotContainer {
     private final XboxController driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
     private final Joystick flightStick = new Joystick(OIConstants.DRIVER_CONTROLLER_PORT);
 
-    // Setup all possible controller inputs to make creating commands easier.
-    JoystickButton starButton = new JoystickButton(driverController, Button.kStart.value);
-    JoystickButton backButton = new JoystickButton(driverController, Button.kBack.value);
-    JoystickButton rightStick = new JoystickButton(driverController, Button.kRightStick.value);
-    JoystickButton leftStick = new JoystickButton(driverController, Button.kLeftStick.value);
-    JoystickButton rightBumper = new JoystickButton(driverController, Button.kRightBumper.value);
-    JoystickButton leftBumper = new JoystickButton(driverController, Button.kLeftBumper.value);
-    JoystickButton aButton = new JoystickButton(driverController, Button.kA.value);
-    JoystickButton bButton = new JoystickButton(driverController, Button.kB.value);
-    JoystickButton yButton = new JoystickButton(driverController, Button.kY.value);
-    JoystickButton xButton = new JoystickButton(driverController, Button.kX.value);
-    POVButton dpadUpButton = new POVButton(driverController, 0);
-    POVButton dpadDownButton = new POVButton(driverController, 180);
-    POVButton dpadRightButton = new POVButton(driverController, 90);
-    POVButton dpadLeftButton = new POVButton(driverController, 270);
+   // Setup each button on each driverController
+   JoystickButton aButton = new JoystickButton(driverController, Button.kA.value);
+   JoystickButton bButton = new JoystickButton(driverController, Button.kB.value);
+   JoystickButton yButton = new JoystickButton(driverController, Button.kY.value);
+   JoystickButton xButton = new JoystickButton(driverController, Button.kX.value);
+   JoystickButton startButton = new JoystickButton(driverController, Button.kStart.value);
+   JoystickButton backButton = new JoystickButton(driverController, Button.kBack.value);
+   JoystickButton leftBumper = new JoystickButton(driverController, Button.kLeftBumper.value);
+   JoystickButton rightBumper = new JoystickButton(driverController, Button.kRightBumper.value);
+   POVButton dPadUpButton = new POVButton(driverController, 0);
+   POVButton dPadDownButton = new POVButton(driverController, 180);
+   POVButton dPadLeftButton = new POVButton(driverController, 90);
+   POVButton dPadRightButton = new POVButton(driverController, 270);
 
-    // Controller commands
-    private final RunCommand xBoxControllerCommand = new RunCommand(
-            () -> driveSubsystem.driveFromController(
-                    -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
-                    -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
-                    -MathUtil.applyDeadband(driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
-                    -MathUtil.applyDeadband(driverController.getRightY(), OIConstants.DRIVE_DEADBAND),
-                    driverController.getRightTriggerAxis(),
-                    true, true),
-            driveSubsystem);
+  // Controller commands
+  private final RunCommand xBoxControllerCommand = new RunCommand(
+    () -> driveSubsystem.driveFromController(
+        -MathUtil.applyDeadband(driverController.getLeftY(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(driverController.getLeftX(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(driverController.getRightX(), OIConstants.DRIVE_DEADBAND),
+        -MathUtil.applyDeadband(driverController.getRightY(), OIConstants.DRIVE_DEADBAND),
+        driverController.getRightTriggerAxis(),
+        true, true),
+        driveSubsystem);
 
-    private final RunCommand flightstickCommand = new RunCommand(
-            () -> driveSubsystem.driveFromController(
-                    -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
-                    -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
-                    -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
-                    0,
-                    0,
-                    true, true),
-            driveSubsystem);
+  private final RunCommand flightstickCommand = new RunCommand(
+      () -> driveSubsystem.drive(
+          -MathUtil.applyDeadband(flightStick.getY(), OIConstants.DRIVE_DEADBAND),
+          -MathUtil.applyDeadband(flightStick.getX(), OIConstants.DRIVE_DEADBAND),
+          -MathUtil.applyDeadband(flightStick.getTwist(), OIConstants.DRIVE_DEADBAND),
+          0,
+          true, true),
+          driveSubsystem);
 
      /**
       * an alternative command used for testing PID Controllers
@@ -93,6 +104,17 @@ public class RobotContainer {
         )),driveSubsystem
      );
 
+  // Alternative Command Options
+  private final RunCommand targetPositionCommand = new RunCommand(() -> driveSubsystem.driveToPosition(
+        new Pose2d(-5 * driverController.getLeftX(),
+        5 * driverController.getLeftY(),
+        new Rotation2d(0))), 
+        driveSubsystem);
+
+   
+  /**
+    * The container for the robot. Contains subsystems, OI devices, and commands.
+    */
     // SmartDashboard options
     private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
     private final SendableChooser<AutonomousOption> autonomousSelection = new SendableChooser<>();
@@ -101,13 +123,101 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+      //---------new button binding 
+      
+      
+      //Bumpers
+      leftBumper.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
+      new StartEndCommand(Intake::IntakeOff, Intake::IntakeMax, Intake).withTimeout(1)));
 
-        // Setup all the neccicery SmartDashboard elements
-        setupDashboard();
+      leftBumper.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
+      new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
 
-        // Configure the button bindings
-        configureButtonBindings();
-    }
+
+      rightBumper.toggleOnTrue(new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()), 
+      new StartEndCommand(Arm::ArmManualStop, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit())));
+
+      // rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
+
+
+      //ABXY
+
+      aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
+
+      // aButton.onFalse(null);
+
+
+      bButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
+
+      // bButton.onFalse(null);
+
+
+      xButton.onTrue(new StartEndCommand(Arm::ArmMid, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
+
+      // xButton.onFalse(null);
+
+
+      yButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
+
+      // yButton.onFalse(null);
+
+      //D-PAD
+
+      dPadUpButton.onTrue(new StartEndCommand(Arm::ArmClimbUp, Arm::ArmClimbUp, Arm));
+
+      // dPadUpButton.onFalse(null);
+
+
+      dPadDownButton.onTrue(new StartEndCommand(Arm::ArmClimbDown, Arm::ArmClimbDown, Arm));
+
+      // dPadDownButton.onFalse(null);
+
+
+      dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManualUp, Arm::ArmManualUp, Arm));
+
+      dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+
+
+      dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManualDown, Arm::ArmManualDown, Arm));
+
+      dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+
+      //Start and Back
+
+      // Reset the IMU when the start button is pressed.
+
+    //   startButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));//,
+    //   new InstantCommand(Arm::resetEncoder, Arm)));
+
+     startButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+    //    startButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem,robotVision));
+
+      //startButton.onFalse(null);
+
+
+      backButton.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop,Shooter), 
+      new StartEndCommand(Intake::IntakeReverse, Intake::IntakeOff, Intake)));
+
+      backButton.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
+      new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
+      // */      
+
+      // Configure the button bindings
+      configureButtonBindings();
+
+    // Adjust the dafult command based on which controler the driver ants to use.
+    if (SmartDashboard.getBoolean("useXBoxController", true)) {
+      driveSubsystem.setDefaultCommand(xBoxControllerCommand);
+    } else {
+      driveSubsystem.setDefaultCommand(flightstickCommand);
+    } 
+
+    // Setup all the neccicery SmartDashboard elements
+    setupDashboard();
+
+    // Configure the button bindings
+    configureButtonBindings();
+}
 
     /**
      * Configures the robot so that the controlls match what was configured on SMartDashboard. (e.g 
@@ -132,9 +242,6 @@ public class RobotContainer {
      * {@link JoystickButton}.
      */
     private void configureButtonBindings() {
-
-        // Reset the IMU when the start button is pressed.
-        starButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem, robotVision));
     }
 
     /**
@@ -151,6 +258,8 @@ public class RobotContainer {
 
         // Determines whether or not we want to run autonomous.
         SmartDashboard.putBoolean("Run Auto", false);
+        SmartDashboard.putBoolean("Run Shoot Auto Alone", true);
+
 
         // Setup autonomous selection.
         // Loop through all of the available auto options and add each of them as a
@@ -198,12 +307,26 @@ public class RobotContainer {
         // Configure the robot's settings so that it will be optimized for the selected command.
         driveSubsystem.setAutonomous(selectedAuto);
 
+         // Run path following command, then stop at the end.
         // If we want to run autonomous, then follow the trajectory. Otherwise don't run the auto.
         if (SmartDashboard.getBoolean("Run Auto", false)) {
 
              // Run path following command, then stop at the end.
-            return autonomousCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false));
-        }
+            return new SequentialCommandGroup(
+            // new InstantCommand(driveSubsystem::zeroHeading),
+            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()),
+            new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
+         new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
+            new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1), 
+            autonomousCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false)));
+        } else if (SmartDashboard.getBoolean("Run Shoot Auto Alone", true)) {
+            return new SequentialCommandGroup(
+            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()),
+            new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
+         new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
+            new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1));
+
+        } 
         return null;
     }
 

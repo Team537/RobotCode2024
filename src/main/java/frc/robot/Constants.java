@@ -240,7 +240,7 @@ public final class Constants {
         public static final List<Pose2d> RED_2_TRAJECTORY = List.of(
                 new Pose2d(12.429,5.713, RED_2_STARTING_POSE.getRotation())
         );
-
+ 
         public static final List<Pose2d> RED_3_TRAJECTORY = List.of(
                 new Pose2d(14.940,1.580, RED_3_STARTING_POSE.getRotation()),
                 new Pose2d(13.475,1.195, RED_3_STARTING_POSE.getRotation())
@@ -268,5 +268,8 @@ public final class Constants {
     public static final int ARM1 = 11;
     public static final int ARM2 = 12;
     public static final int PIGEON = 15;
+    public static final int ENCODER_DIO_1 = 1;
+    public static final int ENCODER_DIO_2 = 2;
+    public static final double ENCODER_OFFSET = 0.0;
   }
 }
