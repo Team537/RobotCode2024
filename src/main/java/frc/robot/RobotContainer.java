@@ -133,12 +133,8 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
 
-        // Move the robot's wheels into an X to prevent movement.
-        starButton.whileTrue(new RunCommand(
-                () -> driveSubsystem.setX(),
-                driveSubsystem));
-
-        backButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem, robotVision));
+        // Reset the IMU when the start button is pressed.
+        starButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem, robotVision));
     }
 
     /**
