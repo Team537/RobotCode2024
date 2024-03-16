@@ -211,12 +211,12 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
                 MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
 
-        public static final Pose2d BLUE_1_STARTING_POSE =  new Pose2d(1.665, 6.636, new Rotation2d((4.0/3.0) * Math.PI));
-        public static final Pose2d BLUE_2_STARTING_POSE =  new Pose2d(2.362, 5.484, new Rotation2d(Math.PI));
-        public static final Pose2d BLUE_3_STARTING_POSE =  new Pose2d(1.689, 4.451, new Rotation2d((2.0/3.0) * Math.PI));
-        public static final Pose2d RED_1_STARTING_POSE =  new Pose2d(16.238, 6.650, new Rotation2d((5.0/3.0) * Math.PI ));
-        public static final Pose2d RED_2_STARTING_POSE =  new Pose2d(15.481, 5.593, new Rotation2d(0));
-        public static final Pose2d RED_3_STARTING_POSE =  new Pose2d(16.322, 4.367, new Rotation2d((1.0/3.0) * Math.PI));
+        public static final Pose2d BLUE_1_STARTING_POSE =  new Pose2d(1.665, 6.636, Rotation2d.fromRadians((4.0/3.0) * Math.PI));
+        public static final Pose2d BLUE_2_STARTING_POSE =  new Pose2d(2.362, 5.484, Rotation2d.fromRadians(Math.PI));
+        public static final Pose2d BLUE_3_STARTING_POSE =  new Pose2d(1.689, 4.451, Rotation2d.fromRadians((2.0/3.0) * Math.PI));
+        public static final Pose2d RED_1_STARTING_POSE =  new Pose2d(16.238, 6.650, Rotation2d.fromRadians((5.0/3.0) * Math.PI ));
+        public static final Pose2d RED_2_STARTING_POSE =  new Pose2d(15.481, 5.593, Rotation2d.fromRadians(0));
+        public static final Pose2d RED_3_STARTING_POSE =  new Pose2d(16.322, 4.367, Rotation2d.fromRadians((1.0/3.0) * Math.PI));
 
         public static final List<Pose2d> BLUE_1_TRAJECTORY = List.of(
                 new Pose2d(2.926,7.563,new Rotation2d()),
