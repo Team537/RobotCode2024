@@ -184,6 +184,8 @@ public class RobotContainer {
 
       //Start and Back
 
+      // Reset the IMU when the start button is pressed.
+
       startButton.onTrue(new ParallelCommandGroup(new ResetImuWithVisionCommand(driveSubsystem, robotVision),
       new InstantCommand(Arm::resetEncoder, Arm)));
 
@@ -237,13 +239,6 @@ public class RobotContainer {
      * {@link JoystickButton}.
      */
     private void configureButtonBindings() {
-
-        // Move the robot's wheels into an X to prevent movement.
-        startButton.whileTrue(new RunCommand(
-                () -> driveSubsystem.setX(),
-                driveSubsystem));
-
-        // backButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem, robotVision));
     }
 
     /**
