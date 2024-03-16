@@ -78,19 +78,19 @@ public class ResetImuWithVisionCommand extends Command {
     }
 
     /**
-     * Attemps to reset the robot's heading using the various april tags located around the field. If 
-     * the robot is unable acomplish this in under 250 milliseconds, then in
+     * Attempt to reset the robot's heading using the various april tags located around the field. If 
+     * the robot is unable accomplish this in under 250 milliseconds, then in
      */
     private void resetGyroWithVision() {
         
-        // Try and get an estimante of the robot's position. If we are unable to get a good estimante,
-        // then wait until we are able to get a good estimante of the robot's position. After that, then 
+        // Try and get an estimate of the robot's position. If we are unable to get a good estimate,
+        // then wait until we are able to get a good estimate of the robot's position. After that, then 
         // see if it has taken more than 250 milliseconds have passed since we started trying to reset the IMU
         // with vision.
         Pose2d estimatedRobotPose = robotVision.estimateRobotPose();
         if (estimatedRobotPose == null) {
 
-            // If more then 250 milliseconds have passed then resore the robot's previous orientation and 
+            // If more then 250 milliseconds have passed then restore the robot's previous orientation and 
             // print out an error.
             if (timer.get() > .25) {
 
@@ -98,7 +98,7 @@ public class ResetImuWithVisionCommand extends Command {
                 restoreOrientation();
 
                 // Inform the user of the failure.
-                System.err.println("Unble to reset robot's IMU with vision.");
+                System.err.println("Unable to reset robot's IMU with vision.");
 
                 // Stop running the command
                 isFinished = true;
@@ -114,7 +114,7 @@ public class ResetImuWithVisionCommand extends Command {
         // it's facing the center of the field. 
         driveSubsystem.setYaw(estimatedRobotYaw);
 
-        // Tell the robot that the command has finished runnng.
+        // Tell the robot that the command has finished running.
         isFinished = true;
     }
     
@@ -150,7 +150,7 @@ public class ResetImuWithVisionCommand extends Command {
         double updatedPreviousHeading = previousHeading + driveSubsystem.getHeading();
 
         // Revert the robot's imu's zero position back to what it was previously.
-        driveSubsystem.setYaw(Rotation2d.fromDegrees(updatedPreviousHeading));
+        driveSubsystem.setYaw(Rotation2d.fromRadians(updatedPreviousHeading));
     }
 
     @Override
