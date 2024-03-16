@@ -268,5 +268,8 @@ public final class Constants {
     public static final int ARM1 = 11;
     public static final int ARM2 = 12;
     public static final int PIGEON = 15;
+    public static final int ENCODER_DIO_1 = 1;
+    public static final int ENCODER_DIO_2 = 2;
+    public static final double ENCODER_OFFSET = 0.0;
   }
 }
