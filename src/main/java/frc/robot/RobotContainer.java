@@ -132,7 +132,7 @@ public class RobotContainer {
       new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
 
 
-      rightBumper.toggleOnTrue(new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()), 
+      rightBumper.toggleOnTrue(new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()),
       new StartEndCommand(Arm::ArmManualStop, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit())));
 
       // rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));

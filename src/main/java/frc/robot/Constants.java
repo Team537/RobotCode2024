@@ -50,7 +50,7 @@ public final class Constants {
         public static final double GRIP_MAGNITUDE_NEGATIVE_SLEW_RATE = 6; // percent per second (1 = 100%)
         public static final double BOOST_MODE_MAGNITUDE_POSITIVE_SLEW_RATE = 2; // percent per second (1 = 100%)
         public static final double BOOST_MODE_MAGNITUDE_NEGATIVE_SLEW_RATE = 3.6; // percent per second (1 = 100%)
-        public static final double ROTATIONAL_SLEW_RATE = 2.0; // percent per second (1 = 100%)
+        public static final double ROTATIONAL_SLEW_RATE = 2.20; // percent per second (1 = 100%)
 
         // Chassis configuration
         public static final double TRACK_WIDTH = Units.inchesToMeters(16); // 16 for amy; 14.5 for alucard
@@ -240,7 +240,7 @@ public final class Constants {
         public static final List<Pose2d> RED_2_TRAJECTORY = List.of(
                 new Pose2d(12.429,5.713, RED_2_STARTING_POSE.getRotation())
         );
- 
+
         public static final List<Pose2d> RED_3_TRAJECTORY = List.of(
                 new Pose2d(14.940,1.580, RED_3_STARTING_POSE.getRotation()),
                 new Pose2d(13.475,1.195, RED_3_STARTING_POSE.getRotation())
@@ -270,6 +270,6 @@ public final class Constants {
     public static final int ARM2 = 12;
     public static final int PIGEON = 15;
     public static final int ENCODER_DIO = 1;
-    public static final double ENCODER_OFFSET = 0.915;
+    public static final double ENCODER_OFFSET = 0.692;
   }
 }       

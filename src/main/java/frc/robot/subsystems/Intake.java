@@ -19,7 +19,6 @@ public class Intake extends SubsystemBase {
 
   TalonFX m_intake = new TalonFX(IntakeConstants.INTAKE);
   DigitalInput m_photoelectric = new DigitalInput(IntakeConstants.PHOTOELECTRIC_DIO);
-  double intakePos;
 
   /** Creates a new Intake. */
   public Intake() {
@@ -75,20 +74,14 @@ public class Intake extends SubsystemBase {
   }
 
   public void IntakePIDOff() {
-    m_intake.setControl(TalonfxPIDControl(intakePos));
+    m_intake.setControl(TalonfxPIDControl(m_intake.getPosition().getValue()));
   }
 
   public void IntakeReverse() {
     m_intake.set(-0.2);
   }
-  public void IntakeOnEND() {
-
-  }
 
   public boolean GetSwitchHit() {
-    if (m_photoelectric.get()) {
-      intakePos = m_intake.getPosition().getValue();
-    }
     return m_photoelectric.get();
   }
 
