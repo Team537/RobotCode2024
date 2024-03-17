@@ -258,6 +258,7 @@ public final class Constants {
 
   public static final class IntakeConstants {
     public static final int INTAKE = 14;
+    public static final int PHOTOELECTRIC_DIO = 0;
   }
 
   public static final class ShooterConstants {
@@ -268,8 +269,7 @@ public final class Constants {
     public static final int ARM1 = 11;
     public static final int ARM2 = 12;
     public static final int PIGEON = 15;
-    public static final int ENCODER_DIO_1 = 1;
-    public static final int ENCODER_DIO_2 = 2;
-    public static final double ENCODER_OFFSET = 0.0;
+    public static final int ENCODER_DIO = 1;
+    public static final double ENCODER_OFFSET = 0.915;
   }
-}
+}       

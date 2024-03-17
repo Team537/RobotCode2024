@@ -123,10 +123,8 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-      //---------new button binding 
-      
-      
-      //Bumpers
+      //Bumpers ------------------------------------------------
+
       leftBumper.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
       new StartEndCommand(Intake::IntakeOff, Intake::IntakeMax, Intake).withTimeout(1)));
 
@@ -140,7 +138,7 @@ public class RobotContainer {
       // rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
 
 
-      //ABXY
+      //ABXY ---------------------------------------------------------
 
       aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
 
@@ -161,7 +159,8 @@ public class RobotContainer {
 
       // yButton.onFalse(null);
 
-      //D-PAD
+
+      //D-PAD ---------------------------------------------
 
       dPadUpButton.onTrue(new StartEndCommand(Arm::ArmClimbUp, Arm::ArmClimbUp, Arm));
 
@@ -182,16 +181,12 @@ public class RobotContainer {
 
       dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
 
-      //Start and Back
+
+      //Start and Back --------------------------------------------
 
       // Reset the IMU when the start button is pressed.
-
-    //   startButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));//,
-    //   new InstantCommand(Arm::resetEncoder, Arm)));
-
      startButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
-    //    startButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem,robotVision));
-
+     
       //startButton.onFalse(null);
 
 

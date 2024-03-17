@@ -21,21 +21,23 @@ public class Arm extends SubsystemBase {
 
   public static TalonFX m_arm1 = new TalonFX(ArmConstants.ARM1);
   public static TalonFX m_arm2 = new TalonFX(ArmConstants.ARM2);
-  public static DutyCycleEncoder m_encoder = new DutyCycleEncoder(1);
-  
-  Pigeon2 m_pigeon = new Pigeon2(ArmConstants.PIGEON);
+  public static DutyCycleEncoder m_encoder = new DutyCycleEncoder(ArmConstants.ENCODER_DIO);
+  public static Pigeon2 m_armPigeon = new Pigeon2(ArmConstants.PIGEON);
 
-  double driveGyroYaw = 0;  
+  final Follower m_follower = new Follower(ArmConstants.ARM1,false);
+
+  double driveGyroYaw = 0;  // arm pigeon code, not used
+
+  // just inits these variables, targetPos relys on the armgetpos so it doesnt move the arm to pos zero on teleop init
   double targetPos = m_arm1.getPosition().getValue();
+  double TargetVar = m_arm1.getPosition().getValue();
 
-  double varpublicsmartdash;
-
-  final Follower m_follower = new Follower(11,false);
 
   /** Creates a new Arm. */
   public Arm() {
   }
 
+  /* Pigeon on arm code
   private double ConvertAngleToRot() {
     double rotations = (m_pigeon.getAngle()/360)*200;
     return rotations;
@@ -43,7 +45,7 @@ public class Arm extends SubsystemBase {
     private double ConvertRotToAngle() {
     double angle = (m_arm1.getPosition().getValue()/200)*360;
     return angle;
-  }
+  }*/
 
   private void TalonfxMotionMagicSlots(double targetPos) {
     double velocity = getTargetDir(targetPos);
@@ -122,28 +124,28 @@ public class Arm extends SubsystemBase {
   public void ArmSubwoofer() { 
     SetMotorsMotionMagic(-7);
     targetPos = -7;
-    // varpublicsmartdash = findTargetDist(-8);
+    TargetVar = findTargetDist(-7);
 
   }
 
   public void ArmIntake() {
     SetMotorsMotionMagic(0);
     targetPos = 0;
-    // varpublsicsmartdash = findTargetDist(0);
+    TargetVar = findTargetDist(0);
 
   }
   
   public void ArmAmp() {
     SetMotorsMotionMagic(-55);
     targetPos = -55;
-    // varpubslicsmartdash = findTargetDist(-55);
+    TargetVar = findTargetDist(-55);
 
   }
 
   public void ArmMid() {
-    SetMotorsMotionMagic(-23.6);
-    targetPos = -23.6;
-    // varpublicsmartdash = findTargetDist(-23.6);
+    SetMotorsMotionMagic(-23);
+    targetPos = -23;
+    TargetVar = findTargetDist(-23);
 
   }
 
@@ -174,37 +176,52 @@ public class Arm extends SubsystemBase {
   } 
   
   public boolean targetPid() {
-    if ((targetPos - 0.2) < m_arm1.getPosition().getValue() && m_arm1.getPosition().getValue() < targetPos+0.2) {
-      // return true;
+    if ((targetPos - 0.2) < m_arm1.getPosition().getValue() && m_arm1.getPosition().getValue() < targetPos + 0.2) {
+      // if the motor value is within 0.2[Deadband] rot of the desired end location, enable the PID loop
+      // and override the motionmagic trapezoidal loop. the PID loop is stronger at keeping the 
+      // arm in position than the motion magic loop. 
       return true; 
     } else {
       return false;
     }
   }
 
-  // private double findTargetDist(double targetPos) {
-  //   double currentPos = m_arm1.getPosition().getValue();
-  //   double currentEncoderPos = (m_encoder.getDistance() - ArmConstants.ENCODER_OFFSET) *100;
+  private double findTargetDist(double posIn) {
+    double currentPos = motorRnd(m_arm1.getPosition().getValue()); //-55
+    double currentEncoderPos = encoderRnd2Dec(m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET); //-55
+                            //-23
+    double distToTarget = (posIn - currentEncoderPos) + currentPos;
 
-  //   double distToTarget = (currentPos - currentEncoderPos) + m_arm1.getPosition().getValue();
-
-  //   // targetPos = distToTarget;
+    // targetPos = distToTarget;
     
-  //   return distToTarget;
-  // }
+    return distToTarget;
+  }
 
-  // public void resetEncoder() {
-  //   m_encoder.reset();
-  // }
+  private double encoderRnd2Dec(double num) {
+    if (num < 0) {
+      return -1*Math.round(Math.abs(num*100));
+    } else {
+      return Math.round(Math.abs(num*100));
+    }
+  }
+
+    private double motorRnd(double num) {
+    if (num < 0) {
+      return -1*Math.round(Math.abs(num));
+    } else {
+      return Math.round(Math.abs(num));
+    }
+  }
 
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("ABSOLUTE POS", m_encoder.getAbsolutePosition());
-    SmartDashboard.putNumber("ABSLT POS OFFSET", m_encoder.getPositionOffset());
+    SmartDashboard.putNumber("ABSOLUTE POS", encoderRnd2Dec(m_encoder.getAbsolutePosition()));
+    SmartDashboard.putNumber("ABSOLUTE POS OFF", encoderRnd2Dec(m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET));
+    SmartDashboard.putNumber("TARGET", TargetVar);
 
-    SmartDashboard.putNumber("ArmPitch", m_pigeon.getPitch().getValue());
-    SmartDashboard.putNumber("ArmYaw", m_pigeon.getYaw().getValue());
+    SmartDashboard.putNumber("ArmPitch", m_armPigeon.getPitch().getValue());
+    SmartDashboard.putNumber("ArmYaw", m_armPigeon.getYaw().getValue());
     SmartDashboard.putBoolean("withinPosRange", targetPid());
     SmartDashboard.putNumber("targetpos", targetPos);
     SmartDashboard.putNumber("ARM POS", m_arm1.getPosition().getValue());
