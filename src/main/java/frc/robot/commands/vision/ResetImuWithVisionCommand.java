@@ -144,10 +144,12 @@ public class ResetImuWithVisionCommand extends Command {
          * is the angle it previously thought to be the value stored in previousHeading.
          * -----------------------------------------------------------------------------------------------
          * 
-         * Add the robot's previous heading and current heading together. Doing this is necessary, 
+         * Add the robot's previous heading and the rotational offset minus our current heading (How much 
+         * we turrned since we started trying to reset the IMU with vision) together. Doing this is necessary, 
          * as the robot may have rotated since when we last stored it's rotation. 
          */
-        double updatedPreviousHeading = previousHeading + driveSubsystem.getHeading();
+        double updatedPreviousHeading = previousHeading + (driveSubsystem.getHeading() 
+                - driveSubsystem.getDriverRotationalOffset().getRadians());
 
         // Revert the robot's imu's zero position back to what it was previously.
         driveSubsystem.setYaw(Rotation2d.fromRadians(updatedPreviousHeading));
