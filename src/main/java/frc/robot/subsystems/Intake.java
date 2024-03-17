@@ -18,7 +18,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
 
   TalonFX m_intake = new TalonFX(IntakeConstants.INTAKE);
-  DigitalInput m_photoelectric = new DigitalInput(0);
+  DigitalInput m_photoelectric = new DigitalInput(IntakeConstants.PHOTOELECTRIC_DIO);
   double intakePos;
 
   /** Creates a new Intake. */

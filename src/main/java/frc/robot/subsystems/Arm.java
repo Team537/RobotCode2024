@@ -198,7 +198,8 @@ public class Arm extends SubsystemBase {
   }
 
   private double encoderRnd2Dec(double num) {
-    if (num < 0) {
+    
+    if (num < 0) {                  //mulltiply by 100 because of falcon gearbox (make encoder same ratio as falcons)
       return -1*Math.round(Math.abs(num*100));
     } else {
       return Math.round(Math.abs(num*100));
@@ -216,8 +217,11 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
 
-    SmartDashboard.putNumber("ABSOLUTE POS", encoderRnd2Dec(m_encoder.getAbsolutePosition()));
-    SmartDashboard.putNumber("ABSOLUTE POS OFF", encoderRnd2Dec(m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET));
+    SmartDashboard.putNumber("ABSOLUTE POS RND", encoderRnd2Dec(m_encoder.getAbsolutePosition()));
+    SmartDashboard.putNumber("ABSOLUTE POS", m_encoder.getAbsolutePosition());
+
+    SmartDashboard.putNumber("ABSOLUTE POS OFF RND", encoderRnd2Dec(m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET));
+    SmartDashboard.putNumber("ABSOLUTE POS OFF", m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET);
     SmartDashboard.putNumber("TARGET", TargetVar);
 
     SmartDashboard.putNumber("ArmPitch", m_armPigeon.getPitch().getValue());
