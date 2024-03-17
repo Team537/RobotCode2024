@@ -7,6 +7,7 @@ package frc.robot;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -43,6 +44,9 @@ public class Robot extends TimedRobot {
     // Start the timer
     snapshotTimer.start();
 
+    // Make it possible to view USB webcams connected to the RoboRio
+    CameraServer.startAutomaticCapture();
+    
     // Make it possible to view the photonvision dashboard over the internet
     PortForwarder.add(5800, "photonvision.local", 5800);
     timer = 0;
