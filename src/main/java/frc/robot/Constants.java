@@ -50,7 +50,7 @@ public final class Constants {
         public static final double GRIP_MAGNITUDE_NEGATIVE_SLEW_RATE = 6; // percent per second (1 = 100%)
         public static final double BOOST_MODE_MAGNITUDE_POSITIVE_SLEW_RATE = 2; // percent per second (1 = 100%)
         public static final double BOOST_MODE_MAGNITUDE_NEGATIVE_SLEW_RATE = 3.6; // percent per second (1 = 100%)
-        public static final double ROTATIONAL_SLEW_RATE = 2.0; // percent per second (1 = 100%)
+        public static final double ROTATIONAL_SLEW_RATE = 2.20; // percent per second (1 = 100%)
 
         // Chassis configuration
         public static final double TRACK_WIDTH = Units.inchesToMeters(16); // 16 for amy; 14.5 for alucard
