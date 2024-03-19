@@ -212,14 +212,6 @@ public class DriveSubsystem extends SubsystemBase {
     backRight.setDesiredState(desiredStates[3]);
   }
 
-  /** Resets the drive encoders to currently read a position of 0. */
-  public void resetEncoders() {
-    frontLeft.resetEncoders();
-    backLeft.resetEncoders();
-    frontRight.resetEncoders();
-    backRight.resetEncoders();
-  }
-
   /** Zeroes the heading of the robot. */
   public void zeroHeading() {
     gyro.reset();

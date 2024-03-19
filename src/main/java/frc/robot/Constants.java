@@ -4,12 +4,14 @@
 
 package frc.robot;
 
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkBase.IdleMode;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -76,7 +78,7 @@ public final class Constants {
     public static final boolean TURNING_ENCODER_INVERTED = true;
 
     // Calculations required for driving motor conversion factors and feed forward
-    public static final double DRIVING_MOTOR_FREE_SPEED_RPS = NeoMotorConstants.FREE_SPEED_RPM / 60;
+    public static final double DRIVING_MOTOR_FREE_SPEED_RPS = TalonMotorConstants.FREE_SPEED_RPM / 60;
     public static final double WHEEL_DIAMETER_METERS = 0.0762;
     public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
     // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15 teeth on the bevel pinion
@@ -111,6 +113,7 @@ public final class Constants {
 
     public static final IdleMode DRIVING_MOTOR_IDLE_MODE = IdleMode.kBrake;
     public static final IdleMode TURNING_MOTOR_IDLE_MODE = IdleMode.kBrake;
+    public static final NeutralModeValue DRIVE_IDLE = NeutralModeValue.Brake;
 
     public static final int DRIVING_MOTOR_CURRENT_LIMIT = 50; // amps
     public static final int TURNING_MOTOR_CURRENT_LIMIT = 20; // amps
@@ -138,6 +141,9 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double FREE_SPEED_RPM = 5676;
+  }
+  public static final class TalonMotorConstants {
+    public static final double FREE_SPEED_RPM = 6380;
   }
 
   public static final class IntakeConstants {
