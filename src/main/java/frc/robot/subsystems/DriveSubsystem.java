@@ -185,7 +185,7 @@ public class DriveSubsystem extends SubsystemBase {
          SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getDegrees());
          SmartDashboard.putNumber("IMU Heading: ", gyro.getAngle());
 
-         // Output the current driver controlelr offset to check whether or not our code works.
+         // Output the current driver controller offset to check whether or not our code works.
          SmartDashboard.putNumber("Rotation Offset: ", driverRotationalOffset.getDegrees());
 
     }
@@ -196,7 +196,7 @@ public class DriveSubsystem extends SubsystemBase {
      */
     private void updateRobotPose() {
 
-        // Return if poseEstimator hasn't been intialize yet.
+        // Return if poseEstimator hasn't been initialize yet.
         if (poseEstimator == null) {
             return;
         }
@@ -204,7 +204,7 @@ public class DriveSubsystem extends SubsystemBase {
         // Retrieve the estimated position from the robot's vision system.
         Pose2d estimatedPose2d = visionMeasurementSupplier.get();
 
-        // Add the robot's estimated vision measurments to the pose estimator if they are not null.
+        // Add the robot's estimated vision measurements to the pose estimator if they are not null.
         if (estimatedPose2d != null) {
 
             // Incorporate the robot's estimated vision measurements into this DriveSubsystem's poseEstimator.
@@ -262,7 +262,7 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Configre the path the robot will follow and the rotational offset that will be used during teleop 
+     * Configure the path the robot will follow and the rotational offset that will be used during teleop 
      * by using the selected autonomous command.
      * 
      * @param selectedAuto The selected autonomous that determines which path the robot will follow and 
@@ -304,7 +304,8 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * gets whether or not the trajcetory is finished
+     * gets whether or not the trajectory is finished
+     * 
      * @return whether or not the trajectory is finished
      */
     public boolean isTrajectoryFinished() {
@@ -331,7 +332,7 @@ public class DriveSubsystem extends SubsystemBase {
      *                      the right joystick y
      * @param boostMode     controls the robot's max speed
      * @param fieldRelative determines whether the robot is field centric
-     * @param rateLimit     applys rate limiting to the robot
+     * @param rateLimit     Applies rate limiting to the robot
      */
     public void driveFromController(double leftX, double leftY, double rightX, double rightY, double boostMode,boolean fieldRelative, boolean rateLimit) {
 
