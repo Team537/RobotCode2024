@@ -28,13 +28,17 @@ public class Arm extends SubsystemBase {
 
   double driveGyroYaw = 0;  // arm pigeon code, not used
 
+  public double armOffset = 0;
+
   // just inits these variables, targetPos relys on the armgetpos so it doesnt move the arm to pos zero on teleop init
-  double targetPos = m_arm1.getPosition().getValue();
+  public static double targetPos = m_arm1.getPosition().getValue();
   double TargetVar = m_arm1.getPosition().getValue();
 
 
   /** Creates a new Arm. */
   public Arm() {
+    SmartDashboard.putNumber("MOTION MAGIC TARGET POS", 0);
+
   }
 
   /* Pigeon on arm code
@@ -117,6 +121,8 @@ public class Arm extends SubsystemBase {
   }
 
   private void SetMotorsMotionMagic(double pos) {
+    pos -= armOffset;
+    SmartDashboard.putNumber("MOTION MAGIC TARGET POS", pos);
     m_arm1.setControl(m_follower);
     m_arm2.setControl(TalonfxMotionMagic(pos));
   }
@@ -165,6 +171,10 @@ public class Arm extends SubsystemBase {
     // SetMotorsPID(0);
   }
 
+  public void ArmAbsolutelyNothing() {
+
+  }
+
   public void ArmManualDown() {
     m_arm1.set(0.2);
     m_arm2.set(0.2);
@@ -210,13 +220,18 @@ public class Arm extends SubsystemBase {
     }
   }
 
-    private double motorRnd(double num) {
+  private double motorRnd(double num) {
     if (num < 0) {
       return -1*Math.round(Math.abs(num));
     } else {
       return Math.round(Math.abs(num));
     }
   }
+
+  public void resetArmZero() {
+    armOffset = Math.abs(m_arm2.getPosition().getValue());
+  }
+
 
   @Override
   public void periodic() {
@@ -232,10 +247,13 @@ public class Arm extends SubsystemBase {
     // SmartDashboard.putNumber("ArmYaw", m_armPigeon.getYaw().getValue());
     SmartDashboard.putBoolean("withinPosRange", targetPid());
     SmartDashboard.putNumber("targetpos", targetPos);
-    SmartDashboard.putNumber("ARM POS", m_arm2.getPosition().getValue());
-    System.out.println("Absolute POS OFFSET: " + (m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET));
-    System.out.println("TARGET: " + targetPos);
-    System.out.println("ARM POS: " + m_arm2.getPosition().getValue());
+    SmartDashboard.putNumber("ARM POS 2", m_arm2.getPosition().getValue());
+    SmartDashboard.putNumber("ARM POS 2 OFF", (m_arm2.getPosition().getValue() + armOffset));
+
+    SmartDashboard.putNumber("ARM POS 1", m_arm1.getPosition().getValue());
+    SmartDashboard.putNumber("ARM POS 2", m_arm2.getPosition().getValue());
+
+
 
             
 

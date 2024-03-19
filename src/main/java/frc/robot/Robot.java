@@ -11,9 +11,11 @@ import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Shooter;
@@ -155,6 +157,12 @@ public class Robot extends TimedRobot {
       snapshotTimer.reset();
       // robotContainer.snapshot();
     }
+
+    // System.out.println("Absolute POS OFFSET: " + (Arm.m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET));
+    // System.out.println("TARGET: " + Arm.targetPos);
+    // System.out.println("ARM POS2: " + Arm.m_arm2.getPosition().getValue());
+    // System.out.println("ARM POS1: " + Arm.m_arm1.getPosition().getValue());
+
   }
 
   @Override
