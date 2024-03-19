@@ -162,7 +162,7 @@ public class RobotContainer {
 
       //D-PAD ---------------------------------------------
 
-      dPadUpButton.onTrue(new StartEndCommand(Arm::resetArmZero, Arm::ArmAbsolutelyNothing, Arm).withTimeout(0.060));
+      dPadUpButton.onTrue(new StartEndCommand(Arm::ArmClimbUp, Arm::ArmClimbUp, Arm));
 
       // dPadUpButton.onFalse(null);
 

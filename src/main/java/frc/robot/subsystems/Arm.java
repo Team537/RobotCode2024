@@ -121,8 +121,6 @@ public class Arm extends SubsystemBase {
   }
 
   private void SetMotorsMotionMagic(double pos) {
-    pos -= armOffset;
-    SmartDashboard.putNumber("MOTION MAGIC TARGET POS", pos);
     m_arm1.setControl(m_follower);
     m_arm2.setControl(TalonfxMotionMagic(pos));
   }
@@ -164,15 +162,9 @@ public class Arm extends SubsystemBase {
   }
 
   public void ArmClimbUp() {
-    // m_arm2.setSelectedSensorPosition(0);
   }
 
   public void ArmClimbDown() {
-    // SetMotorsPID(0);
-  }
-
-  public void ArmAbsolutelyNothing() {
-
   }
 
   public void ArmManualDown() {
@@ -228,10 +220,6 @@ public class Arm extends SubsystemBase {
     }
   }
 
-  public void resetArmZero() {
-    armOffset = Math.abs(m_arm2.getPosition().getValue());
-  }
-
 
   @Override
   public void periodic() {
@@ -252,15 +240,6 @@ public class Arm extends SubsystemBase {
 
     SmartDashboard.putNumber("ARM POS 1", m_arm1.getPosition().getValue());
     SmartDashboard.putNumber("ARM POS 2", m_arm2.getPosition().getValue());
-
-
-
-            
-
-
-            
-
-    
 
     // This method will be called once per scheduler run
   }
