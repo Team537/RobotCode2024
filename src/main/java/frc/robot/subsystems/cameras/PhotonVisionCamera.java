@@ -9,8 +9,10 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
@@ -64,10 +66,23 @@ public class PhotonVisionCamera extends SubsystemBase {
          */
         if (result.hasTargets()) {
 
-            if(result.getTargets().isEmpty()) {
-                System.out.println("Work");
+            List<PhotonTrackedTarget> targets = result.getTargets();
+            if(targets.isEmpty()) {
                 return;
             }
+
+            // Get the detects object's position on the screen and display it on SmartDashboard.
+            PhotonTrackedTarget target = targets.get(0);
+            List<TargetCorner> tagCorners = target.getDetectedCorners();
+            SmartDashboard.putNumber("Bottom Left Corner X: ", tagCorners.get(0).x);
+            SmartDashboard.putNumber("Bottom Left Corner Y: ", tagCorners.get(0).x);
+            SmartDashboard.putNumber("Bottom Right Corner X: ", tagCorners.get(1).x);
+            SmartDashboard.putNumber("Bottom Right Corner Y: ", tagCorners.get(1).x);
+            SmartDashboard.putNumber("Top Right Corner X: ", tagCorners.get(2).x);
+            SmartDashboard.putNumber("Top Right Corner Y: ", tagCorners.get(2).x);
+            SmartDashboard.putNumber("Top Left Corner X: ", tagCorners.get(3).x);
+            SmartDashboard.putNumber("Top Left Corner Y: ", tagCorners.get(3).x);
+
         }
     }
 

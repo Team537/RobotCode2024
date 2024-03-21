@@ -331,7 +331,6 @@ public class RobotVision extends SubsystemBase {
         // Loop through all of then cameras and take a snapshot (photograph) using each camera.
         for (PhotonVisionCamera camera : photonVisionCameras) {
             camera.takeInputSnapshot();
-            System.out.println("Snap!");
         }
         for (LimelightCamera camera : limelightCameras) {
             camera.snapshot();
