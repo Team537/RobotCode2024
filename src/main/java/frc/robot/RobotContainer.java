@@ -33,7 +33,7 @@ public class RobotContainer {
 
     // The robot's subsystems
     private final RobotVision robotVision = new RobotVision.Builder()
-        .addPhotonVisionCamera(VisionConstants.COLOR_CAMERA_NAME, VisionConstants.BACK_CAMERA_OFFSET,
+        .addPhotonVisionCamera(VisionConstants.COLOR_CAMERA_NAME, VisionConstants.BLACK_INTAKE_CAMERA_OFFSET,
             VisionConstants.APRIL_TAG_PIPELINE)
         .build();
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(true, robotVision::estimateRobotPose);
@@ -102,7 +102,7 @@ public class RobotContainer {
      */
     public RobotContainer() {
 
-        // Setup all the neccicery SmartDashboard elements
+        // Setup all the necessary SmartDashboard elements
         setupDashboard();
 
         // Configure the button bindings
@@ -110,13 +110,13 @@ public class RobotContainer {
     }
 
     /**
-     * Configures the robot so that the controlls match what was configured on SMartDashboard. (e.g 
+     * Configures the robot so that the controls match what was configured on SMartDashboard. (e.g 
      * whether the robot is being controlled with a flightstick or an xbox controller).
      */
-    public void configureDriverPrefferences() {
+    public void configureDriverPreferences() {
 
         // Get the drive command for the selected controller.(Note that the
-        // getSelected() method returns the command assosiated with each option, which
+        // getSelected() method returns the command associated with each option, which
         // is set above).
         driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
 
@@ -153,15 +153,14 @@ public class RobotContainer {
         SmartDashboard.putBoolean("Run Auto", false);
 
         // Setup autonomous selection.
-        // Loop through all of the available auto options and add each of them as a
-        // seperate autonomous option
+        // Loop through all of the available auto options and add each of them as a separate autonomous option
         // in SmartDashboard.
         autonomousSelection.setDefaultOption("RED_1", AutonomousOption.RED_1);
         for (AutonomousOption autonomousOption : AutonomousOption.values()) {
             autonomousSelection.addOption(autonomousOption.toString(), autonomousOption);
         }
 
-        // Add all of the configured SmartDashboard elrments to the GUI.
+        // Add all of the configured SmartDashboard elements to the GUI.
         SmartDashboard.putData("Controller Selection", controllerSelection);
         SmartDashboard.putData("Autonomous Selection", autonomousSelection);
     }
@@ -174,7 +173,7 @@ public class RobotContainer {
     }
 
     /**
-     * Takes a photongraph using all of the cameras.
+     * Takes a photo using all of the cameras.
      */
     public void snapshot() {
         robotVision.snapshotAll();

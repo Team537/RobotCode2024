@@ -203,7 +203,7 @@ public class LimelightCamera extends SubsystemBase {
         // Get an array containing the values of the robot's calculated position on the field.
         double[] botposeValues = getValue("botpose").getDoubleArray(new double[6]);
 
-        // Return an EstimatedRobotPose3d containing the caera's estimante of the robot's position on the field.
+        // Return an EstimatedRobotPose3d containing the camera's estimate of the robot's position on the field.
         return new EstimatedRobotPose3d(
             botposeValues[0], botposeValues[1], botposeValues[2], // Robot's position on the filed (x, y, z) in meters.
             botposeValues[3], botposeValues[4], botposeValues[5]  // Robot's rotation (roll, pitch, yaw) in radians.

@@ -1,11 +1,8 @@
 package frc.robot.commands.vision;
 
-import org.photonvision.estimation.RotTrlTransform3d;
-
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.cameras.RobotVision;
@@ -33,14 +30,14 @@ public class ResetImuWithVisionCommand extends Command {
     private boolean isFinished = false;
 
     /**
-     * Creates a new {@code ResetImuWithVisionCommand} with acsess to the specified subsystems.
+     * Creates a new {@code ResetImuWithVisionCommand} with access to the specified subsystems.
      * 
      * @param driveSubsystem The robot's drivetrain
      * @param robotVision The robot's camera manager
      */
     public ResetImuWithVisionCommand(DriveSubsystem driveSubsystem, RobotVision robotVision) {
 
-        // Gain acsess to the robot's subsystems so that we are able to interact with them.
+        // Gain access to the robot's subsystems so that we are able to interact with them.
         this.driveSubsystem = driveSubsystem;
         this.robotVision = robotVision;
 
@@ -51,18 +48,18 @@ public class ResetImuWithVisionCommand extends Command {
     @Override
     public void initialize() {
 
-        // Make it possible to run the comand again. If we don't set isFinished to false every tine
-        // this command is run, then the command will only sucsessfully run once, since once it completes 
+        // Make it possible to run the command again. If we don't set isFinished to false every tine
+        // this command is run, then the command will only successfully run once, since once it completes 
         isFinished = false;
         
         // Determine whether or not the driver wants to use vision to reset the robot's gyro. 
         // This is done by checking if we pressed the back button within the last 750 milliseconds.
         if (timer.get() > 0.75 || previousHeading == -999999999) {
             System.out.println("------------------------------------------------");
-            resetGyro(); // We don't want to use vision to rset the robot's gyro.
+            resetGyro(); // We don't want to use vision to reset the robot's gyro.
         }
 
-        // Reset the timer so that we can keep track of the time that has passed sicne this command
+        // Reset the timer so that we can keep track of the time that has passed since this command
         // started running. This helps us determine when we want to reset the robot's heading with
         // april tags as well as when we want to 
         timer.reset();
@@ -145,7 +142,7 @@ public class ResetImuWithVisionCommand extends Command {
          * -----------------------------------------------------------------------------------------------
          * 
          * Add the robot's previous heading and the rotational offset minus our current heading (How much 
-         * we turrned since we started trying to reset the IMU with vision) together. Doing this is necessary, 
+         * we turned since we started trying to reset the IMU with vision) together. Doing this is necessary, 
          * as the robot may have rotated since when we last stored it's rotation. 
          */
         double updatedPreviousHeading = previousHeading + (driveSubsystem.getHeading() 

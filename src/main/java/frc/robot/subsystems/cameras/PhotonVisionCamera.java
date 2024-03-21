@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
 
 /**
- * A camera attatched to a co-processer.
+ * A camera attached to a co-processor.
  * 
  * @author Cameron Myhre
  * @version 1.0
@@ -42,8 +42,9 @@ public class PhotonVisionCamera extends SubsystemBase {
 
         // Set the camera offset
         this.cameraOffset = cameraOffset;
+        this.cameraOffset.getRotation();
 
-        // Initialize this camera's PhotonPoseEstimaotr so that we are able to estimate
+        // Initialize this camera's PhotonPoseEstimator so that we are able to estimate
         // the robot's position.
         photonPoseEstimator = new PhotonPoseEstimator(VisionConstants.APRIL_TAG_FIELD_LAYOUT,
                 PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, cameraOffset);
@@ -59,7 +60,7 @@ public class PhotonVisionCamera extends SubsystemBase {
         /*         
          * Output values so that I, Cameron, can figure out how photonvision's Object Detection code
          * works. This needs to be done because there isn't any documentation, and the people on the discord
-         * server effectibly told me to just figure it out.
+         * server effectively told me to just figure it out.
          */
         if (result.hasTargets()) {
 
@@ -87,10 +88,10 @@ public class PhotonVisionCamera extends SubsystemBase {
     }
 
     /**
-     * Estimates the robot's position on the filed using all of the visilbe
+     * Estimates the robot's position on the filed using all of the visible
      * AprilTags and returns the result.
      * 
-     * @return An estimante of the robot's positon on the field.
+     * @return An estimate of the robot's position on the field.
      */
     public Optional<EstimatedRobotPose> estimateRobotPose() {
 
@@ -119,7 +120,7 @@ public class PhotonVisionCamera extends SubsystemBase {
      */
     public PhotonTrackedTarget getDistanceToTag(int id) {
 
-        // Make sure that this camera is on the ApilTag detection pipeline. If it isn't,
+        // Make sure that this camera is on the AprilTag detection pipeline. If it isn't,
         // then print an error and return null.
         if (camera.getPipelineIndex() != VisionConstants.APRIL_TAG_PIPELINE) {
 

@@ -69,14 +69,29 @@ public enum AutonomousOption {
         return this.TRAJECTORY;
     }
 
+    /**
+     * Returns the alliance that this auto is associated with.
+     * 
+     * @return The alliance that this auto is associated with.
+     */
     public Alliance getAlliance() {
         return this.ALLIANCE;
     }
 
+    /**
+     * Returns the position of this auto's target amp.
+     * 
+     * @return The position of this auto's target amp.
+     */
     public Pose2d getAmpPosition() {
         return this.AMP_POSITION;
     }
 
+    /**
+     * Returns the position of this auto's target speaker.
+     * 
+     * @return The position of this auto's target speaker.
+     */
     public Pose2d getSpeakerPosition() {
         return this.SPEAKER_POSITION;
     }

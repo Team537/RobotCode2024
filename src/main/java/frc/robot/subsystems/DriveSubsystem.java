@@ -79,7 +79,7 @@ public class DriveSubsystem extends SubsystemBase {
     // other "prevTime" used for displaying motor outputs
     private double prevTimeForEncoder = WPIUtilJNI.now() * 1e-6;
 
-    // variables for storing past motor postions
+    // variables for storing past motor positions
     private double currentFrontLeftMeters = 0;
     private double currentFrontRightMeters = 0;
     private double currentBackLeftMeters = 0;
@@ -100,15 +100,15 @@ public class DriveSubsystem extends SubsystemBase {
     // SwerveDrivePoseEstimator object to keep track of the robot's position on the field.
     private SwerveDrivePoseEstimator poseEstimator;
 
-    // Create a supplier to make it possible for this DriveSubsystem to gain acsess to the cameras' estimated position.
+    // Create a supplier to make it possible for this DriveSubsystem to gain access to the cameras' estimated position.
     private Supplier<Pose2d> visionMeasurementSupplier;
     private Timer elapsedTime = new Timer();
 
     /**
-     * Creates a new {@code DriveSubsystem} object with the specified paramaters.
+     * Creates a new {@code DriveSubsystem} object with the specified parameters.
      * 
      * @param resetOrientation          Whether or not the IMU will be reset.
-     * @param visionMeasurementSupplier A refference to a method that will provide the drivetrain with the 
+     * @param visionMeasurementSupplier A reference to a method that will provide the drivetrain with the 
      */
     public DriveSubsystem(boolean resetOrientation, Supplier<Pose2d> visionMeasurementSupplier) {
 
@@ -117,13 +117,13 @@ public class DriveSubsystem extends SubsystemBase {
            zeroHeading();;
         }
 
-        // Stert the time so that we are able to get time stamped vision measurments.
+        // Start the time so that we are able to get time stamped vision measurements.
         elapsedTime.start();
 
         /* 
-         * Initialze up the visionMeasurementSupplier so that this DriveSubsystem is able to get
+         * Initialize up the visionMeasurementSupplier so that this DriveSubsystem is able to get
          * the camera(s) estimate of the robot's position. This helps ensure the robot is able to
-         * reliable prefrom autonomous action, like autoscoring and auto note grabbing.
+         * reliable preform autonomous action, like autoscaling and auto note grabbing.
         */
         this.visionMeasurementSupplier = visionMeasurementSupplier;
 
@@ -293,7 +293,7 @@ public class DriveSubsystem extends SubsystemBase {
      */
     public void followTrajectory() {
         if (waypoint < trajectory.size()) {
-                if ( (double) getPose().getTranslation().getDistance(trajectory.get(waypoint).getTranslation()) < AutoConstants.TRAJECOTRY_THRESHOLD) {
+                if ( (double) getPose().getTranslation().getDistance(trajectory.get(waypoint).getTranslation()) < AutoConstants.TRAJECTORY_THRESHOLD) {
                         waypoint += 1;
                 } else {
                         driveToPosition(trajectory.get(waypoint));
@@ -413,7 +413,7 @@ public class DriveSubsystem extends SubsystemBase {
 
         }
 
-        // applys driving to the robot
+        // Applies driving to the robot
         drive(leftX, leftY, rotSpeedCommanded, boostMode, true, true);
 
     }
@@ -609,18 +609,18 @@ public class DriveSubsystem extends SubsystemBase {
     }
 
     /**
-     * Sets the direciton that the robot is facing to the sepecified value.
+     * Sets the direction that the robot is facing to the specified value.
      * 
-     * @param newYaw The direciton you want the robot to think it's facing
+     * @param newYaw The direction you want the robot to think it's facing
      */
     public void setYaw(Rotation2d newYaw) {
         gyro.setYaw(newYaw.getDegrees());
     }
     
     /**
-     * Sets the direciton that the robot is facing to the sepecified value.
+     * Sets the direction that the robot is facing to the specified value.
      * 
-     * @param newYaw The direciton you want the robot to think it's facing
+     * @param newYaw The direction you want the robot to think it's facing
      */
     public void setYaw(double newYaw) {
         gyro.setYaw(newYaw);

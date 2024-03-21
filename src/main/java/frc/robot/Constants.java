@@ -162,21 +162,21 @@ public final class Constants {
 
         // Camera settings
         public static final String LIMELIGHT_NAME = "limelight";
-        public static final String BLACK_AND_WHITE_CAMERA_NAME = "Arducam_OV9281_USB_Camera";
+        public static final String ARDUCAM_OV9281_USB_CAMERA = "Arducam_OV9281_USB_Camera";
+        public static final String ARDUCAM_OV2311_USB_CAMERA = "Arducam_OV2311_USB_Camera";
         public static final String COLOR_CAMERA_NAME = "USB_2M_GS_camera";
 
-        // Camera offsets (NOTE: These values are placeholders and thus subject to
-        // change).
-        public static final Transform3d FRONT_CAMERA_OFFSET = new Transform3d(
+        // Camera offsets (NOTE: These values are placeholders and thus subject to change).
+        public static final Transform3d RED_OUTTAKE_CAMERA_OFFSET = new Transform3d(
                 new Translation3d(0, 0, 0),
                 new Rotation3d(0, 0, 0));
-        public static final Transform3d RIGHT_CAMERA_OFFSET = new Transform3d(
+        public static final Transform3d RED_INTAKE_CAMERA_OFFSET = new Transform3d(
                 new Translation3d(0, 0, 0),
                 new Rotation3d(0, 0, 0));
-        public static final Transform3d LEFT_CAMERA_OFFSET = new Transform3d(
+        public static final Transform3d BLACK_OUTTAKE_CAMERA_OFFSET = new Transform3d(
                 new Translation3d(0, 0, 0),
                 new Rotation3d(0, 0, 0));
-        public static final Transform3d BACK_CAMERA_OFFSET = new Transform3d(
+        public static final Transform3d BLACK_INTAKE_CAMERA_OFFSET = new Transform3d(
                 new Translation3d(0, 0, 0),
                 new Rotation3d(0, 0, 0));
     }
@@ -207,7 +207,7 @@ public final class Constants {
 
         // Constraint for the motion profiled robot angle controller
         // Value is a float because xyz
-        public static final double TRAJECOTRY_THRESHOLD = 0.1; //the maximum distance away from a waypoint before the robot moves onto the next one (meters)
+        public static final double TRAJECTORY_THRESHOLD = 0.1; //the maximum distance away from a waypoint before the robot moves onto the next one (meters)
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
                 MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
 
