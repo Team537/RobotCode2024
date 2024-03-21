@@ -29,7 +29,7 @@ public class Arm extends SubsystemBase {
 
   double driveGyroYaw = 0;  // arm pigeon code, not used
 
-  public double ChaseTarget = 0;
+  public double ChaseTarget = m_encoder.getAbsolutePosition();
 
   boolean active = false;
 
@@ -129,7 +129,6 @@ public class Arm extends SubsystemBase {
     SetMotorsMotionMagic(-7);
     FalconArmTarget = -7;
     // SetMotorsMotionMagic(findTargetDist(-7));
-    EncoderTarget = findTargetDist(-7);
     active = false;
   }
 
@@ -137,7 +136,6 @@ public class Arm extends SubsystemBase {
     SetMotorsMotionMagic(0);
     FalconArmTarget = 0;
     // SetMotorsMotionMagic(findTargetDist(0));
-    EncoderTarget = findTargetDist(0);
     active = false;
   }
   
@@ -145,7 +143,6 @@ public class Arm extends SubsystemBase {
     SetMotorsMotionMagic(-55);
     FalconArmTarget = -55;
     // SetMotorsMotionMagic(findTargetDist(-55));
-    EncoderTarget = findTargetDist(-55);
     active = false;
   }
 
@@ -153,19 +150,12 @@ public class Arm extends SubsystemBase {
     SetMotorsMotionMagic(-23);
     FalconArmTarget = -23;
     // SetMotorsMotionMagic(findTargetDist(-23));
-    EncoderTarget = findTargetDist(-23);
     active = false;
   }
 
   public void ArmMotionMagicStop() {
     SetMotorsMotionMagic(FalconArmTarget);
     active = false;
-  }
-
-  public void ArmClimbUp() {
-  }
-
-  public void ArmClimbDown() {
   }
 
   public void ArmManualDown() {
@@ -187,12 +177,12 @@ public class Arm extends SubsystemBase {
 
   public void ChaseSet2() {
     active = true;
-    EncoderTarget = 0.5;
+    ChaseTarget = 0.5;
   }
 
   public void ChaseSet0() {
     active = true;
-    EncoderTarget = 0;
+    ChaseTarget = 0;
   }
   
   public boolean targetPid() {
@@ -204,33 +194,6 @@ public class Arm extends SubsystemBase {
       return true; 
     } else {
       return false;
-    }
-  }
-
-  private double findTargetDist(double posIn) {
-    double currentPos = m_arm2.getPosition().getValue();
-    double currentEncoderPos = 3*(m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET);
-
-    double distToTarget = ((posIn - currentEncoderPos)- FalconArmTarget);
-
-    // targetPos = distToTarget;
-    
-    return distToTarget;
-  }
-
-  private double encoderRnd2Dec(double num) {
-    if (num < 0) {                  //mulltiply by 100 because of falcon gearbox (make encoder same ratio as falcons)
-      return -1*Math.round(Math.abs(num*100));
-    } else {
-      return Math.round(Math.abs(num*100));
-    }
-  }
-
-  private double motorRnd(double num) {
-    if (num < 0) {
-      return -1*Math.round(Math.abs(num));
-    } else {
-      return Math.round(Math.abs(num));
     }
   }
 
@@ -325,20 +288,16 @@ public class Arm extends SubsystemBase {
   }
 
   public void RunChase() {
-    encoderChase(EncoderTarget);
+    encoderChase(ChaseTarget);
   }
 
 
   @Override
   public void periodic() {
-
-
-    SmartDashboard.putNumber("ABSOLUTE POS RND", encoderRnd2Dec(m_encoder.getAbsolutePosition()));
     SmartDashboard.putNumber("ABSOLUTE POS", m_encoder.getAbsolutePosition());
 
     SmartDashboard.putNumber("CHASE TARGET", ChaseTarget);
 
-    SmartDashboard.putNumber("ABSOLUTE POS OFF RND", encoderRnd2Dec(m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET));
     SmartDashboard.putNumber("ABSOLUTE POS OFF", m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET);
     SmartDashboard.putNumber("EncoderTarget", EncoderTarget);
 

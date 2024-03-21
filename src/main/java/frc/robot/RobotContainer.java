@@ -161,12 +161,12 @@ public class RobotContainer {
 
       //D-PAD ---------------------------------------------
 
-      dPadUpButton.onTrue(new StartEndCommand(Arm::ArmClimbUp, Arm::ArmClimbUp, Arm));
+      dPadUpButton.onTrue(new StartEndCommand(Arm::ChaseSet0, Arm::ChaseSet0, Arm));
 
       // dPadUpButton.onFalse(null);
 
 
-      dPadDownButton.onTrue(new StartEndCommand(Arm::ArmClimbDown, Arm::ArmClimbDown, Arm));
+      dPadDownButton.onTrue(new StartEndCommand(Arm::ChaseSet2, Arm::ChaseSet2, Arm));
 
       // dPadDownButton.onFalse(null);
 
