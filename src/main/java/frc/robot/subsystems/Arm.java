@@ -23,7 +23,6 @@ public class Arm extends SubsystemBase {
   public static TalonFX m_arm1 = new TalonFX(ArmConstants.ARM1);
   public static TalonFX m_arm2 = new TalonFX(ArmConstants.ARM2);
   public static DutyCycleEncoder m_encoder = new DutyCycleEncoder(ArmConstants.ENCODER_DIO);
-  // public static Pigeon2 m_armPigeon = new Pigeon2(ArmConstants.PIGEON);
 
   final Follower m_follower = new Follower(ArmConstants.ARM2,false);
 
@@ -42,8 +41,6 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    SmartDashboard.putNumber("MOTION MAGIC TARGET POS", 0);
-
   }
 
   /* Pigeon on arm code
