@@ -28,30 +28,17 @@ public class Arm extends SubsystemBase {
 
   double driveGyroYaw = 0;  // arm pigeon code, not used
 
-  public double ChaseTarget = m_encoder.getAbsolutePosition();
-
+  //test safelock incase the old commands do something stupid
   boolean active = false;
 
   // just inits these variables, targetPos relys on the armgetpos so it doesnt move the arm to pos zero on teleop init
   public static double FalconArmTarget = m_arm1.getPosition().getValue();
-  public static double EncoderTarget = m_arm1.getPosition().getValue();
-
-
+  public double ChaseTarget = m_encoder.getAbsolutePosition();
 
 
   /** Creates a new Arm. */
   public Arm() {
   }
-
-  /* Pigeon on arm code
-  private double ConvertAngleToRot() {
-    double rotations = (m_pigeon.getAngle()/360)*200;
-    return rotations;
-  }
-    private double ConvertRotToAngle() {
-    double angle = (m_arm1.getPosition().getValue()/200)*360;
-    return angle;
-  }*/
 
   private void TalonfxMotionMagicSlots(double targetPos) {
     double velocity = getTargetDir(targetPos);
@@ -296,7 +283,6 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("CHASE TARGET", ChaseTarget);
 
     SmartDashboard.putNumber("ABSOLUTE POS OFF", m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET);
-    SmartDashboard.putNumber("EncoderTarget", EncoderTarget);
 
     // SmartDashboard.putNumber("ArmPitch", m_armPigeon.getPitch().getValue());
     // SmartDashboard.putNumber("ArmYaw", m_armPigeon.getYaw().getValue());
