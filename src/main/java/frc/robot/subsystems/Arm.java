@@ -84,20 +84,6 @@ public class Arm extends SubsystemBase {
     return velocity;
   }
 
-  private String getTargetDirChase(double targetPos) {
-    double currentPos = m_arm2.getPosition().getValue();
-    String direction = "";
-    if (targetPos < currentPos) {
-      //up
-      direction ="up";
-    } else if (targetPos > currentPos) {
-        direction = "down";
-    } else if (targetPos == currentPos) {
-      direction = "none";
-    }
-    return direction;
-  }
-
   private MotionMagicVoltage TalonfxMotionMagic(double pos) {
     TalonfxMotionMagicSlots(pos);
     MotionMagicVoltage m_request = new MotionMagicVoltage(pos).withSlot(1);
