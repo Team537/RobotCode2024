@@ -76,7 +76,7 @@ public class Robot extends TimedRobot {
       m_coastConfig.NeutralMode = NeutralModeValue.Coast;
       Arm.m_arm2.getConfigurator().apply(m_coastConfig);
       Arm.m_arm1.getConfigurator().apply(m_coastConfig);
-    } else {
+    } else if (false) {
       final MotorOutputConfigs m_brakeConfig = new MotorOutputConfigs();
       m_brakeConfig.NeutralMode = NeutralModeValue.Brake;
       Arm.m_arm2.getConfigurator().apply(m_brakeConfig);

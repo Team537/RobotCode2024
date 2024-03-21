@@ -137,25 +137,24 @@ public class RobotContainer {
 
       // rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
 
-
       //ABXY ---------------------------------------------------------
 
-      aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
+      aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmMotionMagicStop, Arm));
 
       // aButton.onFalse(null);
 
 
-      bButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
+      bButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmMotionMagicStop, Arm));
 
       // bButton.onFalse(null);
 
 
-      xButton.onTrue(new StartEndCommand(Arm::ArmMid, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
+      xButton.onTrue(new StartEndCommand(Arm::ArmMid, Arm::ArmMotionMagicStop, Arm));
 
       // xButton.onFalse(null);
 
 
-      yButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()));
+      yButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmMotionMagicStop, Arm));
 
       // yButton.onFalse(null);
 
@@ -206,6 +205,7 @@ public class RobotContainer {
     } else {
       driveSubsystem.setDefaultCommand(flightstickCommand);
     } 
+    Arm.setDefaultCommand(new RunCommand(Arm::RunChase, Arm));
 
     // Setup all the neccicery SmartDashboard elements
     setupDashboard();
@@ -309,14 +309,14 @@ public class RobotContainer {
              // Run path following command, then stop at the end.
             return new SequentialCommandGroup(
             // new InstantCommand(driveSubsystem::zeroHeading),
-            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()),
+            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmMotionMagicStop, Arm).until(() -> Arm.targetPid()),
             new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
          new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
             new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1), 
             autonomousCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false)));
         } else if (SmartDashboard.getBoolean("Run Shoot Auto Alone", true)) {
             return new SequentialCommandGroup(
-            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmPIDStop, Arm).until(() -> Arm.targetPid()),
+            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmMotionMagicStop, Arm).until(() -> Arm.targetPid()),
             new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
          new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
             new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1));
