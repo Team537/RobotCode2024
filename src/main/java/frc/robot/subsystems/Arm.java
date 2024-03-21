@@ -145,7 +145,7 @@ public class Arm extends SubsystemBase {
     active = false;
   } 
 
-  public void ChaseSet2() {
+  public void ChaseSet05() {
     active = true;
     ChaseTarget = 0.5;
   }
@@ -243,10 +243,10 @@ public class Arm extends SubsystemBase {
       double currentENC = m_encoder.getAbsolutePosition();
       double currentOffsetENC = m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET;
 
-      targetENC = targetENC; //parameter
+      targetENC = targetENC; //parameter. not necessary, but helps with readability
       double targetMotor = targetENC*ArmConstants.GEAR_RATIO;
 
-      if (targetENC < currentENC && targetMotor> m_arm2.getPosition().getValue() ) {//m_arm2.getpos = currentmotor
+      if (targetENC < currentENC && targetMotor > m_arm2.getPosition().getValue() ) {//m_arm2.getpos = currentmotor
         targetMotor *= -1;
       }
 
@@ -270,8 +270,7 @@ public class Arm extends SubsystemBase {
 
     SmartDashboard.putNumber("ABSOLUTE POS OFF", m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET);
 
-    // SmartDashboard.putNumber("ArmPitch", m_armPigeon.getPitch().getValue());
-    // SmartDashboard.putNumber("ArmYaw", m_armPigeon.getYaw().getValue());
+
     SmartDashboard.putBoolean("withinPosRange", targetPid());
     SmartDashboard.putNumber("Falcon Arm Target", FalconArmTarget);
     SmartDashboard.putNumber("ARM POS 1", m_arm1.getPosition().getValue());

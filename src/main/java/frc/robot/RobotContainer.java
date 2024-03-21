@@ -166,7 +166,7 @@ public class RobotContainer {
       // dPadUpButton.onFalse(null);
 
 
-      dPadDownButton.onTrue(new StartEndCommand(Arm::ChaseSet2, Arm::ChaseSet2, Arm));
+      dPadDownButton.onTrue(new StartEndCommand(Arm::ChaseSet05, Arm::ChaseSet05, Arm));
 
       // dPadDownButton.onFalse(null);
 
