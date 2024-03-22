@@ -8,6 +8,7 @@ import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ShooterConstants;
+import frc.utils.TalonUtils;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.controls.VelocityVoltage;
@@ -18,13 +19,10 @@ public class Shooter extends SubsystemBase {
 
   /** Creates a new Shooter. */
   public Shooter() {
-    // put falcon defaults here
-    var slot0Configs = new Slot0Configs();
-    slot0Configs.kS = 0.05; // V to overcome static friction
-    slot0Configs.kV = 0.12; // 1 rps = 0.12V output
-    slot0Configs.kP = 0.11; // An error of 1 rps results in 0.11 V output
+    TalonUtils.ApplyRunMotorSlot(m_shooter);
 
-    m_shooter.getConfigurator().apply(slot0Configs);
+    //this makes positive values send the shooter forward(shoot note)
+    m_shooter.setInverted(true);
   }
 
   private VelocityVoltage SetSpeed(double velocity, double feedforward) {
@@ -37,7 +35,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void ShooterForward() {    
-    m_shooter.setControl(SetSpeed(-100, 0));
+    TalonUtils.TalonVelocityControl(m_shooter, 1);
   }
 
   public void ShooterStop() {
@@ -45,17 +43,12 @@ public class Shooter extends SubsystemBase {
   }
 
   public void ShooterAmp() {
-    m_shooter.set(-0.1);
+    TalonUtils.TalonVelocityControl(m_shooter, 0.1);
   }
 
   public void ShooterReverse() {
-    m_shooter.set(0.1);
+    TalonUtils.TalonVelocityControl(m_shooter, -0.1);
   }
-
-  public double getShooterPos() {
-    return m_shooter.getPosition().getValue();
-  }
-
 
   @Override
   public void periodic() {
