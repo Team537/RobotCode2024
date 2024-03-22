@@ -17,6 +17,8 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ArmConstants;
+import frc.utils.TalonUtils;
+import frc.utils.TalonUtils.*;
 
 public class Arm extends SubsystemBase {
 
@@ -36,56 +38,10 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("CHASE CALC TARGET", 0);
   }
 
-  private void TalonfxMotionMagicSlots(double targetPos) {
-    double velocity = getTargetDir(targetPos);
-    var talonFXConfigs = new TalonFXConfiguration();
-
-    // set slot 0 gains
-    var slot1Configs = talonFXConfigs.Slot1;
-    slot1Configs.kV = 0.13; // A velocity target of 1 rps results in [var] V output
-    // slot1Configs.kA = 0.04; // An acceleration of 1 rps/s requires [var] V output
-    slot1Configs.kP = 4; // A position error of 2.5 rotations results in 12 V output  4
-    slot1Configs.kI = 0; // no output for integrated error
-    slot1Configs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output         0.5
-    
-    //configs slot1Configs.kg to be variable (arm cosine, with high gravity being at high)
-    // talonFXConfigs.withSlot1(slot1Configs.withGravityType(GravityTypeValue.Arm_Cosine));
-
-    
-    // set Motion Magic settings
-    var motionMagicConfigs = talonFXConfigs.MotionMagic;
-    motionMagicConfigs.MotionMagicCruiseVelocity = velocity; // Target cruise velocity of 80 rps
-    motionMagicConfigs.MotionMagicAcceleration = 40; // Target acceleration of 160 rps/s (0.5 seconds)
-    motionMagicConfigs.MotionMagicJerk = 100; // Target jerk of 1600 rps/s/s (0.1 seconds)
-
-    m_arm1.getConfigurator().apply(talonFXConfigs);
-    m_arm2.getConfigurator().apply(talonFXConfigs);
-
-  }
-
-  private double getTargetDir(double targetPos) {
-    double currentPos = m_arm2.getPosition().getValue();
-    double velocity = 0;
-    if (targetPos < currentPos) {
-      //up
-      velocity = 60;
-    } else if (targetPos > currentPos) {
-      velocity = 40;
-    } else if (targetPos == currentPos) {
-      velocity = 0;
-    }
-    return velocity;
-  }
-
-  private MotionMagicVoltage TalonfxMotionMagic(double pos) {
-    TalonfxMotionMagicSlots(pos);
-    MotionMagicVoltage m_request = new MotionMagicVoltage(pos).withSlot(1);
-    return m_request;
-  }
-
   private void SetMotorsMotionMagic(double pos) {
     m_arm1.setControl(m_follower);
-    m_arm2.setControl(TalonfxMotionMagic(pos));
+    TalonUtils.TalonArmMotionMagic(m_arm2, pos);
+    FalconArmTarget = pos;
   }
 
   public void ArmSubwoofer() { 
