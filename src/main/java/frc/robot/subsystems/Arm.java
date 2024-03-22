@@ -163,11 +163,6 @@ public class Arm extends SubsystemBase {
     SetMotorsMotionMagic(targetMotor);
   }
 
-  public void RunChase() {
-    encoderChase(ChaseTarget);
-  }
-
-
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ABSOLUTE POS", m_encoder.getAbsolutePosition());
