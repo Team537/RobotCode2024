@@ -67,21 +67,28 @@ public class PhotonVisionCamera extends SubsystemBase {
         if (result.hasTargets()) {
 
             List<PhotonTrackedTarget> targets = result.getTargets();
-            if(targets.isEmpty()) {
+            if(targets.isEmpty() || targets.get(0) == null) {
                 return;
             }
 
             // Get the detects object's position on the screen and display it on SmartDashboard.
             PhotonTrackedTarget target = targets.get(0);
-            List<TargetCorner> tagCorners = target.getDetectedCorners();
+            List<TargetCorner> tagCorners = target.getMinAreaRectCorners();
+            if (tagCorners.isEmpty()) {
+                return;
+            }
             SmartDashboard.putNumber("Bottom Left Corner X: ", tagCorners.get(0).x);
-            SmartDashboard.putNumber("Bottom Left Corner Y: ", tagCorners.get(0).x);
+            SmartDashboard.putNumber("Bottom Left Corner Y: ", tagCorners.get(0).y);
             SmartDashboard.putNumber("Bottom Right Corner X: ", tagCorners.get(1).x);
-            SmartDashboard.putNumber("Bottom Right Corner Y: ", tagCorners.get(1).x);
+            SmartDashboard.putNumber("Bottom Right Corner Y: ", tagCorners.get(1).y);
             SmartDashboard.putNumber("Top Right Corner X: ", tagCorners.get(2).x);
-            SmartDashboard.putNumber("Top Right Corner Y: ", tagCorners.get(2).x);
+            SmartDashboard.putNumber("Top Right Corner Y: ", tagCorners.get(2).y);
             SmartDashboard.putNumber("Top Left Corner X: ", tagCorners.get(3).x);
-            SmartDashboard.putNumber("Top Left Corner Y: ", tagCorners.get(3).x);
+            SmartDashboard.putNumber("Top Left Corner Y: ", tagCorners.get(3).y);
+
+            SmartDashboard.putNumber("Object Y: ",(tagCorners.get(3).y + tagCorners.get(1).y) / 2);
+            SmartDashboard.putNumber("Object X: ",(tagCorners.get(3).x + tagCorners.get(1).x) / 2);
+
 
         }
     }

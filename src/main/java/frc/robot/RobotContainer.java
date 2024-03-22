@@ -34,7 +34,7 @@ public class RobotContainer {
     // The robot's subsystems
     private final RobotVision robotVision = new RobotVision.Builder()
         .addPhotonVisionCamera(VisionConstants.COLOR_CAMERA_NAME, VisionConstants.BLACK_INTAKE_CAMERA_OFFSET,
-            VisionConstants.APRIL_TAG_PIPELINE)
+            VisionConstants.OBJECT_DETECTION_PIPELINE)
         .build();
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(true, robotVision::estimateRobotPose);
 
