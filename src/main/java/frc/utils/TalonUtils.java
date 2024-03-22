@@ -11,10 +11,8 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
-
 /*
-TalonFX commands that arent arm specific
+Broad talonfx commands, most config set positions
 */
 public class TalonUtils {
     /*
