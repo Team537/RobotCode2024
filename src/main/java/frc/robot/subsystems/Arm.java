@@ -44,6 +44,16 @@ public class Arm extends SubsystemBase {
     MotionMagicTarget = pos;
   }
 
+  private void EncoderChase(double targetENC) {
+    EncoderTarget = targetENC;
+    double currentENC = m_encoder.getAbsolutePosition();
+    double targetMotor = ((targetENC-currentENC)*ArmConstants.GEAR_RATIO)+(m_arm2.getPosition().getValue());
+
+    SmartDashboard.putNumber("CHASE CALC TARGET", targetMotor);
+    //sends the pos to the motors
+    SetMotorsMotionMagic(targetMotor);
+  }
+
   public void ArmSubwoofer() { 
     SetMotorsMotionMagic(-7);
   }
@@ -75,21 +85,11 @@ public class Arm extends SubsystemBase {
   } 
 
   public void ChaseSet05() {
-    encoderChase(EncoderTarget);
+    EncoderChase(EncoderTarget);
   }
 
   public void ChaseSet0() {
-    encoderChase(EncoderTarget);
-  }
-
-  private void encoderChase(double targetENC) {
-    EncoderTarget = targetENC;
-    double currentENC = m_encoder.getAbsolutePosition();
-    double targetMotor = ((targetENC-currentENC)*ArmConstants.GEAR_RATIO)+(m_arm2.getPosition().getValue());
-
-    SmartDashboard.putNumber("CHASE CALC TARGET", targetMotor);
-    //sends the pos to the motors
-    SetMotorsMotionMagic(targetMotor);
+    EncoderChase(EncoderTarget);
   }
 
   @Override
