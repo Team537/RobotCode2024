@@ -156,12 +156,7 @@ public class Arm extends SubsystemBase {
 
   private void encoderChase(double targetENC) {
     double currentENC = m_encoder.getAbsolutePosition();
-    double currentOffsetENC = m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET;
-
-    targetENC = targetENC; //parameter. not necessary, but helps with readability
-    double targetMotor = (targetENC-currentENC)*ArmConstants.GEAR_RATIO;
-
-    targetMotor += m_arm2.getPosition().getValue();
+    double targetMotor = ((targetENC-currentENC)*ArmConstants.GEAR_RATIO)+(m_arm2.getPosition().getValue());
 
     SmartDashboard.putNumber("CHASE CALC TARGET", targetMotor);
     //sends the pos to the motors
