@@ -29,8 +29,8 @@ public class Arm extends SubsystemBase {
   final Follower m_follower = new Follower(ArmConstants.ARM2,false);
   
   // just inits these variables, targetPos relys on the armgetpos so it doesnt move the arm to pos zero on teleop init
-  public static double FalconArmTarget = m_arm1.getPosition().getValue();
-  public double ChaseTarget = m_encoder.getAbsolutePosition();
+  public static double MotionMagicTarget = m_arm1.getPosition().getValue();
+  public double EncoderTarget = m_encoder.getAbsolutePosition();
 
 
   /** Creates a new Arm. */
@@ -41,31 +41,27 @@ public class Arm extends SubsystemBase {
   private void SetMotorsMotionMagic(double pos) {
     m_arm1.setControl(m_follower);
     TalonUtils.TalonArmMotionMagic(m_arm2, pos);
-    FalconArmTarget = pos;
+    MotionMagicTarget = pos;
   }
 
   public void ArmSubwoofer() { 
     SetMotorsMotionMagic(-7);
-    FalconArmTarget = -7;
   }
 
   public void ArmIntake() {
     SetMotorsMotionMagic(0);
-    FalconArmTarget = 0;
   }
   
   public void ArmAmp() {
     SetMotorsMotionMagic(-55);
-    FalconArmTarget = -55;
   }
 
   public void ArmMid() {
     SetMotorsMotionMagic(-23);
-    FalconArmTarget = -23;
   }
 
   public void ArmMotionMagicStop() {
-    SetMotorsMotionMagic(FalconArmTarget);
+    SetMotorsMotionMagic(MotionMagicTarget);
   }
 
   public void ArmManualDown() {
@@ -83,13 +79,13 @@ public class Arm extends SubsystemBase {
   } 
 
   public void ChaseSet05() {
-    ChaseTarget = 0.5;
-    encoderChase(ChaseTarget);
+    EncoderTarget = 0.5;
+    encoderChase(EncoderTarget);
   }
 
   public void ChaseSet0() {
-    ChaseTarget = 0;
-    encoderChase(ChaseTarget);
+    EncoderTarget = 0;
+    encoderChase(EncoderTarget);
   }
 
   private void encoderChase(double targetENC) {
@@ -104,11 +100,8 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ABSOLUTE POS", m_encoder.getAbsolutePosition());
-    SmartDashboard.putNumber("ABSOLUTE POS OFF", m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET);
-
-    SmartDashboard.putNumber("CHASE TARGET", ChaseTarget);
-
-    SmartDashboard.putNumber("Falcon Arm Target", FalconArmTarget);
+    SmartDashboard.putNumber("Encoder Target", EncoderTarget);
+    SmartDashboard.putNumber("Motion Magic Arm Target", MotionMagicTarget);
     SmartDashboard.putNumber("ARM POS 1", m_arm1.getPosition().getValue());
     SmartDashboard.putNumber("ARM POS 2", m_arm2.getPosition().getValue());
 
