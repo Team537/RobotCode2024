@@ -40,13 +40,13 @@ public class Arm extends SubsystemBase {
 
   private void SetMotorsMotionMagic(double pos) {
     m_arm1.setControl(m_follower);
-    TalonUtils.TalonArmMotionMagic(m_arm2, pos);
+    TalonUtils.TalonArmMotionMagicControl(m_arm2, pos);
     MotionMagicTarget = pos;
   }
 
   private void SetMotorsPID(double pos) {
     m_arm1.setControl(m_follower);
-    TalonUtils.TalonfxPIDControl(m_arm2, pos);
+    TalonUtils.TalonArmPIDControl(m_arm2, pos);
   }
 
   private void EncoderChase(double targetENC) {

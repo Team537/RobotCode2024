@@ -11,6 +11,7 @@ import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import frc.robot.Constants.*;
+import frc.utils.TalonUtils;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,12 +23,7 @@ public class Intake extends SubsystemBase {
 
   /** Creates a new Intake. */
   public Intake() {
-    var slot0Configs = new Slot0Configs();
-    slot0Configs.kS = 0.05; // V to overcome static friction
-    slot0Configs.kV = 0.12; // 1 rps = 0.12V output
-    slot0Configs.kP = 0.11; // An error of 1 rps results in 0.11 V output
-
-    m_intake.getConfigurator().apply(slot0Configs);
+    TalonUtils.ApplyRunMotorSlot(m_intake);
   }
 
   private VelocityVoltage SetSpeed(double velocity, double feedforward) {

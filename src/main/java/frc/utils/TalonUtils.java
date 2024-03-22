@@ -8,6 +8,7 @@ import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
 import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
@@ -20,7 +21,7 @@ public class TalonUtils {
     Applys motion magic constants for the Arm 
     */
     private static void ApplyArmMotionMagicSlot(TalonFX m_talon, double targetPos) {
-        double velocity = getTargetDir(m_talon,targetPos);
+        double velocity = TargetDirVelo(m_talon,targetPos);
         var talonFXConfigs = new TalonFXConfiguration();
         
         // set slot 0 gains
@@ -44,10 +45,30 @@ public class TalonUtils {
         m_talon.getConfigurator().apply(talonFXConfigs);
         
     }
+
+    private static void ApplyPIDSlot(TalonFX m_talon) {
+        var slot0Configs = new Slot0Configs();
+        slot0Configs.kP = 1;
+        slot0Configs.kI = 1;
+        slot0Configs.kD = .01;
+
+        m_talon.getConfigurator().apply(slot0Configs);
+        var talonFXConfigs = new TalonFXConfiguration();
+    }
+
+    public static void ApplyRunMotorSlot(TalonFX m_talon) {
+        var slot0Configs = new Slot0Configs();
+        slot0Configs.kS = 0.05; // V to overcome static friction
+        slot0Configs.kV = 0.12; // 1 rps = 0.12V output
+        slot0Configs.kP = 0.11; // An error of 1 rps results in 0.11 V output
+
+        m_talon.getConfigurator().apply(slot0Configs);
+    }
+
     /*
     Directional calculator to calculate velocity 
     */
-    private static double getTargetDir(TalonFX m_talon, double targetPos) {
+    private static double TargetDirVelo(TalonFX m_talon, double targetPos) {
         double currentPos = m_talon.getPosition().getValue();
         double velocity = 0;
         if (targetPos < currentPos) {
@@ -61,26 +82,27 @@ public class TalonUtils {
         return velocity;
     }
     
-    public static void TalonArmMotionMagic(TalonFX m_talon, double pos) {
+    public static void TalonArmMotionMagicControl(TalonFX m_talon, double pos) {
         ApplyArmMotionMagicSlot(m_talon, pos);
         MotionMagicVoltage m_request = new MotionMagicVoltage(pos).withSlot(1);
         m_talon.setControl(m_request);
     }
 
-    private static void TalonfxPIDSlots(TalonFX m_talon) {
-        var slot0Configs = new Slot0Configs();
-        slot0Configs.kP = 1;
-        slot0Configs.kI = 1;
-        slot0Configs.kD = .01;
-
-        m_talon.getConfigurator().apply(slot0Configs);
-        var talonFXConfigs = new TalonFXConfiguration();
-    }
-    
-    public static void TalonfxPIDControl(TalonFX m_talon, double pos) {
-        TalonfxPIDSlots(m_talon);
+    public static void TalonArmPIDControl(TalonFX m_talon, double pos) {
+        ApplyPIDSlot(m_talon);
         // pos is the desired location of the falcon in rotations
         final PositionVoltage m_request = new PositionVoltage(pos).withSlot(0).withEnableFOC(true);
         m_talon.setControl(m_request);
+    }
+
+    public static void TalonVelocityControl(TalonFX m_talon, double percent) {
+    //.withVelocity( input is RPS, 6380 is max Falcon rpm which converts to 106 and 1/3 rps)
+    //.withFeedForward(input is V to overcome gravity)
+    ApplyRunMotorSlot(m_talon);
+
+    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
+
+    m_talon.setControl(m_request.withVelocity(percent*106.33));
+//   }
     }
 }
