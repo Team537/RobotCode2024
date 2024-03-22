@@ -25,9 +25,7 @@ public class Arm extends SubsystemBase {
   public static DutyCycleEncoder m_encoder = new DutyCycleEncoder(ArmConstants.ENCODER_DIO);
 
   final Follower m_follower = new Follower(ArmConstants.ARM2,false);
-
-  double driveGyroYaw = 0;  // arm pigeon code, not used
-
+  
   // just inits these variables, targetPos relys on the armgetpos so it doesnt move the arm to pos zero on teleop init
   public static double FalconArmTarget = m_arm1.getPosition().getValue();
   public double ChaseTarget = m_encoder.getAbsolutePosition();
@@ -93,25 +91,21 @@ public class Arm extends SubsystemBase {
   public void ArmSubwoofer() { 
     SetMotorsMotionMagic(-7);
     FalconArmTarget = -7;
-    // SetMotorsMotionMagic(findTargetDist(-7));
   }
 
   public void ArmIntake() {
     SetMotorsMotionMagic(0);
     FalconArmTarget = 0;
-    // SetMotorsMotionMagic(findTargetDist(0));
   }
   
   public void ArmAmp() {
     SetMotorsMotionMagic(-55);
     FalconArmTarget = -55;
-    // SetMotorsMotionMagic(findTargetDist(-55));
   }
 
   public void ArmMid() {
     SetMotorsMotionMagic(-23);
     FalconArmTarget = -23;
-    // SetMotorsMotionMagic(findTargetDist(-23));
   }
 
   public void ArmMotionMagicStop() {
