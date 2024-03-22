@@ -26,55 +26,28 @@ public class Intake extends SubsystemBase {
     TalonUtils.ApplyRunMotorSlot(m_intake);
   }
 
-  private VelocityVoltage SetSpeed(double velocity, double feedforward) {
-    //.withVelocity( input is RPS, 6380 is max Falcon rpm which converts to 106 and 1/3 rps)
-    //.withFeedForward(input is V to overcome gravity)
-
-    final VelocityVoltage m_request = new VelocityVoltage(0).withSlot(0);
-
-    return m_request.withVelocity(velocity).withFeedForward(feedforward);
-  }
-
-  private PositionVoltage TalonfxPIDControl(double pos) {
-    TalonfxPIDSlots();
-    // pos is the desired location of the falcon in rotations
-    final PositionVoltage m_request = new PositionVoltage(pos).withSlot(0).withEnableFOC(true);
-    return m_request;
-  }
-  private void TalonfxPIDSlots() {
-    var slot0Configs = new Slot0Configs();
-    slot0Configs.kP = 1;
-    slot0Configs.kI = 1;
-    slot0Configs.kD = .01;
-
-    m_intake.getConfigurator().apply(slot0Configs);
-
-    var talonFXConfigs = new TalonFXConfiguration();
+  private void SetMotorPID() {
+    TalonUtils.TalonPIDControl(m_intake, m_intake.getPosition().getValue());
   }
 
   public void IntakeForward() {
-    m_intake.set(0.3);
+    TalonUtils.TalonVelocityControl(m_intake, 0.3);
   }
-
-  public void IntakeAmp() {
-    m_intake.set(0.4);
-  }
-  
 
   public void IntakeMax() {
-    m_intake.set(1);
+    TalonUtils.TalonVelocityControl(m_intake, 1);
   }
 
   public void IntakeOff() {
-    m_intake.set(0);
+    TalonUtils.TalonVelocityControl(m_intake, 0);
   }
 
   public void IntakePIDOff() {
-    m_intake.setControl(TalonfxPIDControl(m_intake.getPosition().getValue()));
+    SetMotorPID();
   }
 
   public void IntakeReverse() {
-    m_intake.set(-0.2);
+    TalonUtils.TalonVelocityControl(m_intake, -0.2);
   }
 
   public boolean GetSwitchHit() {

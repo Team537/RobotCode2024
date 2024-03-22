@@ -46,7 +46,7 @@ public class Arm extends SubsystemBase {
 
   private void SetMotorsPID(double pos) {
     m_arm1.setControl(m_follower);
-    TalonUtils.TalonArmPIDControl(m_arm2, pos);
+    TalonUtils.TalonPIDControl(m_arm2, pos);
   }
 
   private void EncoderChase(double targetENC) {

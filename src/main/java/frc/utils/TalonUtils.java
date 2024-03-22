@@ -88,7 +88,7 @@ public class TalonUtils {
         m_talon.setControl(m_request);
     }
 
-    public static void TalonArmPIDControl(TalonFX m_talon, double pos) {
+    public static void TalonPIDControl(TalonFX m_talon, double pos) {
         ApplyPIDSlot(m_talon);
         // pos is the desired location of the falcon in rotations
         final PositionVoltage m_request = new PositionVoltage(pos).withSlot(0).withEnableFOC(true);
