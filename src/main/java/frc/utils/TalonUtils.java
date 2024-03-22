@@ -11,6 +11,11 @@ import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import frc.robot.Constants.FalconMotorConstants;
+import frc.robot.Constants.TalonMotionMagicConstants;
+import frc.robot.Constants.TalonPIDConstants;
+import frc.robot.Constants.TalonVelocityConstants;
+
 /*
 Broad talonfx commands, will config motion magic, PID, and velocity
 simplifies subsystems
@@ -31,14 +36,17 @@ public class TalonUtils {
         var slot1Configs = talonFXConfigs.Slot1;
 
         //feed forward for gravity, velocity, and gravity
-        slot1Configs.kV = 0.13; // A velocity target of 1 rps results in [var] V output
-        slot1Configs.kA = 0.00; // An acceleration of 1 rps/s requires [var] V output
-        slot1Configs.kG = 0.00; //Gravity FeedForward
+        slot1Configs.kV = TalonMotionMagicConstants.KV; // A velocity target of 1 rps results in [var] V output
+        slot1Configs.kA = TalonMotionMagicConstants.KA; // An acceleration of 1 rps/s requires [var] V output
+        slot1Configs.kG = TalonMotionMagicConstants.KG; //Gravity FeedForward
 
         //PID
-        slot1Configs.kP = 4; // A position error of 2.5 rotations results in 12 V output  4
-        slot1Configs.kI = 0; // no output for integrated error
-        slot1Configs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output         0.5
+        slot1Configs.kP = TalonMotionMagicConstants.KP; // A position error of 2.5 rotations results in 12 V output
+        slot1Configs.kI = TalonMotionMagicConstants.KI; // no output for integrated error
+        slot1Configs.kD = TalonMotionMagicConstants.KD; // A velocity error of 1 rps results in 0.1 V output
+        //KD value notes - 3/21/2024 ********************************************
+        // when kd was set to 0.5, motor shock violently. keep motor at or below 0.1
+        //***************************************************
         
         //configs slot1Configs.kg to be variable (arm cosine, with high gravity being at high)
         //untested, dont know what it does
@@ -48,8 +56,8 @@ public class TalonUtils {
         // set Motion Magic settings
         var motionMagicConfigs = talonFXConfigs.MotionMagic;
         motionMagicConfigs.MotionMagicCruiseVelocity = velocity; // Target cruise velocity of [var] rps
-        motionMagicConfigs.MotionMagicAcceleration = 40; // Target acceleration of [var] rps/s (0.5 seconds)
-        motionMagicConfigs.MotionMagicJerk = 100; // Target jerk of [var] rps/s/s (0.1 seconds)
+        motionMagicConfigs.MotionMagicAcceleration = TalonMotionMagicConstants.ACCELERATION; // Target acceleration of [var] rps/s (0.5 seconds)
+        motionMagicConfigs.MotionMagicJerk = TalonMotionMagicConstants.JERK; // Target jerk of [var] rps/s/s (0.1 seconds)
         
         //applys config to the motor
         m_talon.getConfigurator().apply(talonFXConfigs);
@@ -61,9 +69,9 @@ public class TalonUtils {
         //gets new slot0 config
         var slot0Configs = new Slot0Configs();
         //PID
-        slot0Configs.kP = 1;
-        slot0Configs.kI = 1;
-        slot0Configs.kD = .01;
+        slot0Configs.kP = TalonPIDConstants.KP;
+        slot0Configs.kI = TalonPIDConstants.KI;
+        slot0Configs.kD = TalonPIDConstants.KD;
 
         //Applys config to motor
         m_talon.getConfigurator().apply(slot0Configs);
@@ -75,9 +83,9 @@ public class TalonUtils {
         //creates new config
         var slot0Configs = new Slot0Configs();
         //feedforward[static], feedforward[velocity], p gain
-        slot0Configs.kS = 0.05; // V to overcome static friction
-        slot0Configs.kV = 0.12; // 1 rps = 0.12V output
-        slot0Configs.kP = 0.11; // An error of 1 rps results in 0.11 V output
+        slot0Configs.kS = TalonVelocityConstants.KS; // V to overcome static friction
+        slot0Configs.kV = TalonVelocityConstants.KV; // 1 rps = 0.12V output
+        slot0Configs.kP = TalonVelocityConstants.KP; // An error of 1 rps results in 0.11 V output
 
         //applys configs
         m_talon.getConfigurator().apply(slot0Configs);
@@ -90,10 +98,10 @@ public class TalonUtils {
         double velocity = 0;
         if (targetPos < currentPos) {
             //up
-            velocity = 60;
+            velocity = TalonMotionMagicConstants.CRUISE_VELOCITY_UP;
         } else if (targetPos > currentPos) {
             //down
-            velocity = 40;
+            velocity = TalonMotionMagicConstants.CRUISE_VELOCITY_DOWN;
         } else if (targetPos == currentPos) {
             //not moving? idk trust me bro
             velocity = 0;
@@ -144,7 +152,7 @@ public class TalonUtils {
         }
 
         //creates new velocity voltage request with the desired velocity and slot 0 configs
-        final VelocityVoltage m_request = new VelocityVoltage(106.33*percent).withSlot(0);
+        final VelocityVoltage m_request = new VelocityVoltage(FalconMotorConstants.FREE_SPEED_RPS*percent).withSlot(0);
 
         m_talon.setControl(m_request);
     }

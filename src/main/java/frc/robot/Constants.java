@@ -251,10 +251,15 @@ public final class Constants {
         public static final double FREE_SPEED_RPM = 5676;
     }
 
+    public static final class FalconMotorConstants {
+        public static final int FREE_SPEED_RPM = 6380;
+        public static final double FREE_SPEED_RPS = 106.33; //actual value is 106 and 1/3
+    }
+
     public static final class FieldConstants {
         public static final Pose2d SPEAKER_POSE = new Pose2d(0, 0, new Rotation2d());
         public static final double SPEAKER_HEIGHT = 81;
-  }
+    }
 
   public static final class IntakeConstants {
     public static final int INTAKE = 14;
@@ -269,7 +274,34 @@ public final class Constants {
     public static final int ARM1 = 11;
     public static final int ARM2 = 12;
     public static final int ENCODER_DIO = 0;
-    public static final double ENCODER_OFFSET = 0.3;
     public static final int GEAR_RATIO = 3;
+  }
+
+  public static final class TalonMotionMagicConstants {
+        public static final double KV = 0.13;
+        public static final double KA = 0.00;
+        public static final double KG = 0.00;
+
+        public static final double KP = 4;
+        public static final double KI = 0;
+        public static final double KD = 0.1;
+
+        //units in RPS
+        public static final double CRUISE_VELOCITY_UP = 60;
+        public static final double CRUISE_VELOCITY_DOWN = 40;
+        public static final double ACCELERATION = 40;
+        public static final double JERK = 100;
+  }
+   public static final class TalonPIDConstants {
+        public static final double KP = 1;
+        public static final double KI = 1;
+        public static final double KD = 0.01;
+
+  }
+   public static final class TalonVelocityConstants {        
+        public static final double KS = 0.05;
+        public static final double KV = 0.12;
+        public static final double KP = 0.11;
+
   }
 }       
