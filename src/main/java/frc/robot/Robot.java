@@ -74,13 +74,13 @@ public class Robot extends TimedRobot {
       System.out.println(timer);
       final MotorOutputConfigs m_coastConfig = new MotorOutputConfigs();
       m_coastConfig.NeutralMode = NeutralModeValue.Coast;
-      Arm.m_arm2.getConfigurator().apply(m_coastConfig);
-      Arm.m_arm1.getConfigurator().apply(m_coastConfig);
+      Arm.m_leader.getConfigurator().apply(m_coastConfig);
+      Arm.m_follower.getConfigurator().apply(m_coastConfig);
     } else if (false) {
       final MotorOutputConfigs m_brakeConfig = new MotorOutputConfigs();
       m_brakeConfig.NeutralMode = NeutralModeValue.Brake;
-      Arm.m_arm2.getConfigurator().apply(m_brakeConfig);
-      Arm.m_arm1.getConfigurator().apply(m_brakeConfig);
+      Arm.m_leader.getConfigurator().apply(m_brakeConfig);
+      Arm.m_follower.getConfigurator().apply(m_brakeConfig);
     }
     CommandScheduler.getInstance().run();
   }
@@ -90,8 +90,8 @@ public class Robot extends TimedRobot {
   public void disabledInit() {
     MotorOutputConfigs m_configs = new MotorOutputConfigs();
     m_configs.NeutralMode = NeutralModeValue.Brake;
-    Arm.m_arm2.getConfigurator().apply(m_configs);
-    Arm.m_arm1.getConfigurator().apply(m_configs);
+    Arm.m_leader.getConfigurator().apply(m_configs);
+    Arm.m_follower.getConfigurator().apply(m_configs);
   }
 
   @Override
@@ -114,8 +114,8 @@ public class Robot extends TimedRobot {
     // schedule the autonomous command (example)
     MotorOutputConfigs m_configs = new MotorOutputConfigs();
     m_configs.NeutralMode = NeutralModeValue.Brake;
-    Arm.m_arm2.getConfigurator().apply(m_configs);
-    Arm.m_arm1.getConfigurator().apply(m_configs);
+    Arm.m_leader.getConfigurator().apply(m_configs);
+    Arm.m_follower.getConfigurator().apply(m_configs);
     if (autonomousCommand != null) {
       autonomousCommand.schedule();
     }

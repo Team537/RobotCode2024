@@ -22,14 +22,14 @@ import frc.utils.TalonUtils.*;
 
 public class Arm extends SubsystemBase {
 
-  public static TalonFX m_arm1 = new TalonFX(ArmConstants.ARM1);
-  public static TalonFX m_arm2 = new TalonFX(ArmConstants.ARM2);
+  public static TalonFX m_follower = new TalonFX(ArmConstants.ARM1);
+  public static TalonFX m_leader = new TalonFX(ArmConstants.ARM2);
   public static DutyCycleEncoder m_encoder = new DutyCycleEncoder(ArmConstants.ENCODER_DIO);
 
-  final Follower m_follower = new Follower(ArmConstants.ARM2,false);
+  final Follower m_followControl = new Follower(ArmConstants.ARM2,false);
   
   // just inits these variables, targetPos relys on the armgetpos so it doesnt move the arm to pos zero on teleop init
-  public static double MotionMagicTarget = m_arm1.getPosition().getValue();
+  public static double MotionMagicTarget = m_follower.getPosition().getValue();
   public double EncoderTarget = m_encoder.getAbsolutePosition();
 
 
@@ -39,25 +39,25 @@ public class Arm extends SubsystemBase {
   }
 
   private void SetMotorsMotionMagic(double pos) {
-    m_arm1.setControl(m_follower);
-    TalonUtils.TalonArmMotionMagicControl(m_arm2, pos);
+    m_follower.setControl(m_followControl);
+    TalonUtils.TalonArmMotionMagicControl(m_leader, pos);
     MotionMagicTarget = pos;
   }
 
   private void SetMotorsPID(double pos) {
-    m_arm1.setControl(m_follower);
-    TalonUtils.TalonPIDControl(m_arm2, pos);
+    m_follower.setControl(m_followControl);
+    TalonUtils.TalonPIDControl(m_leader, pos);
   }
 
   private void SetMotorsVelocity(double percent) {
-    TalonUtils.TalonVelocityControl(m_arm1, percent);
-    TalonUtils.TalonVelocityControl(m_arm2, percent);
+    TalonUtils.TalonVelocityControl(m_follower, percent);
+    TalonUtils.TalonVelocityControl(m_leader, percent);
   }
 
   private void EncoderChase(double targetENC) {
     EncoderTarget = targetENC;
     double currentENC = m_encoder.getAbsolutePosition();
-    double targetMotor = ((targetENC-currentENC)*ArmConstants.GEAR_RATIO)+(m_arm2.getPosition().getValue());
+    double targetMotor = ((targetENC-currentENC)*ArmConstants.GEAR_RATIO)+(m_leader.getPosition().getValue());
 
     SmartDashboard.putNumber("Encoder Calculated Target", targetMotor);
     //sends the pos to the motors
@@ -93,7 +93,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void ArmManualStop() {
-    SetMotorsPID(m_arm2.getPosition().getValue());
+    SetMotorsPID(m_leader.getPosition().getValue());
   } 
 
 
@@ -112,8 +112,8 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("Encoder Pos", m_encoder.getAbsolutePosition());
     SmartDashboard.putNumber("Encoder Target", EncoderTarget);
     SmartDashboard.putNumber("Motion Magic Arm Target", MotionMagicTarget);
-    SmartDashboard.putNumber("ARM POS 1", m_arm1.getPosition().getValue());
-    SmartDashboard.putNumber("ARM POS 2", m_arm2.getPosition().getValue());
+    SmartDashboard.putNumber("Follower Arm Positon", m_follower.getPosition().getValue());
+    SmartDashboard.putNumber("Leader Arm Positon", m_leader.getPosition().getValue());
 
     // This method will be called once per scheduler run
   }
