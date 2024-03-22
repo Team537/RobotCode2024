@@ -44,6 +44,11 @@ public class Arm extends SubsystemBase {
     MotionMagicTarget = pos;
   }
 
+  private void SetMotorsPID(double pos) {
+    m_arm1.setControl(m_follower);
+    TalonUtils.TalonfxPIDControl(m_arm2, pos);
+  }
+
   private void EncoderChase(double targetENC) {
     EncoderTarget = targetENC;
     double currentENC = m_encoder.getAbsolutePosition();
@@ -81,7 +86,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void ArmManualStop() {
-    SetMotorsMotionMagic(m_arm2.getPosition().getValue());
+    SetMotorsPID(m_arm2.getPosition().getValue());
   } 
 
   public void ChaseSet05() {

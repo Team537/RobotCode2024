@@ -4,8 +4,10 @@
 
 package frc.utils;
 
+import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.controls.MotionMagicVoltage;
+import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.wpilibj.motorcontrol.Talon;
@@ -58,9 +60,27 @@ public class TalonUtils {
         }
         return velocity;
     }
+    
     public static void TalonArmMotionMagic(TalonFX m_talon, double pos) {
         ApplyArmMotionMagicSlot(m_talon, pos);
         MotionMagicVoltage m_request = new MotionMagicVoltage(pos).withSlot(1);
         m_talon.setControl(m_request);
-  }
+    }
+
+    private static void TalonfxPIDSlots(TalonFX m_talon) {
+        var slot0Configs = new Slot0Configs();
+        slot0Configs.kP = 1;
+        slot0Configs.kI = 1;
+        slot0Configs.kD = .01;
+
+        m_talon.getConfigurator().apply(slot0Configs);
+        var talonFXConfigs = new TalonFXConfiguration();
+    }
+    
+    public static void TalonfxPIDControl(TalonFX m_talon, double pos) {
+        TalonfxPIDSlots(m_talon);
+        // pos is the desired location of the falcon in rotations
+        final PositionVoltage m_request = new PositionVoltage(pos).withSlot(0).withEnableFOC(true);
+        m_talon.setControl(m_request);
+    }
 }
