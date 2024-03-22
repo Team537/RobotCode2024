@@ -19,10 +19,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class Intake extends SubsystemBase {
 
   //intake Talon
-  TalonFX m_intake = new TalonFX(IntakeConstants.INTAKE);
+  private TalonFX m_intake = new TalonFX(IntakeConstants.INTAKE);
 
   //photoelectric sensor, with DIO port
-  DigitalInput m_photoelectric = new DigitalInput(IntakeConstants.PHOTOELECTRIC_DIO);
+  private DigitalInput m_photoelectric = new DigitalInput(IntakeConstants.PHOTOELECTRIC_DIO);
 
   /* Creates a new Intake.
   Runs on robot Init
