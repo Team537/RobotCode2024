@@ -139,22 +139,22 @@ public class RobotContainer {
 
       //ABXY ---------------------------------------------------------
 
-      aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmMotionMagicStop, Arm));
+      aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm));
 
       // aButton.onFalse(null);
 
 
-      bButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmMotionMagicStop, Arm));
+      bButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm));
 
       // bButton.onFalse(null);
 
 
-      xButton.onTrue(new StartEndCommand(Arm::ArmMid, Arm::ArmMotionMagicStop, Arm));
+      xButton.onTrue(new StartEndCommand(Arm::ArmMid, Arm::ArmMid, Arm));
 
       // xButton.onFalse(null);
 
 
-      yButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmMotionMagicStop, Arm));
+      yButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp, Arm));
 
       // yButton.onFalse(null);
 
@@ -307,14 +307,14 @@ public class RobotContainer {
              // Run path following command, then stop at the end.
             return new SequentialCommandGroup(
             // new InstantCommand(driveSubsystem::zeroHeading),
-            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmMotionMagicStop, Arm),
+            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm),
             new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
          new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
             new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1), 
             autonomousCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false)));
         } else if (SmartDashboard.getBoolean("Run Shoot Auto Alone", true)) {
             return new SequentialCommandGroup(
-            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmMotionMagicStop, Arm),
+            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm),
             new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
          new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
             new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1));

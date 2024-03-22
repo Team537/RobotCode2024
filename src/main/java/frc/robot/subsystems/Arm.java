@@ -60,10 +60,6 @@ public class Arm extends SubsystemBase {
     SetMotorsMotionMagic(-23);
   }
 
-  public void ArmMotionMagicStop() {
-    SetMotorsMotionMagic(MotionMagicTarget);
-  }
-
   public void ArmManualDown() {
     m_arm1.set(0.2);
     m_arm2.set(0.2);
@@ -79,16 +75,15 @@ public class Arm extends SubsystemBase {
   } 
 
   public void ChaseSet05() {
-    EncoderTarget = 0.5;
     encoderChase(EncoderTarget);
   }
 
   public void ChaseSet0() {
-    EncoderTarget = 0;
     encoderChase(EncoderTarget);
   }
 
   private void encoderChase(double targetENC) {
+    EncoderTarget = targetENC;
     double currentENC = m_encoder.getAbsolutePosition();
     double targetMotor = ((targetENC-currentENC)*ArmConstants.GEAR_RATIO)+(m_arm2.getPosition().getValue());
 
@@ -99,7 +94,7 @@ public class Arm extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("ABSOLUTE POS", m_encoder.getAbsolutePosition());
+    SmartDashboard.putNumber("Encoder Pos", m_encoder.getAbsolutePosition());
     SmartDashboard.putNumber("Encoder Target", EncoderTarget);
     SmartDashboard.putNumber("Motion Magic Arm Target", MotionMagicTarget);
     SmartDashboard.putNumber("ARM POS 1", m_arm1.getPosition().getValue());
