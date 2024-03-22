@@ -135,23 +135,11 @@ public class Arm extends SubsystemBase {
   public void ChaseSet05() {
     ChaseTarget = 0.5;
     encoderChase(ChaseTarget);
-
   }
 
   public void ChaseSet0() {
     ChaseTarget = 0;
     encoderChase(ChaseTarget);
-  }
-  
-  public boolean targetPid() {
-    if ((FalconArmTarget - 0.2) < m_arm2.getPosition().getValue() && m_arm2.getPosition().getValue() < FalconArmTarget + 0.2) {
-      // if the motor value is within 0.2[Deadband] rot of the desired end location, enable the PID loop
-      // and override the motionmagic trapezoidal loop. the PID loop is stronger at keeping the 
-      // arm in position than the motion magic loop. 
-      return true; 
-    } else {
-      return false;
-    }
   }
 
   private void encoderChase(double targetENC) {
@@ -170,7 +158,6 @@ public class Arm extends SubsystemBase {
 
     SmartDashboard.putNumber("CHASE TARGET", ChaseTarget);
 
-    SmartDashboard.putBoolean("withinPosRange", targetPid());
     SmartDashboard.putNumber("Falcon Arm Target", FalconArmTarget);
     SmartDashboard.putNumber("ARM POS 1", m_arm1.getPosition().getValue());
     SmartDashboard.putNumber("ARM POS 2", m_arm2.getPosition().getValue());

@@ -307,14 +307,14 @@ public class RobotContainer {
              // Run path following command, then stop at the end.
             return new SequentialCommandGroup(
             // new InstantCommand(driveSubsystem::zeroHeading),
-            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmMotionMagicStop, Arm).until(() -> Arm.targetPid()),
+            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmMotionMagicStop, Arm),
             new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
          new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
             new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1), 
             autonomousCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false)));
         } else if (SmartDashboard.getBoolean("Run Shoot Auto Alone", true)) {
             return new SequentialCommandGroup(
-            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmMotionMagicStop, Arm).until(() -> Arm.targetPid()),
+            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmMotionMagicStop, Arm),
             new RunCommand(Shooter::ShooterForward, Shooter).withTimeout(1),
          new ParallelCommandGroup(new RunCommand(Shooter::ShooterForward, Shooter), new RunCommand(Intake::IntakeMax, Intake)).withTimeout(1),
             new ParallelCommandGroup(new RunCommand(Shooter::ShooterStop, Shooter), new RunCommand(Intake::IntakeOff, Intake)).withTimeout(1));
