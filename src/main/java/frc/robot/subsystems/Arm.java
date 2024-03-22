@@ -58,7 +58,8 @@ public class Arm extends SubsystemBase {
     //sends the pos to the motors
     SetMotorsMotionMagic(targetMotor);
   }
-
+  
+  //Arm Motion Magic Relative Encoder
   public void ArmSubwoofer() { 
     SetMotorsMotionMagic(-7);
   }
@@ -75,6 +76,7 @@ public class Arm extends SubsystemBase {
     SetMotorsMotionMagic(-23);
   }
 
+  //Arm Manual
   public void ArmManualDown() {
     m_arm1.set(0.2);
     m_arm2.set(0.2);
@@ -89,14 +91,16 @@ public class Arm extends SubsystemBase {
     SetMotorsPID(m_arm2.getPosition().getValue());
   } 
 
+  //Arm Motion Magic Absolute Encoder
   public void ChaseSet05() {
-    EncoderChase(EncoderTarget);
+    EncoderChase(0.5);
   }
 
   public void ChaseSet0() {
-    EncoderChase(EncoderTarget);
+    EncoderChase(0);
   }
 
+  //periodic (runs every 20 ms)
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Encoder Pos", m_encoder.getAbsolutePosition());
