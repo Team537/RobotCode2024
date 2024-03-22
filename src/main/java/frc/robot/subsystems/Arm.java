@@ -28,9 +28,6 @@ public class Arm extends SubsystemBase {
 
   double driveGyroYaw = 0;  // arm pigeon code, not used
 
-  //test safelock incase the old commands do something stupid
-  boolean active = false;
-
   // just inits these variables, targetPos relys on the armgetpos so it doesnt move the arm to pos zero on teleop init
   public static double FalconArmTarget = m_arm1.getPosition().getValue();
   public double ChaseTarget = m_encoder.getAbsolutePosition();
@@ -38,6 +35,7 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
+    SmartDashboard.putNumber("CHASE CALC TARGET", 0);
   }
 
   private void TalonfxMotionMagicSlots(double targetPos) {
@@ -46,17 +44,14 @@ public class Arm extends SubsystemBase {
 
     // set slot 0 gains
     var slot1Configs = talonFXConfigs.Slot1;
-    slot1Configs.kV = 0.17; // A velocity target of 1 rps results in [var] V output
-    slot1Configs.kA = 0.04; // An acceleration of 1 rps/s requires [var] V output
-    slot1Configs.kP = 1; // A position error of 2.5 rotations results in 12 V output
-    slot1Configs.kI = 1; // no output for integrated error
-    slot1Configs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output
+    slot1Configs.kV = 0.13; // A velocity target of 1 rps results in [var] V output
+    // slot1Configs.kA = 0.04; // An acceleration of 1 rps/s requires [var] V output
+    slot1Configs.kP = 4; // A position error of 2.5 rotations results in 12 V output  4
+    slot1Configs.kI = 0; // no output for integrated error
+    slot1Configs.kD = 0.1; // A velocity error of 1 rps results in 0.1 V output         0.5
     
-    //gear ratio
-    talonFXConfigs.Feedback.SensorToMechanismRatio = ArmConstants.GEAR_RATIO;
-
     //configs slot1Configs.kg to be variable (arm cosine, with high gravity being at high)
-    talonFXConfigs.withSlot1(slot1Configs.withGravityType(GravityTypeValue.Arm_Cosine));
+    // talonFXConfigs.withSlot1(slot1Configs.withGravityType(GravityTypeValue.Arm_Cosine));
 
     
     // set Motion Magic settings
@@ -99,64 +94,56 @@ public class Arm extends SubsystemBase {
     SetMotorsMotionMagic(-7);
     FalconArmTarget = -7;
     // SetMotorsMotionMagic(findTargetDist(-7));
-    active = false;
   }
 
   public void ArmIntake() {
     SetMotorsMotionMagic(0);
     FalconArmTarget = 0;
     // SetMotorsMotionMagic(findTargetDist(0));
-    active = false;
   }
   
   public void ArmAmp() {
     SetMotorsMotionMagic(-55);
     FalconArmTarget = -55;
     // SetMotorsMotionMagic(findTargetDist(-55));
-    active = false;
   }
 
   public void ArmMid() {
     SetMotorsMotionMagic(-23);
     FalconArmTarget = -23;
     // SetMotorsMotionMagic(findTargetDist(-23));
-    active = false;
   }
 
   public void ArmMotionMagicStop() {
     SetMotorsMotionMagic(FalconArmTarget);
-    active = false;
   }
 
   public void ArmManualDown() {
     m_arm1.set(0.2);
     m_arm2.set(0.2);
-    active = false;
   }
 
   public void ArmManualUp() {
     m_arm1.set(-0.3);
     m_arm2.set(-0.3);
-    active = false;
   }
 
   public void ArmManualStop() {
     SetMotorsMotionMagic(m_arm2.getPosition().getValue());
-    active = false;
   } 
 
   public void ChaseSet05() {
-    active = true;
     ChaseTarget = 0.5;
+    encoderChase(ChaseTarget);
+
   }
 
   public void ChaseSet0() {
-    active = true;
     ChaseTarget = 0;
+    encoderChase(ChaseTarget);
   }
   
   public boolean targetPid() {
-    active = false;
     if ((FalconArmTarget - 0.2) < m_arm2.getPosition().getValue() && m_arm2.getPosition().getValue() < FalconArmTarget + 0.2) {
       // if the motor value is within 0.2[Deadband] rot of the desired end location, enable the PID loop
       // and override the motionmagic trapezoidal loop. the PID loop is stronger at keeping the 
@@ -239,22 +226,31 @@ public class Arm extends SubsystemBase {
 
 
     */
-    if (active == true) {
-      double currentENC = m_encoder.getAbsolutePosition();
-      double currentOffsetENC = m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET;
+    /**double currentENC = m_encoder.getAbsolutePosition();
+    double currentOffsetENC = m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET;
 
-      targetENC = targetENC; //parameter. not necessary, but helps with readability
-      double targetMotor = targetENC*ArmConstants.GEAR_RATIO;
+    targetENC = targetENC; //parameter. not necessary, but helps with readability
+    double targetMotor = targetENC*ArmConstants.GEAR_RATIO;
 
-      if (targetENC < currentENC && targetMotor > m_arm2.getPosition().getValue() ) {//m_arm2.getpos = currentmotor
-        targetMotor *= -1;
-      }
+    if (targetENC < currentENC ){//&& targetMotor > m_arm2.getPosition().getValue() ) {//m_arm2.getpos = currentmotor
+      targetMotor -= m_arm2.getPosition().getValue();//m_arm2.getpos = currentmotor
 
+    } else {
       targetMotor += m_arm2.getPosition().getValue();//m_arm2.getpos = currentmotor
 
-      //sends the pos to the motors
-      SetMotorsMotionMagic(targetENC);
-    }
+    }*/
+
+    double currentENC = m_encoder.getAbsolutePosition();
+    double currentOffsetENC = m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET;
+
+    targetENC = targetENC; //parameter. not necessary, but helps with readability
+    double targetMotor = (targetENC-currentENC)*ArmConstants.GEAR_RATIO;
+
+    targetMotor += m_arm2.getPosition().getValue();
+
+    SmartDashboard.putNumber("CHASE CALC TARGET", targetMotor);
+    //sends the pos to the motors
+    SetMotorsMotionMagic(targetMotor);
   }
 
   public void RunChase() {
@@ -265,11 +261,9 @@ public class Arm extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putNumber("ABSOLUTE POS", m_encoder.getAbsolutePosition());
-
-    SmartDashboard.putNumber("CHASE TARGET", ChaseTarget);
-
     SmartDashboard.putNumber("ABSOLUTE POS OFF", m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET);
 
+    SmartDashboard.putNumber("CHASE TARGET", ChaseTarget);
 
     SmartDashboard.putBoolean("withinPosRange", targetPid());
     SmartDashboard.putNumber("Falcon Arm Target", FalconArmTarget);

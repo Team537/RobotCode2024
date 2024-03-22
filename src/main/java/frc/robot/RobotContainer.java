@@ -205,8 +205,6 @@ public class RobotContainer {
     } else {
       driveSubsystem.setDefaultCommand(flightstickCommand);
     } 
-    Arm.setDefaultCommand(new RunCommand(Arm::RunChase, Arm));
-
     // Setup all the neccicery SmartDashboard elements
     setupDashboard();
 
