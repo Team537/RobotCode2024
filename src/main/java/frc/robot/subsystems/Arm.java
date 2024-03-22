@@ -35,7 +35,7 @@ public class Arm extends SubsystemBase {
 
   /** Creates a new Arm. */
   public Arm() {
-    SmartDashboard.putNumber("CHASE CALC TARGET", 0);
+    SmartDashboard.putNumber("Encoder Calculated Target", 0);
   }
 
   private void SetMotorsMotionMagic(double pos) {
@@ -49,16 +49,22 @@ public class Arm extends SubsystemBase {
     TalonUtils.TalonPIDControl(m_arm2, pos);
   }
 
+  private void SetMotorsVelocity(double percent) {
+    TalonUtils.TalonVelocityControl(m_arm1, percent);
+    TalonUtils.TalonVelocityControl(m_arm2, percent);
+  }
+
   private void EncoderChase(double targetENC) {
     EncoderTarget = targetENC;
     double currentENC = m_encoder.getAbsolutePosition();
     double targetMotor = ((targetENC-currentENC)*ArmConstants.GEAR_RATIO)+(m_arm2.getPosition().getValue());
 
-    SmartDashboard.putNumber("CHASE CALC TARGET", targetMotor);
+    SmartDashboard.putNumber("Encoder Calculated Target", targetMotor);
     //sends the pos to the motors
     SetMotorsMotionMagic(targetMotor);
   }
   
+
   //Arm Motion Magic Relative Encoder
   public void ArmSubwoofer() { 
     SetMotorsMotionMagic(-7);
@@ -76,20 +82,20 @@ public class Arm extends SubsystemBase {
     SetMotorsMotionMagic(-23);
   }
 
+
   //Arm Manual
   public void ArmManualDown() {
-    m_arm1.set(0.2);
-    m_arm2.set(0.2);
+    SetMotorsVelocity(0.2);
   }
 
   public void ArmManualUp() {
-    m_arm1.set(-0.3);
-    m_arm2.set(-0.3);
+    SetMotorsVelocity(-0.3);
   }
 
   public void ArmManualStop() {
     SetMotorsPID(m_arm2.getPosition().getValue());
   } 
+
 
   //Arm Motion Magic Absolute Encoder
   public void ChaseSet05() {
