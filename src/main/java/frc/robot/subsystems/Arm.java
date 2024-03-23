@@ -123,7 +123,7 @@ public class Arm extends SubsystemBase {
   //when using these positions, TURN ROBOT ON WITH ARM DOWN
   //uses relative encoder
   public void ArmSubwoofer() { 
-    SetMotorsMotionMagic(-7);
+    SetMotorsMotionMagic(10);
   }
 
   public void ArmIntake() {
@@ -131,11 +131,11 @@ public class Arm extends SubsystemBase {
   }
   
   public void ArmAmp() {
-    SetMotorsMotionMagic(-55);
+    SetMotorsMotionMagic(55);
   }
 
   public void ArmMid() {
-    SetMotorsMotionMagic(-23);
+    SetMotorsMotionMagic(23);
   }
 
 /*   This is to test encoder chase method.

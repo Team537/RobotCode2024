@@ -263,7 +263,7 @@ public final class Constants {
 
   public static final class IntakeConstants {
     public static final int INTAKE = 14;
-    public static final int PHOTOELECTRIC_DIO = 1;
+    public static final int PHOTOELECTRIC_DIO = 0;
   }
 
   public static final class ShooterConstants {
@@ -273,7 +273,7 @@ public final class Constants {
   public static final class ArmConstants {
     public static final int ARM1 = 11;
     public static final int ARM2 = 12;
-    public static final int ENCODER_DIO = 0;
+    public static final int ENCODER_DIO = 1;
     public static final int GEAR_RATIO = 3;
 
     //Encoder values to be set
@@ -296,7 +296,7 @@ public final class Constants {
         //units in RPS
         public static final double CRUISE_VELOCITY_UP = 60;
         public static final double CRUISE_VELOCITY_DOWN = 40;
-        public static final double ACCELERATION = 40;
+        public static final double ACCELERATION = 60;
         public static final double JERK = 100;
   }
    public static final class TalonPIDConstants {
