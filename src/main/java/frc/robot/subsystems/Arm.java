@@ -138,6 +138,29 @@ public class Arm extends SubsystemBase {
     SetMotorsMotionMagic(-23);
   }
 
+/*   This is to test encoder chase method.
+  
+  public void ArmSubwoofer(){
+    EncoderChase(ArmConstants.SUBWOOFER_POSITION);
+  }
+
+  public void ArmIntake() {
+    SetMotorsMotionMagic(ArmConstants.INTAKE_POSITION);
+  }
+  
+  public void ArmAmp() {
+    SetMotorsMotionMagic(ArmConstants.AMP_POSITION);
+  }
+
+  public void ArmMid() {
+    SetMotorsMotionMagic(ArmConstants.MID_POSITION);
+  }
+
+  
+
+ */
+
+
 
   //Arm Manual
   //manually moves the arm just incase the setpositions fail
@@ -173,7 +196,7 @@ public class Arm extends SubsystemBase {
   //periodic (runs every 20 ms)
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Encoder Pos", m_encoder.getAbsolutePosition());
+    SmartDashboard.putNumber("ENCODER POS: ", m_encoder.getAbsolutePosition());
     SmartDashboard.putNumber("Encoder Target", encoderTarget);
     SmartDashboard.putNumber("Motion Magic Arm Target", motionMagicTarget);
     SmartDashboard.putNumber("Follower Arm Positon", m_follower.getPosition().getValue());

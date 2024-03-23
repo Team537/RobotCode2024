@@ -275,6 +275,13 @@ public final class Constants {
     public static final int ARM2 = 12;
     public static final int ENCODER_DIO = 0;
     public static final int GEAR_RATIO = 3;
+
+    //Encoder values to be set
+    public static final int AMP_POSITION = 3;
+    public static final int INTAKE_POSITION = 5;
+    public static final int SUBWOOFER_POSITION = 4;
+    public static final int MID_POSITION = 6;
+
   }
 
   public static final class TalonMotionMagicConstants {
