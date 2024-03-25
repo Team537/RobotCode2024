@@ -307,4 +307,17 @@ public class TagPose3d {
     public double getYaw() {
         return this.yaw;
     }
+
+    /**
+     * Returns the distance to the tag
+     * 
+     * @return The point to point horizontal planar distance of the camera to the tag
+     * 
+     */
+
+    public double getDistance(){
+
+        return Math.sqrt((x*x) + (y*y));
+    }
+
 }

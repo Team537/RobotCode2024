@@ -69,6 +69,7 @@ public class Intake extends SubsystemBase {
   @Override
   public void periodic() {
     SmartDashboard.putBoolean("Photoelectric Sensor Value", m_photoelectric.get());
+    
 
     // This method will be called once per scheduler run (every 20ms)
   }

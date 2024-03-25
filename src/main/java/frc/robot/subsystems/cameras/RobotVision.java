@@ -153,6 +153,12 @@ public class RobotVision extends SubsystemBase {
             SmartDashboard.putNumber("RobotVision's Estimated Robot X: ", estimatedRobotPose.getX());
             SmartDashboard.putNumber("RobotVision's Estimated Robot Y: ", estimatedRobotPose.getY());
             SmartDashboard.putNumber("RobotVision's Estimated Robot Heading: ", estimatedRobotPose.getRotation().getDegrees());
+
+            // Id should be 4 or 7 depending on whether we're looking at the red or blue alliance side
+            if (getDistanceToTag(7) != null){
+                SmartDashboard.putNumber("DISTANCE TO SUBWOOFER TAG: ", getDistanceToTag(7).getDistance());
+            }
+
         }
     }
 
