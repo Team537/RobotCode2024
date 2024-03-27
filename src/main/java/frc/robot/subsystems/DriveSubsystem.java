@@ -137,7 +137,7 @@ public class DriveSubsystem extends SubsystemBase {
                 frontRight.getPosition(),
                 backLeft.getPosition(),
                 backRight.getPosition()},
-            new Pose2d(new Translation2d(8.945, 7.815), new Rotation2d(0, 0))); // Note: See how accurate this turns out to be. Change if need be.
+            new Pose2d(new Translation2d(0,0), new Rotation2d(0, 0))); // Note: See how accurate this turns out to be. Change if need be.
 
         // Configure alternative drive mode PID controllers.
         thetaController.enableContinuousInput(0, Math.PI * 2);

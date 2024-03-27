@@ -4,6 +4,8 @@
 
 package frc.robot;
 
+import java.util.List;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -14,10 +16,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.VisionConstants;
+import frc.robot.Constants.AutoConstants;
+import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.FollowTrajectoryCommand;
 import frc.robot.commands.vision.ResetImuWithVisionCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.cameras.RobotVision;
@@ -33,8 +39,8 @@ public class RobotContainer {
 
     // The robot's subsystems
     private final RobotVision robotVision = new RobotVision.Builder()
-        .addPhotonVisionCamera(VisionConstants.COLOR_CAMERA_NAME, VisionConstants.BLACK_INTAKE_CAMERA_OFFSET,
-            VisionConstants.OBJECT_DETECTION_PIPELINE)
+        .addPhotonVisionCamera(VisionConstants.ARDUCAM_OV9281_USB_CAMERA, VisionConstants.RED_OUTTAKE_CAMERA_OFFSET,
+            VisionConstants.APRIL_TAG_PIPELINE)
         .build();
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(true, robotVision::estimateRobotPose);
 
@@ -151,6 +157,7 @@ public class RobotContainer {
 
         // Determines whether or not we want to run autonomous.
         SmartDashboard.putBoolean("Run Auto", false);
+        SmartDashboard.putBoolean("Complex Auto", false);
 
         // Setup autonomous selection.
         // Loop through all of the available auto options and add each of them as a separate autonomous option
@@ -159,6 +166,8 @@ public class RobotContainer {
         for (AutonomousOption autonomousOption : AutonomousOption.values()) {
             autonomousSelection.addOption(autonomousOption.toString(), autonomousOption);
         }
+
+        // Setup the ability to use complex autonomous paths
 
         // Add all of the configured SmartDashboard elements to the GUI.
         SmartDashboard.putData("Controller Selection", controllerSelection);
@@ -189,11 +198,28 @@ public class RobotContainer {
         // Get the selected auto
         AutonomousOption selectedAuto = autonomousSelection.getSelected();
         
-        // Start making the robot follow a trajectory
-        RunCommand autonomousCommand =  new RunCommand(
-                () -> auto()
-        );
+        // Setup the drivetrain to work with the selected auto.
+        driveSubsystem.setAutonomous(selectedAuto);
 
+        /*
+         * Check whether or not the driver wants to run a complex autonomous path. If they do, then get
+         * the complex path for the selected auto. Otherwise, make the robot follow the basic trajectory associated
+         * with the selected auto.
+         */
+        SequentialCommandGroup selectedAutonomousRoutine = null;
+        if (SmartDashboard.getBoolean("Complex Auto", false)) {
+
+            // Get complicated autonomous routine associated with the selected auto.
+            selectedAutonomousRoutine = getComplexPath(selectedAuto);
+        } else {
+
+            // Follow the basic pre-planned path
+            selectedAutonomousRoutine = new SequentialCommandGroup(
+                new FollowTrajectoryCommand(
+                    driveSubsystem, 
+                    selectedAuto.getTrajectory())
+            );
+        }
         // Configure the robot's settings so that it will be optimized for the selected command.
         driveSubsystem.setAutonomous(selectedAuto);
 
@@ -201,9 +227,166 @@ public class RobotContainer {
         if (SmartDashboard.getBoolean("Run Auto", false)) {
 
              // Run path following command, then stop at the end.
-            return autonomousCommand.andThen(() -> driveSubsystem.drive(0, 0, 0, 0, false, false));
+            return selectedAutonomousRoutine;
         }
         return null;
+    }
+
+    /**
+     * Returns the complex autonomous routine associated with the specified autonomous routine.
+     * 
+     * @param autonomousOption The autonomous routine that was selected by the driver.
+     * @return A {@code SequentialCommandGroup} containing a more advanced autonomous routine. A few examples of complicated
+     *         autonomous routines would be autos that score multiple notes or preform more actions than driving along a
+     *         single preplanned path.
+     */
+    private SequentialCommandGroup getComplexPath(AutonomousOption autonomousOption) {
+
+        // Create a empty variable to store the autonomous command.
+        SequentialCommandGroup complexPath;
+        
+        // Create a complex autonomous command for each auto. See the 
+        switch (autonomousOption) {
+            case BLUE_1:
+                complexPath = new SequentialCommandGroup(
+                        // Shoot note
+                        new FollowTrajectoryCommand(driveSubsystem, // Drive up to the amp and then grab the note closest to the wall near the amp.
+                            AutoConstants.BLUE_1_COMPLEX_POSITIONS.subList(0, 1)),
+                        // Grab note
+                        new FollowTrajectoryCommand(driveSubsystem, List.of(
+                            AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
+                            AutoConstants.BLUE_1_STARTING_POSE)), // Drive to the original starting location
+                        // Score note
+                        new FollowTrajectoryCommand(driveSubsystem, List.of(
+                            AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
+                            AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(2))), // Drive to the lower of the two targeted notes
+                        // Grab note
+                        new FollowTrajectoryCommand(driveSubsystem, List.of(
+                            AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
+                            AutoConstants.BLUE_1_STARTING_POSE)) // Drive to the original starting location
+                        // Score note
+                    );
+                break;
+            case BLUE_2:
+                complexPath = new SequentialCommandGroup(
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(0))), // Drive to top note
+                    // Grab note
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                    // Shoot note
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(1))), // Drive to center note
+                    // Grab note
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                    // Shoot note
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(2))), // Drive to bottom note
+                    // Grab note
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)) // Return to the speaker
+                    // Shoot note
+                );
+                break;
+            case BLUE_3:
+                complexPath = new SequentialCommandGroup(
+                    // Score note
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        AutoConstants.BLUE_3_COMPLEX_POSITIONS.subList(0, 1)),
+                    // Grab note
+                    new FollowTrajectoryCommand(driveSubsystem, List.of(
+                        AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(0),
+                        AutoConstants.BLUE_3_STARTING_POSE
+                    )),
+                    // Score note
+                    new FollowTrajectoryCommand(driveSubsystem, List.of(
+                        AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(0),
+                        AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(2)
+                    )),
+                    // Grab note
+                    new FollowTrajectoryCommand(driveSubsystem, List.of(
+                        AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(0),
+                        AutoConstants.BLUE_3_STARTING_POSE
+                    ))
+                    // Score note
+                );
+                break;
+            case RED_1:
+            complexPath = new SequentialCommandGroup(
+                // Shoot note
+                new FollowTrajectoryCommand(driveSubsystem, // Drive up to the amp and then grab the note closest to the wall near the amp.
+                    AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 1)),
+                // Grab note
+                new FollowTrajectoryCommand(driveSubsystem, List.of(
+                    AutoConstants.RED_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
+                    AutoConstants.RED_1_STARTING_POSE)), // Drive to the original starting location
+                // Score note
+                new FollowTrajectoryCommand(driveSubsystem, List.of(
+                    AutoConstants.RED_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
+                    AutoConstants.RED_1_COMPLEX_POSITIONS.get(2))), // Drive to the lower of the two targeted notes
+                // Grab note
+                new FollowTrajectoryCommand(driveSubsystem, List.of(
+                    AutoConstants.RED_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
+                    AutoConstants.RED_1_STARTING_POSE)) // Drive to the original starting location
+                // Score note
+            );
+            case RED_2:
+                complexPath = new SequentialCommandGroup(
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(0))), // Drive to top note
+                    // Grab note
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                    // Shoot note
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(1))), // Drive to center note
+                    // Grab note
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                    // Shoot note
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(2))), // Drive to bottom note
+                    // Grab note
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)) // Return to the speaker
+                    // Shoot note
+                );
+                break;
+            case RED_3:
+                complexPath = new SequentialCommandGroup(
+                    // Score note
+                    new FollowTrajectoryCommand(driveSubsystem, 
+                        AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 1)),
+                    // Grab note
+                    new FollowTrajectoryCommand(driveSubsystem, List.of(
+                        AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
+                        AutoConstants.RED_1_STARTING_POSE
+                    )),
+                    // Score note
+                    new FollowTrajectoryCommand(driveSubsystem, List.of(
+                        AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
+                        AutoConstants.RED_1_COMPLEX_POSITIONS.get(2)
+                    )),
+                    // Grab note
+                    new FollowTrajectoryCommand(driveSubsystem, List.of(
+                        AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
+                        AutoConstants.RED_1_STARTING_POSE
+                    ))
+                    // Score note
+                );
+                break;
+            default:
+                complexPath = new SequentialCommandGroup(
+                    new RunCommand(
+                        () -> auto(), 
+                        driveSubsystem)
+                );
+                break;
+        }
+
+        // Return the complex autonomous routine
+        return complexPath;
     }
 
     /**

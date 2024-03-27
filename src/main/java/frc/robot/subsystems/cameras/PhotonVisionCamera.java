@@ -15,6 +15,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
+import frc.utils.vision.DetectedObject;
 
 /**
  * A camera attached to a co-processor.
@@ -77,6 +78,8 @@ public class PhotonVisionCamera extends SubsystemBase {
             if (tagCorners.isEmpty()) {
                 return;
             }
+
+            // Get raw data
             SmartDashboard.putNumber("Bottom Left Corner X: ", tagCorners.get(0).x);
             SmartDashboard.putNumber("Bottom Left Corner Y: ", tagCorners.get(0).y);
             SmartDashboard.putNumber("Bottom Right Corner X: ", tagCorners.get(1).x);
@@ -86,10 +89,14 @@ public class PhotonVisionCamera extends SubsystemBase {
             SmartDashboard.putNumber("Top Left Corner X: ", tagCorners.get(3).x);
             SmartDashboard.putNumber("Top Left Corner Y: ", tagCorners.get(3).y);
 
-            SmartDashboard.putNumber("Object Y: ",(tagCorners.get(3).y + tagCorners.get(1).y) / 2);
+            // Calculate object's position on the screen relative to the top left corner.
             SmartDashboard.putNumber("Object X: ",(tagCorners.get(3).x + tagCorners.get(1).x) / 2);
+            SmartDashboard.putNumber("Object Y: ",(tagCorners.get(3).y + tagCorners.get(1).y) / 2);
 
-
+            // Convert the detected object to a DetectedObject and output the calculated position values.
+            DetectedObject detectedObject = new DetectedObject(target);
+            SmartDashboard.putNumber("Center Origin Object X: ", detectedObject.getX());
+            SmartDashboard.putNumber("Center Origin Object Y: ", detectedObject.getY());
         }
     }
 
@@ -119,6 +126,13 @@ public class PhotonVisionCamera extends SubsystemBase {
 
         // Update the robot's estimate position and return the results.
         return photonPoseEstimator.update();
+    }
+
+    public List<DetectedObject> gDetectedObjects() {
+
+        // TODO: Add ability to get detected object's data.
+
+        return null;
     }
 
     /**
