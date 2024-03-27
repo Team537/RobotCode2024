@@ -212,12 +212,12 @@ public final class Constants {
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
                 MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
 
-        public static final Pose2d BLUE_1_STARTING_POSE =  new Pose2d(1.629, 6.457, Rotation2d.fromRadians(0));
-        public static final Pose2d BLUE_2_STARTING_POSE =  new Pose2d(1.278, 5.603, Rotation2d.fromRadians(0));
-        public static final Pose2d BLUE_3_STARTING_POSE =  new Pose2d(1.629, 4.749, Rotation2d.fromRadians(0));
-        public static final Pose2d RED_1_STARTING_POSE =  new Pose2d(14.884, 6.457, Rotation2d.fromRadians(Math.PI));
-        public static final Pose2d RED_2_STARTING_POSE =  new Pose2d(15.235, 5.603, Rotation2d.fromRadians(Math.PI));
-        public static final Pose2d RED_3_STARTING_POSE =  new Pose2d(14.884, 4.749, Rotation2d.fromRadians(Math.PI));
+        public static final Pose2d BLUE_1_STARTING_POSE =  new Pose2d(1.629, 6.457, Rotation2d.fromDegrees(0));
+        public static final Pose2d BLUE_2_STARTING_POSE =  new Pose2d(1.278, 5.603, Rotation2d.fromDegrees(0));
+        public static final Pose2d BLUE_3_STARTING_POSE =  new Pose2d(1.629, 4.749, Rotation2d.fromDegrees(0));
+        public static final Pose2d RED_1_STARTING_POSE =  new Pose2d(14.884, 6.457, Rotation2d.fromDegrees(180));
+        public static final Pose2d RED_2_STARTING_POSE =  new Pose2d(15.235, 5.603, Rotation2d.fromDegrees(180));
+        public static final Pose2d RED_3_STARTING_POSE =  new Pose2d(14.884, 4.749, Rotation2d.fromDegrees(180));
 
         // Old paths
         public static final List<Pose2d> RED_1_TRAJECTORY = List.of(
@@ -261,19 +261,19 @@ public final class Constants {
         );
 
         public static final List<Pose2d> RED_1_COMPLEX_POSITIONS = List.of(
-                new Pose2d(14.884, 7.807, Rotation2d.fromDegrees(0)), // Close to amp position
-                new Pose2d(8.796, 7.436, Rotation2d.fromDegrees(0)), // Topmost note
-                new Pose2d(8.796, 5.785, Rotation2d.fromDegrees(0)) // Second top note
+                new Pose2d(14.884, 7.807, Rotation2d.fromDegrees(180)), // Close to amp position
+                new Pose2d(8.796, 7.436, Rotation2d.fromDegrees(180)), // Topmost note
+                new Pose2d(8.796, 5.785, Rotation2d.fromDegrees(180)) // Second top note
         );
         public static final List<Pose2d> RED_2_COMPLEX_POSITIONS = List.of(
-                new Pose2d(14.24, 4.088, Rotation2d.fromDegrees(0)), // Bottom Note
-                new Pose2d(14.24, 5.569, Rotation2d.fromDegrees(0)), // Middle Note
-                new Pose2d(14.24, 7.004, Rotation2d.fromDegrees(0)) // Top Note
+                new Pose2d(14.24, 4.088, Rotation2d.fromDegrees(180)), // Bottom Note
+                new Pose2d(14.24, 5.569, Rotation2d.fromDegrees(180)), // Middle Note
+                new Pose2d(14.24, 7.004, Rotation2d.fromDegrees(180)) // Top Note
         );
         public static final List<Pose2d> RED_3_COMPLEX_POSITIONS = List.of(
-                new Pose2d(11.787, 4.840, Rotation2d.fromDegrees(0)), // Position under triangle thingy 
-                new Pose2d(8.796, 4.099, Rotation2d.fromDegrees(0)), // Center note in center of field.
-                new Pose2d(8.796, 2.425, Rotation2d.fromDegrees(0)) // Second to last note in center of field.
+                new Pose2d(11.787, 4.840, Rotation2d.fromDegrees(180)), // Position under triangle thingy 
+                new Pose2d(8.796, 4.099, Rotation2d.fromDegrees(180)), // Center note in center of field.
+                new Pose2d(8.796, 2.425, Rotation2d.fromDegrees(180)) // Second to last note in center of field.
         );
     }
 
