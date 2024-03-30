@@ -276,6 +276,9 @@ public final class Constants {
     public static final int ENCODER_DIO = 1;
     public static final int GEAR_RATIO = 3;
 
+    public static final Pose2d blueSubwooferPosition = new Pose2d(-0.0381, 5.547868, new Rotation2d(0)); //ID 7
+    public static final Pose2d redSubwooferPosition = new Pose2d(16.579342, 5.547868, new Rotation2d(Math.PI/2)); //ID 4
+
   }
 
   public static final class TalonMotionMagicConstants {
@@ -288,8 +291,8 @@ public final class Constants {
         public static final double KD = 0.1;
 
         //units in RPS
-        public static final double CRUISE_VELOCITY_UP = 60;
-        public static final double CRUISE_VELOCITY_DOWN = 40;
+        public static final double CRUISE_VELOCITY_UP = 80;
+        public static final double CRUISE_VELOCITY_DOWN = 50;
         public static final double ACCELERATION = 60;
         public static final double JERK = 100;
   }

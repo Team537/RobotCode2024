@@ -7,11 +7,15 @@ package frc.robot.subsystems;
 import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.utils.TalonUtils;
+import frc.robot.subsystems.cameras.RobotVision;
 
 public class Arm extends SubsystemBase {
 
@@ -23,6 +27,10 @@ public class Arm extends SubsystemBase {
 
   double midPosition = 23;
   double subwooferPosition = 10;
+
+  Pose2d subwooferPose;
+  Pose2d translationAway;
+  double distanceAway;
 
   /*
     where the arm motors are on the robot (diagram)
@@ -71,8 +79,8 @@ public class Arm extends SubsystemBase {
     //creates the encoder calculated target smartdash block on robot init
     SmartDashboard.putNumber("Encoder Calculated Target", 0);
     SmartDashboard.putNumber("Mid Position: ", 23);
-    SmartDashboard.putNumber("Subwoofer Position ", 10);
-    
+    SmartDashboard.putNumber("Subwoofer Position: ", 10);
+
   }
 
   //Gets the desired position for motion magic, and sets both motors to the correct positions/values. 
@@ -149,28 +157,51 @@ public class Arm extends SubsystemBase {
     SetMotorsMotionMagic(midPosition);
   }
 
-/*   This is to test encoder chase method.
-  
-  public void ArmSubwoofer(){
-    EncoderChase(ArmConstants.SUBWOOFER_POSITION);
+  /**
+   * Default command to set the angle of the shooter based on distance from subwoofer april tags
+   * 
+   * @param robotVision robotVision object used to calculate distance from tags
+   * @param alliance 'b' for blue or 'r' for red. Used to decide which tag to detect
+   * 
+   * @author Ohihoin Vahe
+   */
+  public void automaticAngle(RobotVision robotVision, char alliance){
+
+    if (alliance == 'r'){
+      subwooferPose = Constants.ArmConstants.redSubwooferPosition;
+    }
+    else if (alliance == 'b'){
+      subwooferPose = Constants.ArmConstants.blueSubwooferPosition;
+    }
+
+    if (robotVision.estimateRobotPose() != null){
+
+      translationAway = robotVision.estimateRobotPose().relativeTo(subwooferPose);
+      distanceAway = Math.sqrt( Math.pow(translationAway.getX(), 2) + Math.pow(translationAway.getY(), 2) );
+
+    }
+
+    SetMotorsMotionMagic(angleValue(distanceAway)); //Sets the angle of the shooter using the angle value function
+
   }
 
-  public void ArmIntake() {
-    SetMotorsMotionMagic(ArmConstants.INTAKE_POSITION);
+  /**
+   * Calculates to angle value input for smart motion based on the distance from the subwoofer tag
+   * 
+   * @param distance how far away you are from the subwoofer tag in meters
+   * @author Ohihoin Vahe
+   *  
+  */
+  public double angleValue(double distance){
+
+    distance *= 39.3701; // Converts meters to inches
+
+    // angle Val uses formula created by trial and error and a regression.
+    double angleVal = -38.1 + 1.71*(distance) + -0.0178*Math.pow(distance, 2) + (6.19 *Math.pow(10, -5) * Math.pow(distance, 3));
+
+    return angleVal;
+
   }
-  
-  public void ArmAmp() {
-    SetMotorsMotionMagic(ArmConstants.AMP_POSITION);
-  }
-
-  public void ArmMid() {
-    SetMotorsMotionMagic(ArmConstants.MID_POSITION);
-  }
-
-  
-
- */
-
 
 
   //Arm Manual

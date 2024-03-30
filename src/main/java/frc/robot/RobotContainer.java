@@ -46,6 +46,8 @@ public class RobotContainer {
   private final Arm Arm = new Arm();
   private final Intake Intake = new Intake();
   private final Shooter Shooter = new Shooter();
+
+  
     private final RobotVision robotVision = new RobotVision.Builder()
         .addPhotonVisionCamera(VisionConstants.COLOR_CAMERA_NAME, VisionConstants.BACK_CAMERA_OFFSET,
             VisionConstants.APRIL_TAG_PIPELINE)
@@ -126,7 +128,7 @@ public class RobotContainer {
       //Bumpers ------------------------------------------------
 
       leftBumper.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
-      new StartEndCommand(Intake::IntakeOff, Intake::IntakeMax, Intake).withTimeout(1)));
+      new StartEndCommand(Intake::IntakeOff, Intake::IntakeMax, Intake).withTimeout(0.75)));
 
       leftBumper.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
       new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));

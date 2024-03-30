@@ -312,7 +312,7 @@ public class TagPose3d {
      * Returns the distance to the tag
      * 
      * @return The point to point horizontal planar distance of the camera to the tag
-     * 
+     * @author Ohihoin Vahe
      */
 
     public double getDistance(){

@@ -7,6 +7,8 @@ import org.photonvision.EstimatedRobotPose;
 import org.photonvision.targeting.PhotonTrackedTarget;
 
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -155,11 +157,17 @@ public class RobotVision extends SubsystemBase {
             SmartDashboard.putNumber("RobotVision's Estimated Robot Heading: ", estimatedRobotPose.getRotation().getDegrees());
 
             // Id should be 4 or 7 depending on whether we're looking at the red or blue alliance side
-            if (getDistanceToTag(7) != null){
-                SmartDashboard.putNumber("DISTANCE TO SUBWOOFER TAG: ", getDistanceToTag(7).getDistance());
-            }
+            // all measured in meters
+            
+
+            
+
+
+
+
 
         }
+
     }
 
     /**
