@@ -47,7 +47,6 @@ public class FollowTrajectoryCommand extends Command {
      */
     public void execute() {
         driveSubsystem.followTrajectory();
-        System.out.print("Working");
         if (driveSubsystem.isTrajectoryFinished()) {
             isFinished = true;
         }
