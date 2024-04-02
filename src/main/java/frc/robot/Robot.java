@@ -4,7 +4,6 @@
 
 package frc.robot;
 
-import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.net.PortForwarder;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.Timer;
@@ -37,8 +36,8 @@ public class Robot extends TimedRobot {
     // Start the timer
     snapshotTimer.start();
 
-    // Mak eit possible to view caeras on the driverstation.
-    CameraServer.startAutomaticCapture();
+    // Mak eit possible to view cameras on the driver station.
+    // CameraServer.startAutomaticCapture();
     
     // Make it possible to view the photonvision dashboard over the internet
     PortForwarder.add(5800, "photonvision.local", 5800);
@@ -100,7 +99,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
 
     // Update the robot's settings so that they match what was configured on SmartDashboard.
-    robotContainer.configureDriverPrefferences();
+    robotContainer.configureDriverPreferences();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to

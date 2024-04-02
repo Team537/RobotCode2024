@@ -9,13 +9,16 @@ import org.photonvision.PhotonPoseEstimator;
 import org.photonvision.PhotonPoseEstimator.PoseStrategy;
 import org.photonvision.targeting.PhotonPipelineResult;
 import org.photonvision.targeting.PhotonTrackedTarget;
+import org.photonvision.targeting.TargetCorner;
 
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
+import frc.utils.vision.DetectedObject;
 
 /**
- * A camera attatched to a co-processer.
+ * A camera attached to a co-processor.
  * 
  * @author Cameron Myhre
  * @version 1.0
@@ -42,8 +45,9 @@ public class PhotonVisionCamera extends SubsystemBase {
 
         // Set the camera offset
         this.cameraOffset = cameraOffset;
+        this.cameraOffset.getRotation();
 
-        // Initialize this camera's PhotonPoseEstimaotr so that we are able to estimate
+        // Initialize this camera's PhotonPoseEstimator so that we are able to estimate
         // the robot's position.
         photonPoseEstimator = new PhotonPoseEstimator(VisionConstants.APRIL_TAG_FIELD_LAYOUT,
                 PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, camera, cameraOffset);
@@ -59,14 +63,40 @@ public class PhotonVisionCamera extends SubsystemBase {
         /*         
          * Output values so that I, Cameron, can figure out how photonvision's Object Detection code
          * works. This needs to be done because there isn't any documentation, and the people on the discord
-         * server effectibly told me to just figure it out.
+         * server effectively told me to just figure it out.
          */
         if (result.hasTargets()) {
 
-            if(result.getTargets().isEmpty()) {
-                System.out.println("Work");
+            List<PhotonTrackedTarget> targets = result.getTargets();
+            if(targets.isEmpty() || targets.get(0) == null) {
                 return;
             }
+
+            // Get the detects object's position on the screen and display it on SmartDashboard.
+            PhotonTrackedTarget target = targets.get(0);
+            List<TargetCorner> tagCorners = target.getMinAreaRectCorners();
+            if (tagCorners.isEmpty()) {
+                return;
+            }
+
+            // Get raw data
+            SmartDashboard.putNumber("Bottom Left Corner X: ", tagCorners.get(0).x);
+            SmartDashboard.putNumber("Bottom Left Corner Y: ", tagCorners.get(0).y);
+            SmartDashboard.putNumber("Bottom Right Corner X: ", tagCorners.get(1).x);
+            SmartDashboard.putNumber("Bottom Right Corner Y: ", tagCorners.get(1).y);
+            SmartDashboard.putNumber("Top Right Corner X: ", tagCorners.get(2).x);
+            SmartDashboard.putNumber("Top Right Corner Y: ", tagCorners.get(2).y);
+            SmartDashboard.putNumber("Top Left Corner X: ", tagCorners.get(3).x);
+            SmartDashboard.putNumber("Top Left Corner Y: ", tagCorners.get(3).y);
+
+            // Calculate object's position on the screen relative to the top left corner.
+            SmartDashboard.putNumber("Object X: ",(tagCorners.get(3).x + tagCorners.get(1).x) / 2);
+            SmartDashboard.putNumber("Object Y: ",(tagCorners.get(3).y + tagCorners.get(1).y) / 2);
+
+            // Convert the detected object to a DetectedObject and output the calculated position values.
+            DetectedObject detectedObject = new DetectedObject(target);
+            SmartDashboard.putNumber("Center Origin Object X: ", detectedObject.getX());
+            SmartDashboard.putNumber("Center Origin Object Y: ", detectedObject.getY());
         }
     }
 
@@ -87,15 +117,22 @@ public class PhotonVisionCamera extends SubsystemBase {
     }
 
     /**
-     * Estimates the robot's position on the filed using all of the visilbe
+     * Estimates the robot's position on the filed using all of the visible
      * AprilTags and returns the result.
      * 
-     * @return An estimante of the robot's positon on the field.
+     * @return An estimate of the robot's position on the field.
      */
     public Optional<EstimatedRobotPose> estimateRobotPose() {
 
         // Update the robot's estimate position and return the results.
         return photonPoseEstimator.update();
+    }
+
+    public List<DetectedObject> gDetectedObjects() {
+
+        // TODO: Add ability to get detected object's data.
+
+        return null;
     }
 
     /**
@@ -119,7 +156,7 @@ public class PhotonVisionCamera extends SubsystemBase {
      */
     public PhotonTrackedTarget getDistanceToTag(int id) {
 
-        // Make sure that this camera is on the ApilTag detection pipeline. If it isn't,
+        // Make sure that this camera is on the AprilTag detection pipeline. If it isn't,
         // then print an error and return null.
         if (camera.getPipelineIndex() != VisionConstants.APRIL_TAG_PIPELINE) {
 
