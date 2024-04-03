@@ -74,6 +74,7 @@ public class RobotContainer {
     POVButton dPadDownButton = new POVButton(driverController, 180);
     POVButton dPadRightButton = new POVButton(driverController, 90);
     POVButton dPadLeftButton = new POVButton(driverController, 270);
+    
 
     // Controller commands
     private final RunCommand xBoxControllerCommand = new RunCommand(
@@ -118,83 +119,92 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-        // Setup all the necessary SmartDashboard elements
-        setupDashboard();
+    // Setup all the necessary SmartDashboard elements
+    setupDashboard();
+
+    //triggers -----------------------------------------------
+    if (driverController.getLeftTriggerAxis() >= 0.8) {
+        new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterAmp, Shooter::ShooterAmp,Shooter), 
+        new StartEndCommand(Intake::IntakeAmp, Intake::IntakeAmp, Intake));
+    } else {
+        new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
+        new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake));
+    }
         
-      //Bumpers ------------------------------------------------
+    //Bumpers ------------------------------------------------
 
-      leftBumper.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
-      new StartEndCommand(Intake::IntakeOff, Intake::IntakeMax, Intake).withTimeout(0.75)));
+    leftBumper.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
+        new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(0.75)));
 
+    //   leftBumper.onFalse(null);
        
 
-
-      rightBumper.toggleOnTrue(new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()),
-      new StartEndCommand(Arm::ArmManualStop, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit())));
+    rightBumper.toggleOnTrue(new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()),
+        new StartEndCommand(Arm::ArmIntake, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit())));
 
     //   rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
 
-      //ABXY ---------------------------------------------------------
+    //ABXY ---------------------------------------------------------
 
-      aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm));
+    aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm));
 
-      // aButton.onFalse(null);
-
-
-      bButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm));
-
-      // bButton.onFalse(null);
+    // aButton.onFalse(null);
 
 
-      xButton.onTrue(new StartEndCommand(Arm::ArmMid, Arm::ArmMid, Arm));
+    bButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm));
 
-      // xButton.onFalse(null);
-
-
-      yButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp, Arm));
-
-      // yButton.onFalse(null);
+    // bButton.onFalse(null);
 
 
-      //D-PAD ---------------------------------------------
+    xButton.onTrue(new StartEndCommand(Arm::ArmMid, Arm::ArmMid, Arm));
+
+    // xButton.onFalse(null);
+
+
+    yButton.onTrue(new StartEndCommand(Arm::ArmAmp, Arm::ArmAmp, Arm));
+
+    // yButton.onFalse(null);
+
+
+    //D-PAD ---------------------------------------------
 
     //   dPadUpButton.onTrue(null);
 
-      // dPadUpButton.onFalse(null);
+    // dPadUpButton.onFalse(null);
 
 
-      dPadDownButton.onTrue(new StartEndCommand(Arm::ArmSmartSet, Arm::ArmSmartSet, Arm).withTimeout(0));
+    dPadDownButton.onTrue(new StartEndCommand(Arm::ArmSmartSet, Arm::ArmSmartSet, Arm).withTimeout(0));
 
-      // dPadDownButton.onFalse(null);
-
-
-      dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManualUp, Arm::ArmManualUp, Arm));
-
-      dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+    // dPadDownButton.onFalse(null);
 
 
-      dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManualDown, Arm::ArmManualDown, Arm));
+    dPadLeftButton.onTrue(new StartEndCommand(Arm::ArmManualUp, Arm::ArmManualUp, Arm));
 
-      dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+    dPadLeftButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
 
 
-      //Start and Back --------------------------------------------
+    dPadRightButton.onTrue(new StartEndCommand(Arm::ArmManualDown, Arm::ArmManualDown, Arm));
 
-      // Reset the IMU when the start button is pressed.
-      startButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+    dPadRightButton.onFalse(new StartEndCommand(Arm::ArmManualStop, Arm::ArmManualStop, Arm));
+
+
+    //Start and Back --------------------------------------------
+
+    // Reset the IMU when the start button is pressed.
+    startButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
      
-      //startButton.onFalse(null);
+    //startButton.onFalse(null);
 
 
-      backButton.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop,Shooter), 
-      new StartEndCommand(Intake::IntakeReverse, Intake::IntakeOff, Intake)));
+    backButton.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterReverse, Shooter::ShooterStop,Shooter), 
+        new StartEndCommand(Intake::IntakeReverse, Intake::IntakeStop, Intake)));
 
-      backButton.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
-      new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake)));
-      // */      
+    backButton.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
+        new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake)));
+    // */      
 
-      // Configure the button bindings
-      configureButtonBindings();
+    // Configure the button bindings
+    configureButtonBindings();
 
     // Adjust the dafult command based on which controler the driver ants to use.
     if (SmartDashboard.getBoolean("useXBoxController", true)) {

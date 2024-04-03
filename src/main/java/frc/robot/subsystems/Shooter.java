@@ -42,6 +42,11 @@ public class Shooter extends SubsystemBase {
     TalonUtils.TalonVelocityControl(m_shooter, -0.1);
   }
 
+  //amp specific, tyler request
+  public void ShooterAmp() {
+    TalonUtils.TalonVelocityControl(m_shooter, 0.75);
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run(every 20 ms)

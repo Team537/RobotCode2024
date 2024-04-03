@@ -136,7 +136,7 @@ public class Arm extends SubsystemBase {
   //when using these positions, TURN ROBOT ON WITH ARM DOWN
   //uses relative encoder
   public void ArmSubwoofer() { 
-    SetMotorsMotionMagic(7);
+    SetMotorsMotionMagic(10);
   }
 
   public void ArmIntake() {
@@ -148,7 +148,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void ArmMid() {
-    SetMotorsMotionMagic(23);
+    SetMotorsMotionMagic(16.5);
   }
 
   public void ArmSmartSet() {

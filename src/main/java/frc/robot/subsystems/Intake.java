@@ -39,13 +39,18 @@ public class Intake extends SubsystemBase {
     TalonUtils.TalonVelocityControl(m_intake, 1);
   }
 
+  //amp specific, tyler request
+  public void IntakeAmp() {
+    TalonUtils.TalonVelocityControl(m_intake, 0.75);
+  }
+
   //Intake Pickup notes
   public void IntakeForward() {
     TalonUtils.TalonVelocityControl(m_intake, 0.3);
   }
 
   //turns the intake off, used specifically after shooting notes
-  public void IntakeOff() {
+  public void IntakeStop() {
     TalonUtils.TalonVelocityControl(m_intake, 0);
   }
 
