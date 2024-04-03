@@ -336,6 +336,8 @@ public class RobotContainer {
         return null;
     }
 
+    
+
     /**
      * Returns the complex autonomous routine associated with the specified autonomous routine.
      * 
@@ -348,136 +350,258 @@ public class RobotContainer {
 
         // Create a empty variable to store the autonomous command.
         SequentialCommandGroup complexPath;
+
+        StartEndCommand grabNote = new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake);
+
+        ParallelCommandGroup shootNote =                         
+                        new ParallelCommandGroup( 
+                            new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(3), 
+
+                            new SequentialCommandGroup(
+                                
+                                new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(2.25)
+                                
+                            )
+
+                        );
+    
+       
+        StartEndCommand goToSubwooferPosition = new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm);
+        StartEndCommand goToIntakePosition = new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm);
+
+        SequentialCommandGroup scoreNote = new SequentialCommandGroup(
+
+            goToSubwooferPosition.withTimeout(1.5),
+            shootNote,
+            goToIntakePosition.withTimeout(1.5)
+
+        );
+        
         
         // Create a complex autonomous command for each auto. See the 
         switch (autonomousOption) {
             case BLUE_1:
                 complexPath = new SequentialCommandGroup(
-                        // Shoot note
+                        //Shoot Note
+                        scoreNote,
+                        
                         new FollowTrajectoryCommand(driveSubsystem, // Drive up to the amp and then grab the note closest to the wall near the amp.
                             AutoConstants.BLUE_1_COMPLEX_POSITIONS.subList(0, 1)),
+                        
+                        
                         // Grab note
+                        grabNote.until(() -> Intake.GetSwitchHit()),
+
+
                         new FollowTrajectoryCommand(driveSubsystem, List.of(
                             AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
                             AutoConstants.BLUE_1_STARTING_POSE)), // Drive to the original starting location
+
+                        
                         // Score note
+                        scoreNote,
+                        
+
                         new FollowTrajectoryCommand(driveSubsystem, List.of(
                             AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
                             AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(2))), // Drive to the lower of the two targeted notes
+                        
                         // Grab note
+                        grabNote.until(() -> Intake.GetSwitchHit() ),
+
                         new FollowTrajectoryCommand(driveSubsystem, List.of(
                             AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
-                            AutoConstants.BLUE_1_STARTING_POSE)) // Drive to the original starting location
+                            AutoConstants.BLUE_1_STARTING_POSE)), // Drive to the original starting location
+                        
+
                         // Score note
+                        scoreNote
+                        
                     );
                 break;
             case BLUE_2:
                 complexPath = new SequentialCommandGroup(
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(0))), // Drive to top note
+                    
                     // Grab note
+                    grabNote.until(() -> Intake.GetSwitchHit()),
+
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                    
                     // Shoot note
+                    scoreNote,
+
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(1))), // Drive to center note
+                    
                     // Grab note
+                    grabNote.until(() -> Intake.GetSwitchHit()),
+
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                    
                     // Shoot note
+                    shootNote,
+
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(2))), // Drive to bottom note
+                    
                     // Grab note
+                    grabNote.until(() -> Intake.GetSwitchHit()),
+
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)) // Return to the speaker
+                        List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                    
                     // Shoot note
+                    scoreNote
                 );
                 break;
+
             case BLUE_3:
                 complexPath = new SequentialCommandGroup(
                     // Score note
+                    scoreNote,
+
                     new FollowTrajectoryCommand(driveSubsystem, 
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.subList(0, 1)),
+
                     // Grab note
+                    grabNote.until(() -> Intake.GetSwitchHit()),
+
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(0),
                         AutoConstants.BLUE_3_STARTING_POSE
                     )),
+
                     // Score note
+                    scoreNote,
+
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(0),
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(2)
                     )),
+
                     // Grab note
+                    grabNote.until(() -> Intake.GetSwitchHit()),
+
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(0),
                         AutoConstants.BLUE_3_STARTING_POSE
-                    ))
+                    )),
+
                     // Score note
+                    scoreNote
                 );
                 break;
+
             case RED_1:
             complexPath = new SequentialCommandGroup(
                 // Shoot note
+                scoreNote,
+
                 new FollowTrajectoryCommand(driveSubsystem, // Drive up to the amp and then grab the note closest to the wall near the amp.
                     AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 1)),
+                
                 // Grab note
+                grabNote.until(() -> Intake.GetSwitchHit()),
+
                 new FollowTrajectoryCommand(driveSubsystem, List.of(
                     AutoConstants.RED_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
                     AutoConstants.RED_1_STARTING_POSE)), // Drive to the original starting location
+                
                 // Score note
+                scoreNote,
+
                 new FollowTrajectoryCommand(driveSubsystem, List.of(
                     AutoConstants.RED_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
                     AutoConstants.RED_1_COMPLEX_POSITIONS.get(2))), // Drive to the lower of the two targeted notes
+                
                 // Grab note
+                grabNote.until(() -> Intake.GetSwitchHit()),
+
                 new FollowTrajectoryCommand(driveSubsystem, List.of(
                     AutoConstants.RED_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
-                    AutoConstants.RED_1_STARTING_POSE)) // Drive to the original starting location
+                    AutoConstants.RED_1_STARTING_POSE)), // Drive to the original starting location
+                
                 // Score note
+                scoreNote
             );
             case RED_2:
                 complexPath = new SequentialCommandGroup(
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(0))), // Drive to top note
                     // Grab note
+                    grabNote.until(() -> Intake.GetSwitchHit()),
+
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                    
                     // Shoot note
+                    scoreNote,
+
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(1))), // Drive to center note
+                    
                     // Grab note
+                    grabNote.until(() -> Intake.GetSwitchHit()),
+
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                    
                     // Shoot note
+                    scoreNote,
+
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(2))), // Drive to bottom note
+                    
                     // Grab note
+                    grabNote.until(() -> Intake.GetSwitchHit()),
+
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)) // Return to the speaker
+                        List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+
                     // Shoot note
+                    scoreNote
+
                 );
                 break;
             case RED_3:
                 complexPath = new SequentialCommandGroup(
                     // Score note
+                    scoreNote,
+
                     new FollowTrajectoryCommand(driveSubsystem, 
                         AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 1)),
+                    
                     // Grab note
+                    grabNote.until(() -> Intake.GetSwitchHit()),
+
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
                         AutoConstants.RED_1_STARTING_POSE
                     )),
+
                     // Score note
+                    scoreNote,
+
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
                         AutoConstants.RED_1_COMPLEX_POSITIONS.get(2)
                     )),
+
                     // Grab note
+                    grabNote.until(() -> Intake.GetSwitchHit()),
+
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
                         AutoConstants.RED_1_STARTING_POSE
-                    ))
+                    )),
+
                     // Score note
+                    scoreNote
                 );
                 break;
             default:
