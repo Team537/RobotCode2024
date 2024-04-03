@@ -18,7 +18,6 @@ import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Arm;
-import frc.robot.subsystems.Shooter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -27,9 +26,9 @@ import frc.robot.subsystems.Shooter;
  * project.
  */
 public class Robot extends TimedRobot {
-  private int timer = 0;
   private Command autonomousCommand;
   private RobotContainer robotContainer;
+  public int timer = 0;
   private final Timer snapshotTimer = new Timer(); // Used to take photographs after a set period of time.
 
   /**
@@ -46,14 +45,11 @@ public class Robot extends TimedRobot {
     // Start the timer
     snapshotTimer.start();
 
-    // Make it possible to view USB webcams connected to the RoboRio
-    CameraServer.startAutomaticCapture();
+    // Mak eit possible to view cameras on the driver station.
+    // CameraServer.startAutomaticCapture();
     
     // Make it possible to view the photonvision dashboard over the internet
     PortForwarder.add(5800, "photonvision.local", 5800);
-    timer = 0;
-
-    
   }
 
   /**
@@ -95,9 +91,7 @@ public class Robot extends TimedRobot {
   }
 
   @Override
-  public void disabledPeriodic() {
-
-  }
+  public void disabledPeriodic() {}
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -128,7 +122,7 @@ public class Robot extends TimedRobot {
      // Take a screenshot every 250ms.
      if (snapshotTimer.get() >= VisionConstants.SNAPSHOT_RATE) {
       snapshotTimer.reset();
-      // robotContainer.snapshot();
+      robotContainer.snapshot();
     }
   }
 
@@ -136,7 +130,7 @@ public class Robot extends TimedRobot {
   public void teleopInit() {
 
     // Update the robot's settings so that they match what was configured on SmartDashboard.
-    robotContainer.configureDriverPrefferences();
+    robotContainer.configureDriverPreferences();
 
     // This makes sure that the autonomous stops running when
     // teleop starts running. If you want the autonomous to
@@ -155,7 +149,7 @@ public class Robot extends TimedRobot {
      // Take a screenshot every 250ms.
      if (snapshotTimer.get() >= VisionConstants.SNAPSHOT_RATE) {
       snapshotTimer.reset();
-      // robotContainer.snapshot();
+      robotContainer.snapshot();
     }
 
     // System.out.println("Absolute POS OFFSET: " + (Arm.m_encoder.getAbsolutePosition()-ArmConstants.ENCODER_OFFSET));

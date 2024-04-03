@@ -26,5 +26,8 @@
     },
   ],
   "java.test.defaultConfig": "WPIlibUnitTests",
-  "java.debug.settings.onBuildFailureProceed": true
+  "java.debug.settings.onBuildFailureProceed": true,
+  "cSpell.words": [
+    "Odometry"
+  ]
 }

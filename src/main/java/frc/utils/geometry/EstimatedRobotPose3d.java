@@ -140,10 +140,10 @@ public class EstimatedRobotPose3d {
 
     /**
      * Returns a {@code Rotation3d} object specifying how much this robot would have to rotate
-     * to face the same direciton.
+     * to face the same direction.
      * 
      * @param rotation The rotation you want to get the distance to.
-     * @return A {@code Pose3d} object specifying the amout that this robot would have to rotate
+     * @return A {@code Pose3d} object specifying the amount that this robot would have to rotate
      *         in each 
      */
     public Pose3d getDistanceTo(Rotation3d rotation) {
@@ -160,7 +160,7 @@ public class EstimatedRobotPose3d {
     /**
      * Returns the distance this robot would have to travel in order to reach the specified location.
      * 
-     * @param position The positon you want to get the distance to.
+     * @param position The position you want to get the distance to.
      * @return The distance to the specified location as a {@code Pose3d} object.
      */
     public Pose3d getDistanceTo(Translation3d position) {
@@ -176,7 +176,7 @@ public class EstimatedRobotPose3d {
 
     /**
      * Returns a {@code Pose3d} object specifying how much the robot will have to drive an rotate along 
-     * each axis in order to reach the speicifed positon. 
+     * each axis in order to reach the specified position. 
      * 
      * @param position The position you want to get the distance to.
      * @return The distance to the specified position as a {@code Pose3d} object.
@@ -209,10 +209,10 @@ public class EstimatedRobotPose3d {
     }
 
     /**
-     * Adds the specified {@code EstimatedRobotPose3d}'s valoes to this 
+     * Adds the specified {@code EstimatedRobotPose3d}'s values to this 
      * {@code EstimatedRobotPose3d}'s values.
      * 
-     * @param robotPose The {@code EstimatedRobotPose3d} who's valoes are to be added to this 
+     * @param robotPose The {@code EstimatedRobotPose3d} who's values are to be added to this 
      *                  {@code EstimatedRobotPose3d}'s values.
      */
     public void add(EstimatedRobotPose3d robotPose) {
@@ -225,10 +225,29 @@ public class EstimatedRobotPose3d {
     }
 
     /**
-     * Subtracts the specified {@code EstimatedRobotPose3d}'s valoes from this 
+     * Adds the specified {@code Pose3d}'s values to this 
      * {@code EstimatedRobotPose3d}'s values.
      * 
-     * @param robotPose The {@code EstimatedRobotPose3d} who's valoes are to be subtracted from this 
+     * @param robotPose The {@code Pose3d} who's values are to be added to this 
+     *                  {@code EstimatedRobotPose3d}'s values.
+     */
+    public void add(Pose3d pose3d) {
+        this.x += pose3d.getX();
+        this.y += pose3d.getY();
+        this.z += pose3d.getZ();
+
+        // Get the rotation from the specified Pose3d and add its values to this RobotPose3d's values.
+        Rotation3d rotation = pose3d.getRotation();
+        this.roll += rotation.getX();
+        this.pitch += rotation.getY();
+        this.yaw += rotation.getZ();
+    }
+
+    /**
+     * Subtracts the specified {@code EstimatedRobotPose3d}'s values from this 
+     * {@code EstimatedRobotPose3d}'s values.
+     * 
+     * @param robotPose The {@code EstimatedRobotPose3d} who's values are to be subtracted from this 
      *                  {@code EstimatedRobotPose3d}'s values.
      */
     public void minus(EstimatedRobotPose3d robotPose) {
@@ -238,6 +257,25 @@ public class EstimatedRobotPose3d {
         this.roll -= robotPose.getRoll();
         this.pitch -= robotPose.getPitch();
         this.yaw -= robotPose.getYaw();
+    }
+
+    /**
+     * Subtracts the specified {@code Pose3d}'s values from this 
+     * {@code EstimatedRobotPose3d}'s values.
+     * 
+     * @param robotPose The {@code EstimatedRobotPose3d} who's values are to be subtracted from this 
+     *                  {@code EstimatedRobotPose3d}'s values.
+     */
+    public void minus(Pose3d pose3d) {
+        this.x -= pose3d.getX();
+        this.y -= pose3d.getY();
+        this.z -= pose3d.getZ();
+
+        // Get the rotation from the specified Pose3d and add its values to this RobotPose3d's values.
+        Rotation3d rotation = pose3d.getRotation();
+        this.roll -= rotation.getX();
+        this.pitch -= rotation.getY();
+        this.yaw -= rotation.getZ();
     }
 
      /**
@@ -273,7 +311,7 @@ public class EstimatedRobotPose3d {
     /**
      * Sets this {@code EstimatedRobotPose3d}'s x coordinate to the specified value.
      * 
-     * @param newX The new x coordiante of this {@code EstimatedRobotPose3d} in meters.
+     * @param newX The new x coordinate of this {@code EstimatedRobotPose3d} in meters.
      */
     public void setX(double newX) {
 

@@ -7,6 +7,12 @@
         }
       },
       "Talon FX (v6)[11]": {
+      "SPARK MAX [2]": {
+        "header": {
+          "open": true
+        }
+      },
+      "SPARK MAX [8]": {
         "header": {
           "open": true
         }
@@ -38,5 +44,6 @@
   },
   "NetworkTables Info": {
     "visible": true
+  }
   }
 }
