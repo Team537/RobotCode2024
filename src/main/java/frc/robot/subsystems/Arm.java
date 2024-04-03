@@ -24,9 +24,8 @@ public class Arm extends SubsystemBase {
 
   //current leader arm motor. ID 12
   public static TalonFX m_leader = new TalonFX(ArmConstants.ARM2);
-
-  double midPosition = 23;
-  double subwooferPosition = 10;
+  
+  double setpos = 5;
 
   Pose2d subwooferPose;
   Pose2d translationAway;
@@ -137,10 +136,7 @@ public class Arm extends SubsystemBase {
   //when using these positions, TURN ROBOT ON WITH ARM DOWN
   //uses relative encoder
   public void ArmSubwoofer() { 
-
-    // SetMotorsMotionMagic(10);
-    //Allows us to tune subwoofer position from smart dashboard
-    SetMotorsMotionMagic(subwooferPosition);
+    SetMotorsMotionMagic(7);
   }
 
   public void ArmIntake() {
@@ -152,9 +148,11 @@ public class Arm extends SubsystemBase {
   }
 
   public void ArmMid() {
-    // SetMotorsMotionMagic(23);
-    //Allows us to tune mid position from smart dashboard
-    SetMotorsMotionMagic(midPosition);
+    SetMotorsMotionMagic(23);
+  }
+
+  public void ArmSmartSet() {
+    SetMotorsMotionMagic(setpos);
   }
 
   /**
@@ -248,8 +246,7 @@ public class Arm extends SubsystemBase {
     SmartDashboard.putNumber("Follower Arm Positon", m_follower.getPosition().getValue());
     SmartDashboard.putNumber("Leader Arm Positon", m_leader.getPosition().getValue());
 
-    midPosition = SmartDashboard.getNumber("Mid Position: ", 23);
-    subwooferPosition = SmartDashboard.getNumber("Subwoofer Position: ", 10);
+    setpos = SmartDashboard.getNumber("Set Position", 5);
 
     // This method will be called once per scheduler run
   }

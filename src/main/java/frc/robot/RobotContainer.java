@@ -137,7 +137,7 @@ public class RobotContainer {
       rightBumper.toggleOnTrue(new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()),
       new StartEndCommand(Arm::ArmManualStop, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit())));
 
-      // rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
+    //   rightBumper.onFalse(new StartEndCommand(Intake::IntakeOff, Intake::IntakeOff, Intake));
 
       //ABXY ---------------------------------------------------------
 
@@ -163,12 +163,12 @@ public class RobotContainer {
 
       //D-PAD ---------------------------------------------
 
-      dPadUpButton.onTrue(new StartEndCommand(Arm::ChaseSet0, Arm::ChaseSet0, Arm));
+    //   dPadUpButton.onTrue(null);
 
       // dPadUpButton.onFalse(null);
 
 
-      dPadDownButton.onTrue(new StartEndCommand(Arm::ChaseSet05, Arm::ChaseSet05, Arm));
+      dPadDownButton.onTrue(new StartEndCommand(Arm::ArmSmartSet, Arm::ArmSmartSet, Arm).withTimeout(0));
 
       // dPadDownButton.onFalse(null);
 
@@ -186,7 +186,7 @@ public class RobotContainer {
       //Start and Back --------------------------------------------
 
       // Reset the IMU when the start button is pressed.
-     startButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
+      startButton.onTrue(new InstantCommand(driveSubsystem::zeroHeading));
      
       //startButton.onFalse(null);
 
