@@ -19,7 +19,6 @@ import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -167,7 +166,8 @@ public final class Constants {
         public static final String ARDUCAM_OV2311_USB_CAMERA_NAME = "Arducam_OV2311_USB_Camera";
         public static final String USB_2M_GS_CAMERA_NAME = "USB_2M_GS_camera";
 
-        // Camera offsets (NOTE: These values are placeholders and thus subject to change).
+        // Camera offsets (NOTE: These values are placeholders and thus subject to
+        // change).
         public static final Transform3d ARDUCAM_OV9281_OFFSET = new Transform3d(
                 new Translation3d(0, 0, 0),
                 new Rotation3d(0, 0, 0));
@@ -205,40 +205,35 @@ public final class Constants {
 
         // Constraint for the motion profiled robot angle controller
         // Value is a float because xyz
-        public static final double TRAJECTORY_THRESHOLD = 0.1; //the maximum distance away from a waypoint before the robot moves onto the next one (meters)
+        public static final double TRAJECTORY_THRESHOLD = 0.1; // the maximum distance away from a waypoint before the
+                                                               // robot moves onto the next one (meters)
         public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
                 MAX_ANGULAR_SPEED_RADIANS_PER_SECOND, MAX_ANGULAR_SPEED_RADIANS_PER_SECOND_SQUARED);
 
-        public static final Pose2d BLUE_1_STARTING_POSE =  new Pose2d(1.629, 6.457, Rotation2d.fromDegrees(0));
-        public static final Pose2d BLUE_2_STARTING_POSE =  new Pose2d(1.278, 5.603, Rotation2d.fromDegrees(0));
-        public static final Pose2d BLUE_3_STARTING_POSE =  new Pose2d(1.629, 4.749, Rotation2d.fromDegrees(0));
-        public static final Pose2d RED_1_STARTING_POSE =  new Pose2d(14.884, 6.457, Rotation2d.fromDegrees(180));
-        public static final Pose2d RED_2_STARTING_POSE =  new Pose2d(15.235, 5.603, Rotation2d.fromDegrees(180));
-        public static final Pose2d RED_3_STARTING_POSE =  new Pose2d(14.884, 4.749, Rotation2d.fromDegrees(180));
+        public static final Pose2d BLUE_1_STARTING_POSE = new Pose2d(1.629, 6.457, Rotation2d.fromDegrees(0));
+        public static final Pose2d BLUE_2_STARTING_POSE = new Pose2d(1.278, 5.603, Rotation2d.fromDegrees(0));
+        public static final Pose2d BLUE_3_STARTING_POSE = new Pose2d(1.629, 4.749, Rotation2d.fromDegrees(0));
+        public static final Pose2d RED_1_STARTING_POSE = new Pose2d(14.884, 6.457, Rotation2d.fromDegrees(180));
+        public static final Pose2d RED_2_STARTING_POSE = new Pose2d(15.235, 5.603, Rotation2d.fromDegrees(180));
+        public static final Pose2d RED_3_STARTING_POSE = new Pose2d(14.884, 4.749, Rotation2d.fromDegrees(180));
 
         // Old paths
         public static final List<Pose2d> RED_1_TRAJECTORY = List.of(
-                new Pose2d(15.036,7.671, RED_1_STARTING_POSE.getRotation()),
-                new Pose2d(15.072,7.671, RED_1_STARTING_POSE.getRotation())
-        );
+                new Pose2d(15.036, 7.671, RED_1_STARTING_POSE.getRotation()),
+                new Pose2d(15.072, 7.671, RED_1_STARTING_POSE.getRotation()));
         public static final List<Pose2d> RED_2_TRAJECTORY = List.of(
-                new Pose2d(12.429,5.713, RED_2_STARTING_POSE.getRotation())
-        );
+                new Pose2d(12.429, 5.713, RED_2_STARTING_POSE.getRotation()));
         public static final List<Pose2d> RED_3_TRAJECTORY = List.of(
-                new Pose2d(14.940,1.580, RED_3_STARTING_POSE.getRotation()),
-                new Pose2d(13.475,1.195, RED_3_STARTING_POSE.getRotation())
-        );
+                new Pose2d(14.940, 1.580, RED_3_STARTING_POSE.getRotation()),
+                new Pose2d(13.475, 1.195, RED_3_STARTING_POSE.getRotation()));
         public static final List<Pose2d> BLUE_1_TRAJECTORY = List.of(
-                new Pose2d(2.926,7.563, BLUE_1_STARTING_POSE.getRotation()),
-                new Pose2d(5.497,7.563, BLUE_1_STARTING_POSE.getRotation())
-        );
+                new Pose2d(2.926, 7.563, BLUE_1_STARTING_POSE.getRotation()),
+                new Pose2d(5.497, 7.563, BLUE_1_STARTING_POSE.getRotation()));
         public static final List<Pose2d> BLUE_2_TRAJECTORY = List.of(
-                new Pose2d(5.293,5.593, BLUE_2_STARTING_POSE.getRotation())
-        );
+                new Pose2d(5.293, 5.593, BLUE_2_STARTING_POSE.getRotation()));
         public static final List<Pose2d> BLUE_3_TRAJECTORY = List.of(
-                new Pose2d(3.503,0.931, BLUE_3_STARTING_POSE.getRotation()),
-                new Pose2d(4.440,0.931, BLUE_3_STARTING_POSE.getRotation())
-        );
+                new Pose2d(3.503, 0.931, BLUE_3_STARTING_POSE.getRotation()),
+                new Pose2d(4.440, 0.931, BLUE_3_STARTING_POSE.getRotation()));
 
         // New Paths
         public static final List<Pose2d> BLUE_1_COMPLEX_POSITIONS = List.of(
@@ -252,7 +247,7 @@ public final class Constants {
                 new Pose2d(2.273, 7.004, Rotation2d.fromDegrees(0)) // Top Note
         );
         public static final List<Pose2d> BLUE_3_COMPLEX_POSITIONS = List.of(
-                new Pose2d(4.726, 4.840, Rotation2d.fromDegrees(0)), // Position under triangle thingy 
+                new Pose2d(4.726, 4.840, Rotation2d.fromDegrees(0)), // Position under triangle thingy
                 new Pose2d(7.717, 4.099, Rotation2d.fromDegrees(0)), // Center note in center of field.
                 new Pose2d(7.717, 2.425, Rotation2d.fromDegrees(0)) // Second to last note in center of field.
         );
@@ -268,7 +263,7 @@ public final class Constants {
                 new Pose2d(14.24, 7.004, Rotation2d.fromDegrees(180)) // Top Note
         );
         public static final List<Pose2d> RED_3_COMPLEX_POSITIONS = List.of(
-                new Pose2d(11.787, 4.840, Rotation2d.fromDegrees(180)), // Position under triangle thingy 
+                new Pose2d(11.787, 4.840, Rotation2d.fromDegrees(180)), // Position under triangle thingy
                 new Pose2d(8.796, 4.099, Rotation2d.fromDegrees(180)), // Center note in center of field.
                 new Pose2d(8.796, 2.425, Rotation2d.fromDegrees(180)) // Second to last note in center of field.
         );
@@ -281,40 +276,19 @@ public final class Constants {
     public static final class FieldConstants {
         public static final Pose2d SPEAKER_POSE = new Pose2d(0, 0, new Rotation2d());
         public static final double SPEAKER_HEIGHT = 81;
+    }
 
-        // Speaker Scoring Locations
-        public static final Pose2d RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION = 
-                new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0));
-        public static final Pose2d RED_ALLIANCE_SPEAKER_LEFT_SCORING_LOCATION = 
-                new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0));
-        public static final Pose2d RED_ALLIANCE_SPEAKER_RIGHT_SCORING_LOCATION = 
-                new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0));
+    public static final class IntakeConstants {
+        public static final int INTAKE = 14;
+    }
 
-        public static final Pose2d BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION = 
-                new Pose2d(new Translation2d(1.278, 5.603), Rotation2d.fromDegrees(0));
-        public static final Pose2d BLUE_ALLIANCE_SPEAKER_LEFT_SCORING_LOCATION = 
-                new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0));
-        public static final Pose2d BLUE_ALLIANCE_SPEAKER_RIGHT_SCORING_LOCATION = 
-                new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0));
+    public static final class ShooterConstants {
+        public static final int SHOOTER = 13;
+    }
 
-        // AMP Scoring locations
-        public static final Pose2d RED_AMP_SCORING_POSITION =
-                new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0));
-        public static final Pose2d BLUE_AMP_SCORING_POSITION =
-                new Pose2d(new Translation2d(), Rotation2d.fromDegrees(0));
-  }
-
-  public static final class IntakeConstants {
-    public static final int INTAKE = 14;
-  }
-
-  public static final class ShooterConstants {
-    public static final int SHOOTER = 13;
-  }
-
-  public static final class ArmConstants {
-    public static final int ARM1 = 11;
-    public static final int ARM2 = 12;
-    public static final int PIGEON = 15;
-  }
+    public static final class ArmConstants {
+        public static final int ARM1 = 11;
+        public static final int ARM2 = 12;
+        public static final int PIGEON = 15;
+    }
 }
