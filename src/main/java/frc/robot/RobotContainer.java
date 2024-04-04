@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.FieldConstants;
@@ -138,6 +139,7 @@ public class RobotContainer {
         new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
         new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake));
     }
+    System.out.println(driverController.getLeftTriggerAxis());
         
     //Bumpers ------------------------------------------------
 
@@ -177,12 +179,12 @@ public class RobotContainer {
 
     //D-PAD ---------------------------------------------
 
-    //   dPadUpButton.onTrue(null);
+    //dPadUpButton.onTrue(null);
 
     // dPadUpButton.onFalse(null);
 
 
-    dPadDownButton.onTrue(new StartEndCommand(Arm::ArmSmartSet, Arm::ArmSmartSet, Arm).withTimeout(0));
+    // dPadDownButton.onTrue(new StartEndCommand(Arm::ArmSmartSet, Arm::ArmSmartSet, Arm).withTimeout(0));
 
     // dPadDownButton.onFalse(null);
 
@@ -225,14 +227,7 @@ public class RobotContainer {
       driveSubsystem.setDefaultCommand(xBoxControllerCommand);
     } else {
       driveSubsystem.setDefaultCommand(flightstickCommand);
-    } 
-
-/*         Arm.setDefaultCommand(
-            new RunCommand(
-            () -> Arm.automaticAngle( driveSubsystem, teamAlliance.getSelected() ),
-            Arm
-            )
-        );  */      
+    }  
 
 
     // Setup all the neccicery SmartDashboard elements
@@ -415,7 +410,7 @@ public class RobotContainer {
                         
                         new SequentialCommandGroup(
 
-                            // Raises the Arm to Subwoofer Position
+                            // lowers the Arm to Subwoofer Position
                             new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
 
                             // Shoots the Note             
@@ -425,8 +420,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -440,7 +435,7 @@ public class RobotContainer {
                             AutoConstants.BLUE_1_COMPLEX_POSITIONS.subList(0, 2)),
                         
                         // Grab note
-                        new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                        new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()).withTimeout(1),
 
 
                         new FollowTrajectoryCommand(driveSubsystem, List.of(
@@ -461,8 +456,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -478,7 +473,7 @@ public class RobotContainer {
                             AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(2))), // Drive to the lower of the two targeted notes
                         
                         // Grab note
-                        new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit() ),
+                        new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()).withTimeout(1),
 
                         new FollowTrajectoryCommand(driveSubsystem, List.of(
                             AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
@@ -498,8 +493,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -526,8 +521,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -559,8 +554,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -574,7 +569,7 @@ public class RobotContainer {
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(1))), // Drive to center note
                     
                     // Grab note
-                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()).withTimeout(1),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
@@ -592,8 +587,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -607,7 +602,7 @@ public class RobotContainer {
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(2))), // Drive to bottom note
                     
                     // Grab note
-                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()).withTimeout(1),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
@@ -625,8 +620,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -653,8 +648,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -667,7 +662,7 @@ public class RobotContainer {
                     new FollowTrajectoryCommand(driveSubsystem, 
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.subList(0, 2)),
                     // Grab note
-                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()).withTimeout(1),
 
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(0),
@@ -687,8 +682,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -704,7 +699,7 @@ public class RobotContainer {
                     )),
 
                     // Grab note
-                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()).withTimeout(1),
 
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(0),
@@ -724,8 +719,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -752,8 +747,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -766,7 +761,7 @@ public class RobotContainer {
                 new FollowTrajectoryCommand(driveSubsystem, // Drive up to the amp and then grab the note closest to the wall near the amp.
                     AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 2)),
                 // Grab note
-                new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()).withTimeout(1),
 
                 new FollowTrajectoryCommand(driveSubsystem, List.of(
                     AutoConstants.RED_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
@@ -785,8 +780,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -801,7 +796,7 @@ public class RobotContainer {
                     AutoConstants.RED_1_COMPLEX_POSITIONS.get(2))), // Drive to the lower of the two targeted notes
                 
                 // Grab note
-                new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()).withTimeout(1),
 
                 new FollowTrajectoryCommand(driveSubsystem, List.of(
                     AutoConstants.RED_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
@@ -820,8 +815,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -850,24 +845,22 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
-                            ),
-                       
-                            // Goes back to the intake position
-                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                            )
                         
                         ),
                 
 
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(0))), // Drive to top note
+                        List.of(AutoConstants.RED_2_COMPLEX_POSITIONS.get(0))), // Drive to top note
 
                     // Grab note
 
-                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                    new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()).withTimeout(2),
+                    new StartEndCommand(Arm::ArmIntake, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit()).withTimeout(2)),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
@@ -885,22 +878,20 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
-                            ),
-                       
-                            // Goes back to the intake position
-                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                            )
                         
                         ),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(1))), // Drive to center note
+                        List.of(AutoConstants.RED_2_COMPLEX_POSITIONS.get(1))), // Drive to center note
                     
                     // Grab note
-                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                    new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()).withTimeout(2),
+                    new StartEndCommand(Arm::ArmIntake, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit()).withTimeout(2)),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
@@ -918,22 +909,20 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
-                            ),
-                       
-                            // Goes back to the intake position
-                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                            )
                         
                         ),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(2))), // Drive to bottom note
+                        List.of(AutoConstants.RED_2_COMPLEX_POSITIONS.get(2))), // Drive to bottom note
                     
                     // Grab note
-                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                    new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()).withTimeout(2),
+                    new StartEndCommand(Arm::ArmIntake, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit()).withTimeout(2)),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
@@ -951,14 +940,11 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
-                            ),
-                       
-                            // Goes back to the intake position
-                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                            )
                         
                         )
 
@@ -979,8 +965,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -993,7 +979,7 @@ public class RobotContainer {
                     new FollowTrajectoryCommand(driveSubsystem, 
                         AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 2)),
                     // Grab note
-                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()).withTimeout(1),
 
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
@@ -1013,8 +999,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
@@ -1030,7 +1016,7 @@ public class RobotContainer {
                     )),
 
                     // Grab note
-                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()).withTimeout(1),
 
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
@@ -1050,8 +1036,8 @@ public class RobotContainer {
 
                                 new SequentialCommandGroup(
                                 
-                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(1),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1)
                                 
                                 )
                             ),
