@@ -798,10 +798,36 @@ public class RobotContainer {
                         )
             );
             case RED_2:
+                                // Score note
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ), 
+                
+
                 complexPath = new SequentialCommandGroup(
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(0))), // Drive to top note
                     // Grab note
+
                     new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
