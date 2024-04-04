@@ -32,6 +32,11 @@
           "open": true
         }
       },
+      "SPARK MAX [2]": {
+        "header": {
+          "open": true
+        }
+      },
       "Talon FX (v6)[11]": {
         "SPARK MAX [2]": {
           "header": {
@@ -42,6 +47,19 @@
           "header": {
             "open": true
           }
+        },
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[13]": {
+        "header": {
+          "open": true
+        }
+      },
+      "Talon FX (v6)[14]": {
+        "header": {
+          "open": true
         }
       }
     }
