@@ -364,23 +364,17 @@ public class RobotContainer {
         } else {
 
             // Follow the basic pre-planned path
-            // selectedAutonomousRoutine = new SequentialCommandGroup(
-            //     new FollowTrajectoryCommand(
-            //         driveSubsystem, 
-            //         selectedAuto.getTrajectory())
-            // );
             selectedAutonomousRoutine = new SequentialCommandGroup(
-                new StartEndCommand(Arm::ArmSubwoofer,Arm::ArmSubwoofer,Arm).withTimeout(1),
-                new ParallelCommandGroup(
-                    new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
-                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(0.75)).withTimeout(2)
-                );
+                new FollowTrajectoryCommand(
+                    driveSubsystem, 
+                    selectedAuto.getTrajectory())
+            );
         }
         // Configure the robot's settings so that it will be optimized for the selected command.
         driveSubsystem.setAutonomous(selectedAuto);
 
         // If we want to run autonomous, then follow the trajectory. Otherwise don't run the auto.
-        if (SmartDashboard.getBoolean("Run Auto", true)) {
+        if (SmartDashboard.getBoolean("Run Auto", false)) {
 
              // Run path following command, then stop at the end.
             return selectedAutonomousRoutine;
@@ -509,6 +503,30 @@ public class RobotContainer {
                 break;
             case BLUE_2:
                 complexPath = new SequentialCommandGroup(
+
+                                       new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
+
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(0))), // Drive to top note
                     
@@ -803,8 +821,13 @@ public class RobotContainer {
                         
                         )
             );
+            break;
             case RED_2:
-                                // Score note
+
+
+                complexPath = new SequentialCommandGroup(
+
+                                                    // Score note
                         new SequentialCommandGroup(
 
                             // Raises the Arm to Subwoofer Position
@@ -826,12 +849,11 @@ public class RobotContainer {
                             // Goes back to the intake position
                             new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
                         
-                        ), 
-                
+                        ),
 
-                complexPath = new SequentialCommandGroup(
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(0))), // Drive to top note
+
                     // Grab note
 
                     new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
