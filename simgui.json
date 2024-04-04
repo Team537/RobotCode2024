@@ -49,6 +49,7 @@
   "NTProvider": {
     "types": {
       "/FMSInfo": "FMSInfo",
+      "/SmartDashboard/Alliance Selection": "String Chooser",
       "/SmartDashboard/Autonomous Selection": "String Chooser",
       "/SmartDashboard/Controller Selection": "String Chooser"
     }

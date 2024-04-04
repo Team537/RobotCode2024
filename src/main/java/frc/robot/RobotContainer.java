@@ -210,13 +210,11 @@ public class RobotContainer {
 
     backButton.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
         new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake)));
-    // */      
+    
 
-/*     Arm.setDefaultCommand(
-        new Command() {
-        () -> Arm.automaticAngle( driveSubsystem, teamAlliance.getSelected() )
-        }
-    ) */
+
+
+   
 
 
     // Configure the button bindings
@@ -307,6 +305,13 @@ public class RobotContainer {
      */
     public void updateCommands() {
         driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
+
+/*         Arm.setDefaultCommand(
+            new RunCommand(
+            () -> Arm.automaticAngle( driveSubsystem, teamAlliance.getSelected() ),
+            Arm
+            )
+        );  */       
     }
 
     /**
