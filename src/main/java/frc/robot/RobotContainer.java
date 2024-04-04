@@ -300,7 +300,7 @@ public class RobotContainer {
         // Determines whether or not we want to run autonomous.
         SmartDashboard.putBoolean("Run Auto", false);
         SmartDashboard.putBoolean("Complex Auto", false);
-
+        SmartDashboard.putBoolean("Only Drive", false);
         // Setup autonomous selection.
         // Loop through all of the available auto options and add each of them as a separate autonomous option
         // in SmartDashboard.
@@ -361,20 +361,24 @@ public class RobotContainer {
 
             // Get complicated autonomous routine associated with the selected auto.
             selectedAutonomousRoutine = getComplexPath(selectedAuto);
-        } else {
+        } else if (SmartDashboard.getBoolean("Only Drive", true)) {
 
             // Follow the basic pre-planned path
-            // selectedAutonomousRoutine = new SequentialCommandGroup(
-            //     new FollowTrajectoryCommand(
-            //         driveSubsystem, 
-            //         selectedAuto.getTrajectory())
-            // );
+            selectedAutonomousRoutine = new SequentialCommandGroup(
+                new FollowTrajectoryCommand(
+                    driveSubsystem, 
+                    selectedAuto.getTrajectory())
+            );
+        } else {
             selectedAutonomousRoutine = new SequentialCommandGroup(
                 new StartEndCommand(Arm::ArmSubwoofer,Arm::ArmSubwoofer,Arm).withTimeout(1),
                 new ParallelCommandGroup(
                     new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
-                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(0.75)).withTimeout(2)
-                );
+                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(0.75)).withTimeout(2),
+                new FollowTrajectoryCommand(
+                    driveSubsystem, 
+                    selectedAuto.getTrajectory())
+            );
         }
         // Configure the robot's settings so that it will be optimized for the selected command.
         driveSubsystem.setAutonomous(selectedAuto);
@@ -513,7 +517,7 @@ public class RobotContainer {
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(0))), // Drive to top note
                     
                     // Grab note
-                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()).withTimeout(1.5),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
