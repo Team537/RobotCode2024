@@ -105,6 +105,10 @@ public class DriveSubsystem extends SubsystemBase {
     private Supplier<Pose2d> visionMeasurementSupplier;
     private Timer elapsedTime = new Timer();
 
+    private Pose2d transFromRedSub;
+    private Pose2d transFromBlueSub;
+    private double redDistanceAway, blueDistanceAway, lowerDistance, angleVal;
+
     /**
      * Creates a new {@code DriveSubsystem} object with the specified parameters.
      * 
@@ -150,15 +154,16 @@ public class DriveSubsystem extends SubsystemBase {
         // Periodically update the robot's position data to keep track of its location.
         updateRobotPose();
 
-        Pose2d transFromRedSub = getPose().relativeTo(ArmConstants.redSubwooferPosition);
-        Pose2d transFromBlueSub = getPose().relativeTo(ArmConstants.blueSubwooferPosition);
-        double redDistanceAway = Math.sqrt( Math.pow(transFromRedSub.getX(), 2) + Math.pow(transFromRedSub.getY(), 2) );
-        double blueDistanceAway = Math.sqrt(Math.pow(transFromBlueSub.getX(), 2) + Math.pow(transFromBlueSub.getY(), 2) );
+        transFromRedSub = getPose().relativeTo(ArmConstants.redSubwooferPosition);
+        transFromBlueSub = getPose().relativeTo(ArmConstants.blueSubwooferPosition);
+        redDistanceAway = Math.sqrt( Math.pow(transFromRedSub.getX(), 2) + Math.pow(transFromRedSub.getY(), 2) );
+        blueDistanceAway = Math.sqrt(Math.pow(transFromBlueSub.getX(), 2) + Math.pow(transFromBlueSub.getY(), 2) );
 
-        redDistanceAway *= 3.281;
+        redDistanceAway *= 3.281; //Converts to ft from meters
         blueDistanceAway *= 3.281;
-        double lowerDistance = Math.min(redDistanceAway, blueDistanceAway);
-        double angleVal = -38.1 + 1.71*(lowerDistance) + -0.0178*Math.pow(lowerDistance, 2) + (6.19 *Math.pow(10, -5) * Math.pow(lowerDistance, 3));
+
+        lowerDistance = Math.min(redDistanceAway, blueDistanceAway);
+        angleVal = -38.1 + 1.71*(lowerDistance) + -0.0178*Math.pow(lowerDistance, 2) + (6.19 *Math.pow(10, -5) * Math.pow(lowerDistance, 3));
 
         SmartDashboard.putNumber("Distance from Blue Subwoofer: ", blueDistanceAway);
         SmartDashboard.putNumber("Distance from Red Subwoofer: ", redDistanceAway);
