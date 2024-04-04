@@ -185,6 +185,9 @@ public class DriveSubsystem extends SubsystemBase {
          SmartDashboard.putNumber("Robot Heading: ", robotPose.getRotation().getDegrees());
          SmartDashboard.putNumber("IMU Heading: ", gyro.getAngle());
 
+         // PID Values
+         SmartDashboard.putNumber("PID Error: ", thetaController.getPositionError());
+
          // Output the current driver controller offset to check whether or not our code works.
          SmartDashboard.putNumber("Rotation Offset: ", driverRotationalOffset.getDegrees());
 
