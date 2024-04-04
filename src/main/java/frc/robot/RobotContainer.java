@@ -226,6 +226,15 @@ public class RobotContainer {
     } else {
       driveSubsystem.setDefaultCommand(flightstickCommand);
     } 
+
+/*         Arm.setDefaultCommand(
+            new RunCommand(
+            () -> Arm.automaticAngle( driveSubsystem, teamAlliance.getSelected() ),
+            Arm
+            )
+        );  */      
+
+
     // Setup all the neccicery SmartDashboard elements
     setupDashboard();
 
@@ -246,6 +255,14 @@ public class RobotContainer {
         // getSelected() method returns the command associated with each option, which
         // is set above).
         driveSubsystem.setDefaultCommand(controllerSelection.getSelected());
+/*         Arm.setDefaultCommand(
+            new RunCommand(
+            () -> Arm.automaticAngle( driveSubsystem, teamAlliance.getSelected() ),
+            Arm
+            )
+        );  */  
+
+
 
     }
 
