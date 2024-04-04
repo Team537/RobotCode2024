@@ -34,6 +34,8 @@ import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.cameras.RobotVision;
 import frc.utils.Autonomous.AutonomousOption;
+import frc.utils.Autonomous.Alliance;
+
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -116,9 +118,13 @@ public class RobotContainer {
     // SmartDashboard options
     private final SendableChooser<Command> controllerSelection = new SendableChooser<>();
     private final SendableChooser<AutonomousOption> autonomousSelection = new SendableChooser<>();
+    private final SendableChooser<Alliance> teamAlliance = new SendableChooser<>();
+
+
+
 
     /**
-     * The container for the robot. Contains subsystems, OI devices, and commands.
+     * The container for the robot. Contains subsystems, OI devices, and commands
      */
     public RobotContainer() {
     // Setup all the necessary SmartDashboard elements
@@ -206,6 +212,13 @@ public class RobotContainer {
         new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake)));
     // */      
 
+/*     Arm.setDefaultCommand(
+        new Command() {
+        () -> Arm.automaticAngle( driveSubsystem, teamAlliance.getSelected() )
+        }
+    ) */
+
+
     // Configure the button bindings
     configureButtonBindings();
 
@@ -220,6 +233,9 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+
+
+
 }
 
     /**
@@ -262,6 +278,10 @@ public class RobotContainer {
         controllerSelection.addOption("Flightstick", flightstickCommand);
         controllerSelection.addOption("Drive To Position Test", driveToPosition);
 
+        // Team Alliance Options
+        teamAlliance.addOption("Red Alliance", Alliance.RED);
+        teamAlliance.addOption("Blue Alliance", Alliance.BLUE);
+
         // Determines whether or not we want to run autonomous.
         SmartDashboard.putBoolean("Run Auto", false);
         SmartDashboard.putBoolean("Complex Auto", false);
@@ -279,6 +299,7 @@ public class RobotContainer {
         // Add all of the configured SmartDashboard elements to the GUI.
         SmartDashboard.putData("Controller Selection", controllerSelection);
         SmartDashboard.putData("Autonomous Selection", autonomousSelection);
+        SmartDashboard.putData("Alliance Selection", teamAlliance);
     }
 
     /**

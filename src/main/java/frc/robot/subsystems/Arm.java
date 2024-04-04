@@ -16,6 +16,7 @@ import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.utils.TalonUtils;
 import frc.robot.subsystems.cameras.RobotVision;
+import frc.utils.Autonomous.Alliance;
 
 public class Arm extends SubsystemBase {
 
@@ -163,12 +164,12 @@ public class Arm extends SubsystemBase {
    * 
    * @author Ohihoin Vahe
    */
-  public void automaticAngle(DriveSubsystem driveSubsystem, char alliance){
+  public void automaticAngle(DriveSubsystem driveSubsystem, Alliance teamAlliance){
 
-    if (alliance == 'r'){
+    if (teamAlliance == Alliance.RED){
       subwooferPose = Constants.ArmConstants.redSubwooferPosition;
     }
-    else if (alliance == 'b'){
+    else if (teamAlliance == Alliance.BLUE){
       subwooferPose = Constants.ArmConstants.blueSubwooferPosition;
     }
 

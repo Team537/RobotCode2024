@@ -1,5 +1,31 @@
 {
   "HALProvider": {
+    "NTProvider": {
+      "types": {
+        "/FMSInfo": "FMSInfo",
+        "/SmartDashboard/Autonomous Selection": "String Chooser",
+        "/SmartDashboard/Controller Selection": "String Chooser"
+      }
+    },
+    "NetworkTables": {
+      "Retained Values": {
+        "open": false
+      },
+      "transitory": {
+        "SmartDashboard": {
+          "Autonomous Selection": {
+            "open": true,
+            "string[]##v_/SmartDashboard/Autonomous Selection/options": {
+              "open": true
+            }
+          },
+          "open": true
+        }
+      }
+    },
+    "NetworkTables Info": {
+      "visible": true
+    },
     "Other Devices": {
       "Pigeon 2 (v6)[42]": {
         "header": {
@@ -7,14 +33,15 @@
         }
       },
       "Talon FX (v6)[11]": {
-      "SPARK MAX [2]": {
-        "header": {
-          "open": true
-        }
-      },
-      "SPARK MAX [8]": {
-        "header": {
-          "open": true
+        "SPARK MAX [2]": {
+          "header": {
+            "open": true
+          }
+        },
+        "SPARK MAX [8]": {
+          "header": {
+            "open": true
+          }
         }
       }
     }
@@ -26,24 +53,7 @@
       "/SmartDashboard/Controller Selection": "String Chooser"
     }
   },
-  "NetworkTables": {
-    "Retained Values": {
-      "open": false
-    },
-    "transitory": {
-      "SmartDashboard": {
-        "Autonomous Selection": {
-          "open": true,
-          "string[]##v_/SmartDashboard/Autonomous Selection/options": {
-            "open": true
-          }
-        },
-        "open": true
-      }
-    }
-  },
   "NetworkTables Info": {
     "visible": true
-  }
   }
 }
