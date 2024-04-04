@@ -279,19 +279,19 @@ public class RobotContainer {
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(0))), // Drive to top note
                     // Grab note
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                        List.of(AutoConstants.BLUE_2_STARTING_POSE)), // Return to the speaker
                     // Shoot note
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(1))), // Drive to center note
                     // Grab note
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                        List.of(AutoConstants.BLUE_2_STARTING_POSE)), // Return to the speaker
                     // Shoot note
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(2))), // Drive to bottom note
                     // Grab note
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)) // Return to the speaker
+                        List.of(AutoConstants.BLUE_2_STARTING_POSE)) // Return to the speaker
                     // Shoot note
                 );
                 break;
@@ -340,22 +340,22 @@ public class RobotContainer {
             case RED_2:
                 complexPath = new SequentialCommandGroup(
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(0))), // Drive to top note
+                        List.of(AutoConstants.RED_2_COMPLEX_POSITIONS.get(0))), // Drive to top note
                     // Grab note
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                        List.of(AutoConstants.RED_2_STARTING_POSE)), // Return to the speaker
                     // Shoot note
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(1))), // Drive to center note
+                        List.of(AutoConstants.RED_2_COMPLEX_POSITIONS.get(1))), // Drive to center note
                     // Grab note
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
+                        List.of(AutoConstants.RED_2_STARTING_POSE)), // Return to the speaker
                     // Shoot note
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(2))), // Drive to bottom note
+                        List.of(AutoConstants.RED_2_COMPLEX_POSITIONS.get(2))), // Drive to bottom note
                     // Grab note
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)) // Return to the speaker
+                        List.of(AutoConstants.RED_2_STARTING_POSE)) // Return to the speaker
                     // Shoot note
                 );
                 break;
@@ -363,21 +363,21 @@ public class RobotContainer {
                 complexPath = new SequentialCommandGroup(
                     // Score note
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 2)),
+                        AutoConstants.RED_3_COMPLEX_POSITIONS.subList(0, 2)),
                     // Grab note
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
-                        AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
-                        AutoConstants.RED_1_STARTING_POSE
+                        AutoConstants.RED_3_COMPLEX_POSITIONS.get(0),
+                        AutoConstants.RED_3_STARTING_POSE
                     )),
                     // Score note
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
-                        AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
-                        AutoConstants.RED_1_COMPLEX_POSITIONS.get(2)
+                        AutoConstants.RED_3_COMPLEX_POSITIONS.get(0),
+                        AutoConstants.RED_3_COMPLEX_POSITIONS.get(2)
                     )),
                     // Grab note
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
-                        AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
-                        AutoConstants.RED_1_STARTING_POSE
+                        AutoConstants.RED_3_COMPLEX_POSITIONS.get(0),
+                        AutoConstants.RED_3_STARTING_POSE
                     ))
                     // Score note
                 );
