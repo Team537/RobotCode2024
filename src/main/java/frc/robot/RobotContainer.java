@@ -396,46 +396,41 @@ public class RobotContainer {
 
         // Create a empty variable to store the autonomous command.
         SequentialCommandGroup complexPath;
-
-        StartEndCommand grabNote = new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake);
-
-        ParallelCommandGroup shootNote =                         
-                        new ParallelCommandGroup( 
-                            new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(3), 
-
-                            new SequentialCommandGroup(
-                                
-                                new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
-                                new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(2.25)
-                                
-                            )
-
-                        );
-    
-       
-        StartEndCommand goToSubwooferPosition = new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm);
-        StartEndCommand goToIntakePosition = new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm);
-
-        SequentialCommandGroup scoreNote = new SequentialCommandGroup(
-
-            goToSubwooferPosition.withTimeout(1.5),
-            shootNote,
-            goToIntakePosition.withTimeout(1.5)
-
-        );
-        
         
         // Create a complex autonomous command for each auto. See the 
         switch (autonomousOption) {
             case BLUE_1:
                 complexPath = new SequentialCommandGroup(
                         //Shoot Note
-                        scoreNote,
+                        
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
                         
                         new FollowTrajectoryCommand(driveSubsystem, // Drive up to the amp and then grab the note closest to the wall near the amp.
                             AutoConstants.BLUE_1_COMPLEX_POSITIONS.subList(0, 2)),
+                        
                         // Grab note
-                        grabNote.until(() -> Intake.GetSwitchHit()),
+                        new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
 
                         new FollowTrajectoryCommand(driveSubsystem, List.of(
@@ -444,7 +439,28 @@ public class RobotContainer {
 
                         
                         // Score note
-                        scoreNote,
+                         new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
                         
 
                         new FollowTrajectoryCommand(driveSubsystem, List.of(
@@ -452,7 +468,7 @@ public class RobotContainer {
                             AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(2))), // Drive to the lower of the two targeted notes
                         
                         // Grab note
-                        grabNote.until(() -> Intake.GetSwitchHit() ),
+                        new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit() ),
 
                         new FollowTrajectoryCommand(driveSubsystem, List.of(
                             AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
@@ -460,7 +476,28 @@ public class RobotContainer {
                         
 
                         // Score note
-                        scoreNote
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        )
                         
                     );
                 break;
@@ -470,49 +507,133 @@ public class RobotContainer {
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(0))), // Drive to top note
                     
                     // Grab note
-                    grabNote.until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
                     
                     // Shoot note
-                    scoreNote,
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(1))), // Drive to center note
                     
                     // Grab note
-                    grabNote.until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
                     
                     // Shoot note
-                    shootNote,
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.BLUE_2_COMPLEX_POSITIONS.get(2))), // Drive to bottom note
                     
                     // Grab note
-                    grabNote.until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.BLUE_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
                     
                     // Shoot note
-                    scoreNote
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        )
                 );
                 break;
 
             case BLUE_3:
                 complexPath = new SequentialCommandGroup(
                     // Score note
-                    scoreNote,
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.subList(0, 2)),
                     // Grab note
-                    grabNote.until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(0),
@@ -520,7 +641,28 @@ public class RobotContainer {
                     )),
 
                     // Score note
-                    scoreNote,
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
 
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(0),
@@ -528,7 +670,7 @@ public class RobotContainer {
                     )),
 
                     // Grab note
-                    grabNote.until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(0),
@@ -536,89 +678,257 @@ public class RobotContainer {
                     )),
 
                     // Score note
-                    scoreNote
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        )
                 );
                 break;
 
             case RED_1:
             complexPath = new SequentialCommandGroup(
                 // Shoot note
-                scoreNote,
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
 
                 new FollowTrajectoryCommand(driveSubsystem, // Drive up to the amp and then grab the note closest to the wall near the amp.
                     AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 2)),
                 // Grab note
-                grabNote.until(() -> Intake.GetSwitchHit()),
+                new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                 new FollowTrajectoryCommand(driveSubsystem, List.of(
                     AutoConstants.RED_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
                     AutoConstants.RED_1_STARTING_POSE)), // Drive to the original starting location
                 
                 // Score note
-                scoreNote,
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
 
                 new FollowTrajectoryCommand(driveSubsystem, List.of(
                     AutoConstants.RED_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
                     AutoConstants.RED_1_COMPLEX_POSITIONS.get(2))), // Drive to the lower of the two targeted notes
                 
                 // Grab note
-                grabNote.until(() -> Intake.GetSwitchHit()),
+                new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                 new FollowTrajectoryCommand(driveSubsystem, List.of(
                     AutoConstants.RED_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
                     AutoConstants.RED_1_STARTING_POSE)), // Drive to the original starting location
                 
                 // Score note
-                scoreNote
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        )
             );
             case RED_2:
                 complexPath = new SequentialCommandGroup(
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(0))), // Drive to top note
                     // Grab note
-                    grabNote.until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
                     
                     // Shoot note
-                    scoreNote,
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(1))), // Drive to center note
                     
                     // Grab note
-                    grabNote.until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
                     
                     // Shoot note
-                    scoreNote,
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(AutoConstants.RED_1_COMPLEX_POSITIONS.get(2))), // Drive to bottom note
                     
                     // Grab note
-                    grabNote.until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         List.of(FieldConstants.RED_ALLIANCE_SPEAKER_CENTER_SCORING_LOCATION)), // Return to the speaker
 
                     // Shoot note
-                    scoreNote
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        )
 
                 );
                 break;
             case RED_3:
                 complexPath = new SequentialCommandGroup(
                     // Score note
-                    scoreNote,
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
 
                     new FollowTrajectoryCommand(driveSubsystem, 
                         AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 2)),
                     // Grab note
-                    grabNote.until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
@@ -626,7 +936,28 @@ public class RobotContainer {
                     )),
 
                     // Score note
-                    scoreNote,
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        ),
 
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
@@ -634,7 +965,7 @@ public class RobotContainer {
                     )),
 
                     // Grab note
-                    grabNote.until(() -> Intake.GetSwitchHit()),
+                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).until(() -> Intake.GetSwitchHit()),
 
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
@@ -642,7 +973,28 @@ public class RobotContainer {
                     )),
 
                     // Score note
-                    scoreNote
+                        new SequentialCommandGroup(
+
+                            // Raises the Arm to Subwoofer Position
+                            new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.5),
+
+                            // Shoots the Note             
+                            new ParallelCommandGroup( 
+
+                                new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop, Shooter).withTimeout(2), 
+
+                                new SequentialCommandGroup(
+                                
+                                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75),
+                                    new StartEndCommand(Intake::IntakeMax, Intake::IntakeStop, Intake).withTimeout(1.25)
+                                
+                                )
+                            ),
+                       
+                            // Goes back to the intake position
+                            new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
+                        
+                        )
                 );
                 break;
             default:

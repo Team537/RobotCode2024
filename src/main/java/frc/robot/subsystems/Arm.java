@@ -15,7 +15,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 import frc.robot.Constants.ArmConstants;
 import frc.utils.TalonUtils;
-import frc.robot.subsystems.cameras.RobotVision;
+import frc.robot.subsystems.DriveSubsystem;
 import frc.utils.Autonomous.Alliance;
 
 public class Arm extends SubsystemBase {
@@ -164,25 +164,26 @@ public class Arm extends SubsystemBase {
    * 
    * @author Ohihoin Vahe
    */
-  public void automaticAngle(DriveSubsystem driveSubsystem, Alliance teamAlliance){
+  
+  // public void automaticAngle(DriveSubsystem driveSubsystem, Alliance teamAlliance){
 
-    if (teamAlliance == Alliance.RED){
-      subwooferPose = Constants.ArmConstants.redSubwooferPosition;
-    }
-    else if (teamAlliance == Alliance.BLUE){
-      subwooferPose = Constants.ArmConstants.blueSubwooferPosition;
-    }
+  //   if (teamAlliance == Alliance.RED){
+  //     subwooferPose = Constants.ArmConstants.redSubwooferPosition;
+  //   }
+  //   else if (teamAlliance == Alliance.BLUE){
+  //     subwooferPose = Constants.ArmConstants.blueSubwooferPosition;
+  //   }
 
-    if (driveSubsystem.getPose() != null){
+  //   if (driveSubsystem.getPose() != null){
 
-      translationAway = driveSubsystem.getPose().relativeTo(subwooferPose);
-      distanceAway = Math.sqrt( Math.pow(translationAway.getX(), 2) + Math.pow(translationAway.getY(), 2) );
+  //     translationAway = driveSubsystem.getPose().relativeTo(subwooferPose);
+  //     distanceAway = Math.sqrt( Math.pow(translationAway.getX(), 2) + Math.pow(translationAway.getY(), 2) );
 
-    }
+  //   }
 
-    SetMotorsMotionMagic(angleValue(distanceAway)); //Sets the angle of the shooter using the angle value function
+  //   SetMotorsMotionMagic(angleValue(distanceAway)); //Sets the angle of the shooter using the angle value function
 
-  }
+  // }
 
   /**
    * Calculates to angle value input for smart motion based on the distance from the subwoofer tag
