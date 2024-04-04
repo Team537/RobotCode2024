@@ -163,21 +163,18 @@ public final class Constants {
 
         // Camera settings
         public static final String LIMELIGHT_NAME = "limelight";
-        public static final String ARDUCAM_OV9281_USB_CAMERA = "Arducam_OV9281_USB_Camera";
-        public static final String ARDUCAM_OV2311_USB_CAMERA = "Arducam_OV2311_USB_Camera";
-        public static final String COLOR_CAMERA_NAME = "USB_2M_GS_camera";
+        public static final String ARDUCAM_OV9281_USB_CAMERA_NAME = "Arducam_OV9281_USB_Camera";
+        public static final String ARDUCAM_OV2311_USB_CAMERA_NAME = "Arducam_OV2311_USB_Camera";
+        public static final String USB_2M_GS_CAMERA_NAME = "USB_2M_GS_camera";
 
         // Camera offsets (NOTE: These values are placeholders and thus subject to change).
-        public static final Transform3d RED_OUTTAKE_CAMERA_OFFSET = new Transform3d(
+        public static final Transform3d ARDUCAM_OV9281_OFFSET = new Transform3d(
                 new Translation3d(0, 0, 0),
                 new Rotation3d(0, 0, 0));
-        public static final Transform3d RED_INTAKE_CAMERA_OFFSET = new Transform3d(
+        public static final Transform3d ARDUCAM_OV2311_OFFSET = new Transform3d(
                 new Translation3d(0, 0, 0),
                 new Rotation3d(0, 0, 0));
-        public static final Transform3d BLACK_OUTTAKE_CAMERA_OFFSET = new Transform3d(
-                new Translation3d(0, 0, 0),
-                new Rotation3d(0, 0, 0));
-        public static final Transform3d BLACK_INTAKE_CAMERA_OFFSET = new Transform3d(
+        public static final Transform3d USB_2M_GS_CAMERA_OFFSET = new Transform3d(
                 new Translation3d(0, 0, 0),
                 new Rotation3d(0, 0, 0));
     }
