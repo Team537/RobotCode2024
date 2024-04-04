@@ -172,10 +172,10 @@ public final class Constants {
                 new Translation3d(0, 0, 0),
                 new Rotation3d(0, 0, 0));
         public static final Transform3d ARDUCAM_OV2311_OFFSET = new Transform3d(
-                new Translation3d(0, 0, 0),
+                new Translation3d(0.1778, -0.2286, 0.3048),
                 new Rotation3d(0, 0, 0));
         public static final Transform3d USB_2M_GS_CAMERA_OFFSET = new Transform3d(
-                new Translation3d(0, 0, 0),
+                new Translation3d(-0.1016, -0.1143, 0.5588),
                 new Rotation3d(0, 0, 0));
     }
 
