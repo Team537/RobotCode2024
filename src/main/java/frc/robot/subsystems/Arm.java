@@ -30,7 +30,7 @@ public class Arm extends SubsystemBase {
 
   private Pose2d subwooferPose;
   private Pose2d translationAway;
-  private double distanceAway = (39)/(39.3701); //Sets initial distance away to subwoofer distance. The divided by (39.2701) converts in to m
+  private double distanceAway = (49)/(39.3701); //Sets initial distance away to subwoofer distance. The divided by (39.2701) converts in to m
 
   /*
     where the arm motors are on the robot (diagram)

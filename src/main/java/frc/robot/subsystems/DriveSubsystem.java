@@ -29,6 +29,7 @@ import frc.robot.Constants.DriveConstants;
 import frc.utils.SlewRateLimiterEX;
 import frc.utils.SwerveUtils;
 import frc.utils.Autonomous.AutonomousOption;
+import frc.robot.Constants.ArmConstants;
 
 public class DriveSubsystem extends SubsystemBase {
 
@@ -148,6 +149,21 @@ public class DriveSubsystem extends SubsystemBase {
         
         // Periodically update the robot's position data to keep track of its location.
         updateRobotPose();
+
+        Pose2d transFromRedSub = getPose().relativeTo(ArmConstants.redSubwooferPosition);
+        Pose2d transFromBlueSub = getPose().relativeTo(ArmConstants.blueSubwooferPosition);
+        double redDistanceAway = Math.sqrt( Math.pow(transFromRedSub.getX(), 2) + Math.pow(transFromRedSub.getY(), 2) );
+        double blueDistanceAway = Math.sqrt(Math.pow(transFromBlueSub.getX(), 2) + Math.pow(transFromBlueSub.getY(), 2) );
+
+        redDistanceAway *= 3.281;
+        blueDistanceAway *= 3.281;
+        double lowerDistance = Math.min(redDistanceAway, blueDistanceAway);
+        double angleVal = -38.1 + 1.71*(lowerDistance) + -0.0178*Math.pow(lowerDistance, 2) + (6.19 *Math.pow(10, -5) * Math.pow(lowerDistance, 3));
+
+        SmartDashboard.putNumber("Distance from Blue Subwoofer: ", blueDistanceAway);
+        SmartDashboard.putNumber("Distance from Red Subwoofer: ", redDistanceAway);
+        SmartDashboard.putNumber("AngleVal Into SmartMotion: ", angleVal);
+
 
         SmartDashboard.putString("Front Left Commanded Speed",
                 Double.toString(frontLeft.getState().speedMetersPerSecond));
