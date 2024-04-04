@@ -39,7 +39,9 @@ public class RobotContainer {
 
     // The robot's subsystems
     private final RobotVision robotVision = new RobotVision.Builder()
-        .addPhotonVisionCamera(VisionConstants.ARDUCAM_OV9281_USB_CAMERA, VisionConstants.RED_OUTTAKE_CAMERA_OFFSET,
+        .addPhotonVisionCamera(VisionConstants.ARDUCAM_OV2311_USB_CAMERA_NAME, VisionConstants.ARDUCAM_OV9281_OFFSET,
+            VisionConstants.APRIL_TAG_PIPELINE)
+        .addPhotonVisionCamera(VisionConstants.USB_2M_GS_CAMERA_NAME, VisionConstants.USB_2M_GS_CAMERA_OFFSET,
             VisionConstants.APRIL_TAG_PIPELINE)
         .build();
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(true, robotVision::estimateRobotPose);
@@ -251,7 +253,7 @@ public class RobotContainer {
                 complexPath = new SequentialCommandGroup(
                         // Shoot note
                         new FollowTrajectoryCommand(driveSubsystem, // Drive up to the amp and then grab the note closest to the wall near the amp.
-                            AutoConstants.BLUE_1_COMPLEX_POSITIONS.subList(0, 1)),
+                            AutoConstants.BLUE_1_COMPLEX_POSITIONS.subList(0, 2)),
                         // Grab note
                         new FollowTrajectoryCommand(driveSubsystem, List.of(
                             AutoConstants.BLUE_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
@@ -293,7 +295,7 @@ public class RobotContainer {
                 complexPath = new SequentialCommandGroup(
                     // Score note
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        AutoConstants.BLUE_3_COMPLEX_POSITIONS.subList(0, 1)),
+                        AutoConstants.BLUE_3_COMPLEX_POSITIONS.subList(0, 2)),
                     // Grab note
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.BLUE_3_COMPLEX_POSITIONS.get(0),
@@ -316,7 +318,7 @@ public class RobotContainer {
             complexPath = new SequentialCommandGroup(
                 // Shoot note
                 new FollowTrajectoryCommand(driveSubsystem, // Drive up to the amp and then grab the note closest to the wall near the amp.
-                    AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 1)),
+                    AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 2)),
                 // Grab note
                 new FollowTrajectoryCommand(driveSubsystem, List.of(
                     AutoConstants.RED_1_COMPLEX_POSITIONS.get(0), // Drive back up near the amp
@@ -357,7 +359,7 @@ public class RobotContainer {
                 complexPath = new SequentialCommandGroup(
                     // Score note
                     new FollowTrajectoryCommand(driveSubsystem, 
-                        AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 1)),
+                        AutoConstants.RED_1_COMPLEX_POSITIONS.subList(0, 2)),
                     // Grab note
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.RED_1_COMPLEX_POSITIONS.get(0),
