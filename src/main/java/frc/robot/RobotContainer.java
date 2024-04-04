@@ -364,17 +364,23 @@ public class RobotContainer {
         } else {
 
             // Follow the basic pre-planned path
+            // selectedAutonomousRoutine = new SequentialCommandGroup(
+            //     new FollowTrajectoryCommand(
+            //         driveSubsystem, 
+            //         selectedAuto.getTrajectory())
+            // );
             selectedAutonomousRoutine = new SequentialCommandGroup(
-                new FollowTrajectoryCommand(
-                    driveSubsystem, 
-                    selectedAuto.getTrajectory())
-            );
+                new StartEndCommand(Arm::ArmSubwoofer,Arm::ArmSubwoofer,Arm).withTimeout(1),
+                new ParallelCommandGroup(
+                    new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
+                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(0.75)).withTimeout(2)
+                );
         }
         // Configure the robot's settings so that it will be optimized for the selected command.
         driveSubsystem.setAutonomous(selectedAuto);
 
         // If we want to run autonomous, then follow the trajectory. Otherwise don't run the auto.
-        if (SmartDashboard.getBoolean("Run Auto", false)) {
+        if (SmartDashboard.getBoolean("Run Auto", true)) {
 
              // Run path following command, then stop at the end.
             return selectedAutonomousRoutine;
