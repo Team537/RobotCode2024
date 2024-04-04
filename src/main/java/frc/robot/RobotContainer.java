@@ -161,6 +161,10 @@ public class RobotContainer {
         SmartDashboard.putBoolean("Run Auto", false);
         SmartDashboard.putBoolean("Complex Auto", false);
 
+        // PID Values
+        SmartDashboard.putNumber("Rotation KP",0);
+        SmartDashboard.putNumber("Rotation KD",0);
+
         // Setup autonomous selection.
         // Loop through all of the available auto options and add each of them as a separate autonomous option
         // in SmartDashboard.
