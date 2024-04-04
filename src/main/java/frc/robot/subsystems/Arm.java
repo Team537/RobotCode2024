@@ -27,9 +27,9 @@ public class Arm extends SubsystemBase {
   
   double setpos = 5;
 
-  Pose2d subwooferPose;
-  Pose2d translationAway;
-  double distanceAway;
+  private Pose2d subwooferPose;
+  private Pose2d translationAway;
+  private double distanceAway = (39)/(39.3701); //Sets initial distance away to subwoofer distance. The divided by (39.2701) converts in to m
 
   /*
     where the arm motors are on the robot (diagram)
@@ -163,7 +163,7 @@ public class Arm extends SubsystemBase {
    * 
    * @author Ohihoin Vahe
    */
-  public void automaticAngle(RobotVision robotVision, char alliance){
+  public void automaticAngle(DriveSubsystem driveSubsystem, char alliance){
 
     if (alliance == 'r'){
       subwooferPose = Constants.ArmConstants.redSubwooferPosition;
@@ -172,9 +172,9 @@ public class Arm extends SubsystemBase {
       subwooferPose = Constants.ArmConstants.blueSubwooferPosition;
     }
 
-    if (robotVision.estimateRobotPose() != null){
+    if (driveSubsystem.getPose() != null){
 
-      translationAway = robotVision.estimateRobotPose().relativeTo(subwooferPose);
+      translationAway = driveSubsystem.getPose().relativeTo(subwooferPose);
       distanceAway = Math.sqrt( Math.pow(translationAway.getX(), 2) + Math.pow(translationAway.getY(), 2) );
 
     }
