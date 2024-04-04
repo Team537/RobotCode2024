@@ -830,7 +830,7 @@ public class RobotContainer {
                             // Goes back to the intake position
                             new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm).withTimeout(1)
                         
-                        ), 
+                        );
                 
 
                 complexPath = new SequentialCommandGroup(
