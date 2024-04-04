@@ -142,7 +142,7 @@ public class RobotContainer {
     //Bumpers ------------------------------------------------
 
     leftBumper.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
-        new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(0.75)));
+        new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(1)));
 
     leftBumper.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
         new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake)));
