@@ -21,7 +21,6 @@ import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import edu.wpi.first.wpilibj2.command.button.POVButton;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.AutoConstants;
-import frc.robot.Constants.FieldConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.FollowTrajectoryCommand;
 import frc.robot.commands.vision.ResetImuWithVisionCommand;
@@ -160,10 +159,6 @@ public class RobotContainer {
         // Determines whether or not we want to run autonomous.
         SmartDashboard.putBoolean("Run Auto", false);
         SmartDashboard.putBoolean("Complex Auto", false);
-
-        // PID Values
-        SmartDashboard.putNumber("Rotation KP",0);
-        SmartDashboard.putNumber("Rotation KD",0);
 
         // Setup autonomous selection.
         // Loop through all of the available auto options and add each of them as a separate autonomous option
