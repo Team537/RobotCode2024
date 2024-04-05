@@ -46,7 +46,7 @@ public class Robot extends TimedRobot {
     snapshotTimer.start();
 
     // Mak eit possible to view cameras on the driver station.
-    // CameraServer.startAutomaticCapture();
+    CameraServer.startAutomaticCapture();
     
     // Make it possible to view the photonvision dashboard over the internet
     PortForwarder.add(5800, "photonvision.local", 5800);
@@ -67,7 +67,6 @@ public class Robot extends TimedRobot {
     // block in order for anything in the Command-based framework to work.
     if (timer <= 15000) {
       timer += 20;
-      System.out.println(timer);
       final MotorOutputConfigs m_coastConfig = new MotorOutputConfigs();
       m_coastConfig.NeutralMode = NeutralModeValue.Coast;
       Arm.m_leader.getConfigurator().apply(m_coastConfig);
