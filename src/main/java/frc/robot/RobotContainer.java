@@ -54,8 +54,6 @@ public class RobotContainer {
     private final RobotVision robotVision = new RobotVision.Builder()
         .addPhotonVisionCamera(VisionConstants.ARDUCAM_OV2311_USB_CAMERA_NAME, VisionConstants.ARDUCAM_OV9281_OFFSET,
             VisionConstants.APRIL_TAG_PIPELINE)
-        .addPhotonVisionCamera(VisionConstants.USB_2M_GS_CAMERA_NAME, VisionConstants.USB_2M_GS_CAMERA_OFFSET,
-            VisionConstants.APRIL_TAG_PIPELINE)
         .build();
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(true, robotVision::estimateRobotPose);
 
@@ -106,8 +104,8 @@ public class RobotContainer {
       */
      private final RunCommand driveToPosition = new RunCommand(
         () -> driveSubsystem.driveToPosition(new Pose2d(
-                driverController.getLeftX(),
-                driverController.getLeftY(),
+                driverController.getLeftX() * 1,
+                driverController.getLeftY() * 1,
                 new Rotation2d(Math.atan2(
                         driverController.getRightY(),
                         driverController.getRightX()
