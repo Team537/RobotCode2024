@@ -46,10 +46,10 @@ public final class Constants {
         public static final double GRIP_BOOST_MODE_DIRECTION_SLEW_RATE = 5; // radians per second
         public static final double MAGNITUDE_POSITIVE_SLEW_RATE = 3.6; // percent per second (1 = 100%)
         public static final double MAGNITUDE_NEGATIVE_SLEW_RATE = 4.8; // percent per second (1 = 100%)
-        public static final double GRIP_MAGNITUDE_POSITIVE_SLEW_RATE = 7.2; // percent per second (1 = 100%)
-        public static final double GRIP_MAGNITUDE_NEGATIVE_SLEW_RATE = 6; // percent per second (1 = 100%)
-        public static final double BOOST_MODE_MAGNITUDE_POSITIVE_SLEW_RATE = 2; // percent per second (1 = 100%)
-        public static final double BOOST_MODE_MAGNITUDE_NEGATIVE_SLEW_RATE = 3.6; // percent per second (1 = 100%)
+        public static final double GRIP_MAGNITUDE_POSITIVE_SLEW_RATE = 5; // percent per second (1 = 100%)
+        public static final double GRIP_MAGNITUDE_NEGATIVE_SLEW_RATE = 5; // percent per second (1 = 100%)
+        public static final double BOOST_MODE_MAGNITUDE_POSITIVE_SLEW_RATE = 1.8; // percent per second (1 = 100%)
+        public static final double BOOST_MODE_MAGNITUDE_NEGATIVE_SLEW_RATE = 3; // percent per second (1 = 100%)
         public static final double ROTATIONAL_SLEW_RATE = 2.20; // percent per second (1 = 100%)
 
         // Chassis configuration
@@ -104,7 +104,7 @@ public final class Constants {
 
         // Calculations required for driving motor conversion factors and feed forward
         public static final double DRIVING_MOTOR_FREE_SPEED_RPS = NeoMotorConstants.FREE_SPEED_RPM / 60;
-        public static final double WHEEL_DIAMETER_METERS = 0.0762;
+        public static final double WHEEL_DIAMETER_METERS = 0.06677;
         public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
         // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
         // teeth on the bevel pinion

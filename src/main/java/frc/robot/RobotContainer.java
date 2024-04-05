@@ -52,7 +52,7 @@ public class RobotContainer {
 
   
     private final RobotVision robotVision = new RobotVision.Builder()
-        .addPhotonVisionCamera(VisionConstants.ARDUCAM_OV2311_USB_CAMERA_NAME, VisionConstants.ARDUCAM_OV9281_OFFSET,
+        .addPhotonVisionCamera(VisionConstants.ARDUCAM_OV2311_USB_CAMERA_NAME, VisionConstants.ARDUCAM_OV2311_OFFSET,
             VisionConstants.APRIL_TAG_PIPELINE)
         // .addPhotonVisionCamera(VisionConstants.USB_2M_GS_CAMERA_NAME, VisionConstants.USB_2M_GS_CAMERA_OFFSET,
         //     VisionConstants.APRIL_TAG_PIPELINE)
