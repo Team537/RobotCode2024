@@ -41,9 +41,9 @@ public final class Constants {
         public static final double MAX_ANGULAR_SPEED = 2 * Math.PI; // radians per second
 
         public static final double DIRECTION_SLEW_RATE = 2; // radians per second
-        public static final double GRIP_DIRECTION_SLEW_RATE = 5; // radians per second
+        public static final double GRIP_DIRECTION_SLEW_RATE = 4; // radians per second
         public static final double BOOST_MODE_DIRECTION_SLEW_RATE = 1.8; // radians per second
-        public static final double GRIP_BOOST_MODE_DIRECTION_SLEW_RATE = 5; // radians per second
+        public static final double GRIP_BOOST_MODE_DIRECTION_SLEW_RATE = 3.5; // radians per second
         public static final double MAGNITUDE_POSITIVE_SLEW_RATE = 3.6; // percent per second (1 = 100%)
         public static final double MAGNITUDE_NEGATIVE_SLEW_RATE = 4.8; // percent per second (1 = 100%)
         public static final double GRIP_MAGNITUDE_POSITIVE_SLEW_RATE = 5; // percent per second (1 = 100%)
