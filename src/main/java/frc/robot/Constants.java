@@ -199,9 +199,9 @@ public final class Constants {
         public static final double Y_CONTROLLER_KI = 0;
         public static final double Y_CONTROLLER_KD = 0;
 
-        public static final double THETA_CONTROLLER_KP = 1;
+        public static final double THETA_CONTROLLER_KP = .85;
         public static final double THETA_CONTROLLER_KI = 0;
-        public static final double THETA_CONTROLLER_KD = 0.2;
+        public static final double THETA_CONTROLLER_KD = 1;
 
         // Constraint for the motion profiled robot angle controller
         // Value is a float because xyz
