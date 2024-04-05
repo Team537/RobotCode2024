@@ -78,7 +78,13 @@ public class RobotContainer {
     POVButton dPadDownButton = new POVButton(driverController, 180);
     POVButton dPadRightButton = new POVButton(driverController, 90);
     POVButton dPadLeftButton = new POVButton(driverController, 270);
-    
+ 
+    public class TriggerButton extends Trigger{
+        public TriggerButton(XboxController controller){
+            super(() -> controller.getLeftTriggerAxis() >= 0.75);
+        }
+    }
+    TriggerButton leftTrigger = new TriggerButton(driverController);
 
     // Controller commands
     private final RunCommand xBoxControllerCommand = new RunCommand(
@@ -131,19 +137,18 @@ public class RobotContainer {
     setupDashboard();
 
     //triggers -----------------------------------------------
-    if (driverController.getLeftTriggerAxis() >= 0.8) {
-        new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterAmp, Shooter::ShooterAmp,Shooter), 
-        new StartEndCommand(Intake::IntakeAmp, Intake::IntakeAmp, Intake));
-    } else {
-        new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
-        new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake));
-    }        
+    leftTrigger.onTrue(new ParallelCommandGroup(new StartEndCommand(Shooter::ShooterAmp, Shooter::ShooterAmp, Shooter),
+    new StartEndCommand(Intake::IntakeAmp, Intake::IntakeAmp, Intake)));
+
+    leftTrigger.onFalse(new ParallelCommandGroup(new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop, Shooter),
+    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake)));
+     
     //Bumpers ------------------------------------------------
 
     leftBumper.onTrue(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
         new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(1)));
 
-    leftBumper.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
+    leftBumper.onFalse(new ParallelCommandGroup( new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterStop,Shooter).withTimeout(0.25), 
         new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake)));
        
 
@@ -156,7 +161,7 @@ public class RobotContainer {
 
     aButton.onTrue(new StartEndCommand(Arm::ArmIntake, Arm::ArmIntake, Arm));
 
-    // aButton.onFalse(null);
+    // aButton.onFalse(null
 
 
     bButton.onTrue(new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm));
@@ -176,7 +181,7 @@ public class RobotContainer {
 
     //D-PAD ---------------------------------------------
 
-    //dPadUpButton.onTrue(null);
+    // dPadUpButton.onTrue(null);
 
     // dPadUpButton.onFalse(null);
 
@@ -364,10 +369,12 @@ public class RobotContainer {
                     selectedAuto.getTrajectory())
             );
         } else if (SmartDashboard.getBoolean("Only Shoot", false)) {
-                new StartEndCommand(Arm::ArmSubwoofer,Arm::ArmSubwoofer,Arm).withTimeout(1.75);
+            selectedAutonomousRoutine = new SequentialCommandGroup(
+                new StartEndCommand(Arm::ArmSubwoofer,Arm::ArmSubwoofer,Arm).withTimeout(1.75),
                 new ParallelCommandGroup(
                     new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
-                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(0.75));
+                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(0.75))
+            );
         } else {
             selectedAutonomousRoutine = new SequentialCommandGroup(
                 new StartEndCommand(Arm::ArmSubwoofer,Arm::ArmSubwoofer,Arm).withTimeout(1.75),

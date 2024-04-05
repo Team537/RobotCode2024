@@ -14,10 +14,13 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.StartEndCommand;
 import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.VisionConstants;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.Shooter;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -144,7 +147,6 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
-
      // Take a screenshot every 250ms.
      if (snapshotTimer.get() >= VisionConstants.SNAPSHOT_RATE) {
       snapshotTimer.reset();
