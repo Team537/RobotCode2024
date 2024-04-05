@@ -54,8 +54,8 @@ public class RobotContainer {
     private final RobotVision robotVision = new RobotVision.Builder()
         .addPhotonVisionCamera(VisionConstants.ARDUCAM_OV2311_USB_CAMERA_NAME, VisionConstants.ARDUCAM_OV9281_OFFSET,
             VisionConstants.APRIL_TAG_PIPELINE)
-        .addPhotonVisionCamera(VisionConstants.USB_2M_GS_CAMERA_NAME, VisionConstants.USB_2M_GS_CAMERA_OFFSET,
-            VisionConstants.APRIL_TAG_PIPELINE)
+        // .addPhotonVisionCamera(VisionConstants.USB_2M_GS_CAMERA_NAME, VisionConstants.USB_2M_GS_CAMERA_OFFSET,
+        //     VisionConstants.APRIL_TAG_PIPELINE)
         .build();
     private final DriveSubsystem driveSubsystem = new DriveSubsystem(true, robotVision::estimateRobotPose);
 
@@ -293,6 +293,8 @@ public class RobotContainer {
         SmartDashboard.putBoolean("Run Auto", false);
         SmartDashboard.putBoolean("Complex Auto", false);
         SmartDashboard.putBoolean("Only Drive", false);
+        SmartDashboard.putBoolean("Only Shoot", false);
+
         // Setup autonomous selection.
         // Loop through all of the available auto options and add each of them as a separate autonomous option
         // in SmartDashboard.
@@ -353,7 +355,7 @@ public class RobotContainer {
 
             // Get complicated autonomous routine associated with the selected auto.
             selectedAutonomousRoutine = getComplexPath(selectedAuto);
-        } else if (SmartDashboard.getBoolean("Only Drive", true)) {
+        } else if (SmartDashboard.getBoolean("Only Drive", false)) {
 
             // Follow the basic pre-planned path
             selectedAutonomousRoutine = new SequentialCommandGroup(
@@ -361,9 +363,14 @@ public class RobotContainer {
                     driveSubsystem, 
                     selectedAuto.getTrajectory())
             );
+        } else if (SmartDashboard.getBoolean("Only Shoot", false)) {
+                new StartEndCommand(Arm::ArmSubwoofer,Arm::ArmSubwoofer,Arm).withTimeout(1.75);
+                new ParallelCommandGroup(
+                    new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
+                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(0.75));
         } else {
             selectedAutonomousRoutine = new SequentialCommandGroup(
-                new StartEndCommand(Arm::ArmSubwoofer,Arm::ArmSubwoofer,Arm).withTimeout(1),
+                new StartEndCommand(Arm::ArmSubwoofer,Arm::ArmSubwoofer,Arm).withTimeout(1.75),
                 new ParallelCommandGroup(
                     new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
                     new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(0.75)).withTimeout(2),
