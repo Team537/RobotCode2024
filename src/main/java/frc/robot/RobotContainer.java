@@ -498,7 +498,9 @@ public class RobotContainer {
             case BLUE_2: // Starting position is the same as the scoring position so we don't drive to the scoring position at the start.
                 complexPath = new SequentialCommandGroup(
                     new SequentialCommandGroup(
-
+                        new FollowTrajectoryCommand(driveSubsystem, List.of(
+                             AutoConstants.BLUE_2_SCORING_POSITION
+                        )),
                         // lowers the Arm to Subwoofer Position
                         new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.75),
 
@@ -757,6 +759,10 @@ public class RobotContainer {
             case RED_2: // Starting position is the same as the scoring position so we don't drive to the scoring position at the start.
                 complexPath = new SequentialCommandGroup(
                     new SequentialCommandGroup(
+
+                        new FollowTrajectoryCommand(driveSubsystem, List.of(
+                            AutoConstants.RED_2_SCORING_POSITION // Return to this auto's scoring position
+                        )),
 
                         // lowers the Arm to Subwoofer Position
                         new StartEndCommand(Arm::ArmSubwoofer, Arm::ArmSubwoofer, Arm).withTimeout(1.75),
