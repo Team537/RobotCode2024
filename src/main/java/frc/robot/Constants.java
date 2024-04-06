@@ -104,7 +104,7 @@ public final class Constants {
 
         // Calculations required for driving motor conversion factors and feed forward
         public static final double DRIVING_MOTOR_FREE_SPEED_RPS = NeoMotorConstants.FREE_SPEED_RPM / 60;
-        public static final double WHEEL_DIAMETER_METERS = 0.0762;
+        public static final double WHEEL_DIAMETER_METERS = 0.06677;
         public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
         // 45 teeth on the wheel's bevel gear, 22 teeth on the first-stage spur gear, 15
         // teeth on the bevel pinion
@@ -199,9 +199,9 @@ public final class Constants {
         public static final double Y_CONTROLLER_KI = 0;
         public static final double Y_CONTROLLER_KD = 0;
 
-        public static final double THETA_CONTROLLER_KP = .85;
+        public static final double THETA_CONTROLLER_KP = 0.5;
         public static final double THETA_CONTROLLER_KI = 0;
-        public static final double THETA_CONTROLLER_KD = 1;
+        public static final double THETA_CONTROLLER_KD = 0.2;
 
         // Constraint for the motion profiled robot angle controller
         // Value is a float because xyz
@@ -237,38 +237,38 @@ public final class Constants {
                 new Pose2d(4.440, 0.931, BLUE_3_STARTING_POSE.getRotation()));
 
         // Blue 1 complex auto positions
-        public static final Pose2d BLUE_1_SCORING_POSITION = BLUE_1_STARTING_POSE;
+        public static final Pose2d BLUE_1_SCORING_POSITION = new Pose2d(0.840,6.979, Rotation2d.fromDegrees(60));
         public static final Pose2d BLUE_1_NEAR_AMP_POSITION = new Pose2d(1.629, 7.807, Rotation2d.fromDegrees(0));
         public static final Pose2d BLUE_1_FIRST_NOTE_POSITION = new Pose2d(7.717, 7.436, Rotation2d.fromDegrees(0));
         public static final Pose2d BLUE_1_SECOND_NOTE_POSITION =  new Pose2d(7.717, 5.785, Rotation2d.fromDegrees(0));
 
         // Blue 2 complex auto positions
-        public static final Pose2d BLUE_2_SCORING_POSITION = BLUE_2_STARTING_POSE;
+        public static final Pose2d BLUE_2_SCORING_POSITION = new Pose2d(1.418,5.603, Rotation2d.fromDegrees(0));
         public static final Pose2d BLUE_2_RIGHTMOST_NOTE_POSITION = new Pose2d(2.273, 4.088, Rotation2d.fromDegrees(0));
         public static final Pose2d BLUE_2_CENTER_NOTE_POSITION = new Pose2d(2.273, 5.569, Rotation2d.fromDegrees(0));
         public static final Pose2d BLUE_2_LEFTMOST_NOTE_POSITION =  new Pose2d(2.273, 7.004, Rotation2d.fromDegrees(0));
 
         // Blue 3 complex auto positions
-        public static final Pose2d BLUE_3_SCORING_POSITION = BLUE_3_STARTING_POSE;
+        public static final Pose2d BLUE_3_SCORING_POSITION = new Pose2d(0.840,4.227, Rotation2d.fromDegrees(300));
         public static final Pose2d BLUE_3_UNDER_STAGE_POSITION = new Pose2d(4.726, 4.840, Rotation2d.fromDegrees(0));
         public static final Pose2d BLUE_3_FIRST_NOTE_POSITION = new Pose2d(7.717, 4.099, Rotation2d.fromDegrees(0));
         public static final Pose2d BLUE_3_SECOND_NOTE_POSITION =  new Pose2d(7.717, 2.425, Rotation2d.fromDegrees(0));
 
 
-        // Red 1 complex auto positions
-        public static final Pose2d RED_1_SCORING_POSITION = RED_1_STARTING_POSE;
+        // Red 1 complex auto positions  15.743
+        public static final Pose2d RED_1_SCORING_POSITION = new Pose2d(15.673,6.979, Rotation2d.fromDegrees(120));
         public static final Pose2d RED_1_NEAR_AMP_POSITION = new Pose2d(14.884, 7.807, Rotation2d.fromDegrees(180));
         public static final Pose2d RED_1_FIRST_NOTE_POSITION = new Pose2d(8.796, 7.436, Rotation2d.fromDegrees(180));
         public static final Pose2d RED_1_SECOND_NOTE_POSITION = new Pose2d(8.796, 5.785, Rotation2d.fromDegrees(180));
 
         // Red 2 complex auto positions
-        public static final Pose2d RED_2_SCORING_POSITION = RED_2_STARTING_POSE;
+        public static final Pose2d RED_2_SCORING_POSITION = new Pose2d(15.095,5.603, Rotation2d.fromDegrees(180));;
         public static final Pose2d RED_2_RIGHTMOST_NOTE_POSITION = new Pose2d(14.24, 4.088, Rotation2d.fromDegrees(180));
         public static final Pose2d RED_2_CENTER_NOTE_POSITION = new Pose2d(14.24, 5.569, Rotation2d.fromDegrees(180));
         public static final Pose2d RED_2_LEFTMOST_NOTE_POSITION = new Pose2d(14.24, 7.004, Rotation2d.fromDegrees(180));
 
         // Red 3 complex auto positions
-        public static final Pose2d RED_3_SCORING_POSITION = RED_3_STARTING_POSE;
+        public static final Pose2d RED_3_SCORING_POSITION = new Pose2d(15.673,4.227, Rotation2d.fromDegrees(240));
         public static final Pose2d RED_3_UNDER_STAGE_POSITION = new Pose2d(11.787, 4.840, Rotation2d.fromDegrees(180));
         public static final Pose2d RED_3_FIRST_NOTE_POSITION = new Pose2d(8.796, 4.099, Rotation2d.fromDegrees(180));
         public static final Pose2d RED_3_SECOND_NOTE_POSITION = new Pose2d(8.796, 2.425, Rotation2d.fromDegrees(180));
