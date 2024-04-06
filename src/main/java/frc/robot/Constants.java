@@ -250,8 +250,8 @@ public final class Constants {
 
         // Blue 3 complex auto positions
         public static final Pose2d BLUE_3_SCORING_POSITION = new Pose2d(0.840,4.227, Rotation2d.fromDegrees(300));
-        public static final Pose2d BLUE_3_UNDER_STAGE_POSITION = new Pose2d(4.726, 4.840, Rotation2d.fromDegrees(0));
-        public static final Pose2d BLUE_3_FIRST_NOTE_POSITION = new Pose2d(7.717, 4.099, Rotation2d.fromDegrees(0));
+        public static final Pose2d BLUE_3_NEAR_STAGE_POSITION = new Pose2d(3, 0.740, Rotation2d.fromDegrees(0));
+        public static final Pose2d BLUE_3_FIRST_NOTE_POSITION = new Pose2d(7.717, 0.740, Rotation2d.fromDegrees(0));
         public static final Pose2d BLUE_3_SECOND_NOTE_POSITION =  new Pose2d(7.717, 2.425, Rotation2d.fromDegrees(0));
 
 
@@ -269,8 +269,8 @@ public final class Constants {
 
         // Red 3 complex auto positions
         public static final Pose2d RED_3_SCORING_POSITION = new Pose2d(15.673,4.227, Rotation2d.fromDegrees(240));
-        public static final Pose2d RED_3_UNDER_STAGE_POSITION = new Pose2d(11.787, 4.840, Rotation2d.fromDegrees(180));
-        public static final Pose2d RED_3_FIRST_NOTE_POSITION = new Pose2d(8.796, 4.099, Rotation2d.fromDegrees(180));
+        public static final Pose2d RED_3_UNDER_STAGE_POSITION = new Pose2d(13.513, 0.740, Rotation2d.fromDegrees(180));
+        public static final Pose2d RED_3_FIRST_NOTE_POSITION = new Pose2d(8.796, 0.740, Rotation2d.fromDegrees(180));
         public static final Pose2d RED_3_SECOND_NOTE_POSITION = new Pose2d(8.796, 2.425, Rotation2d.fromDegrees(180));
     }
 

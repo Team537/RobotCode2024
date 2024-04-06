@@ -617,14 +617,14 @@ public class RobotContainer {
                         )
                     ),
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
-                        AutoConstants.BLUE_3_UNDER_STAGE_POSITION, // Drive under the stage
+                        AutoConstants.BLUE_3_NEAR_STAGE_POSITION, // Drive under the stage
                         AutoConstants.BLUE_3_FIRST_NOTE_POSITION // Drive to the first target note.
                     )),
                     new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()).withTimeout(2),
                     new StartEndCommand(Arm::ArmIntake, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit()).withTimeout(2)),
 
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
-                        AutoConstants.BLUE_3_UNDER_STAGE_POSITION, // Drive under the stage
+                        AutoConstants.BLUE_3_NEAR_STAGE_POSITION, // Drive under the stage
                         AutoConstants.BLUE_3_SCORING_POSITION // Return to this auto's scoring position
                     )),
                     new SequentialCommandGroup(
@@ -645,14 +645,14 @@ public class RobotContainer {
                         )
                     ),
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
-                        AutoConstants.BLUE_3_UNDER_STAGE_POSITION, // Drive under the stage
+                        AutoConstants.BLUE_3_NEAR_STAGE_POSITION, // Drive under the stage
                         AutoConstants.BLUE_3_SECOND_NOTE_POSITION // Drive to the first target note.
                     )),
                     new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()).withTimeout(2),
                     new StartEndCommand(Arm::ArmIntake, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit()).withTimeout(2)),
 
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
-                        AutoConstants.BLUE_3_UNDER_STAGE_POSITION, // Drive under the stage
+                        AutoConstants.BLUE_3_NEAR_STAGE_POSITION, // Drive under the stage
                         AutoConstants.BLUE_3_SCORING_POSITION // Return to this auto's scoring position
                     )),
                     new SequentialCommandGroup(
@@ -909,7 +909,7 @@ public class RobotContainer {
                     )),
                     new ParallelCommandGroup(new StartEndCommand(Intake::IntakeForward, Intake::IntakePIDOff, Intake).until(()-> Intake.GetSwitchHit()).withTimeout(2),
                     new StartEndCommand(Arm::ArmIntake, Arm::ArmSubwoofer, Arm).until(()-> Intake.GetSwitchHit()).withTimeout(2)),
-                    
+
                     new FollowTrajectoryCommand(driveSubsystem, List.of(
                         AutoConstants.RED_3_UNDER_STAGE_POSITION, // Drive under the stage
                         AutoConstants.RED_3_SCORING_POSITION // Return to this auto's scoring position
