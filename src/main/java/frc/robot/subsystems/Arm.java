@@ -149,7 +149,7 @@ public class Arm extends SubsystemBase {
   }
 
   public void ArmMid() {
-    SetMotorsMotionMagic(16.5);
+    SetMotorsMotionMagic(20);
   }
 
   public void ArmSmartSet() {

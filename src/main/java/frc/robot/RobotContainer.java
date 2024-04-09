@@ -381,6 +381,9 @@ public class RobotContainer {
                 new ParallelCommandGroup(
                     new StartEndCommand(Shooter::ShooterForward, Shooter::ShooterForward,Shooter), 
                     new StartEndCommand(Intake::IntakeStop, Intake::IntakeMax, Intake).withTimeout(0.75)).withTimeout(2),
+                new ParallelCommandGroup(
+                    new StartEndCommand(Shooter::ShooterStop, Shooter::ShooterStop,Shooter), 
+                    new StartEndCommand(Intake::IntakeStop, Intake::IntakeStop, Intake).withTimeout(0.75)).withTimeout(0.1),
                 new FollowTrajectoryCommand(
                     driveSubsystem, 
                     selectedAuto.getTrajectory())
