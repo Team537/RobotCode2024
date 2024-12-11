@@ -15,7 +15,7 @@ import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.VisionConstants;
-import frc.utils.vision.DetectedObject;
+// import frc.utils.vision.DetectedObject;
 
 /**
  * A camera attached to a co-processor.
@@ -94,9 +94,9 @@ public class PhotonVisionCamera extends SubsystemBase {
             SmartDashboard.putNumber("Object Y: ",(tagCorners.get(3).y + tagCorners.get(1).y) / 2);
 
             // Convert the detected object to a DetectedObject and output the calculated position values.
-            DetectedObject detectedObject = new DetectedObject(target);
-            SmartDashboard.putNumber("Center Origin Object X: ", detectedObject.getX());
-            SmartDashboard.putNumber("Center Origin Object Y: ", detectedObject.getY());
+            // DetectedObject detectedObject = new DetectedObject(target);
+            // SmartDashboard.putNumber("Center Origin Object X: ", detectedObject.getX());
+            // SmartDashboard.putNumber("Center Origin Object Y: ", detectedObject.getY());
         }
     }
 
@@ -128,12 +128,12 @@ public class PhotonVisionCamera extends SubsystemBase {
         return photonPoseEstimator.update();
     }
 
-    public List<DetectedObject> gDetectedObjects() {
+    // public List<DetectedObject> gDetectedObjects() {
 
-        // TODO: Add ability to get detected object's data.
+    //     // TODO: Add ability to get detected object's data.
 
-        return null;
-    }
+    //     return null;
+    // }
 
     /**
      * This method sets the pipeline that this camera's stream will be processed

@@ -152,7 +152,7 @@ public class DriveSubsystem extends SubsystemBase {
     public void periodic() {
         
         // Periodically update the robot's position data to keep track of its location.
-        updateRobotPose();
+        // updateRobotPose();
 
         transFromRedSub = getPose().relativeTo(ArmConstants.redSubwooferPosition);
         transFromBlueSub = getPose().relativeTo(ArmConstants.blueSubwooferPosition);

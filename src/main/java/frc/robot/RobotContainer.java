@@ -27,12 +27,12 @@ import frc.robot.Constants.VisionConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.FollowTrajectoryCommand;
-import frc.robot.commands.vision.ResetImuWithVisionCommand;
+// import frc.robot.commands.vision.ResetImuWithVisionCommand;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.cameras.RobotVision;
+// import frc.robot.subsystems.cameras.RobotVision;
 import frc.utils.Autonomous.AutonomousOption;
 import frc.utils.Autonomous.Alliance;
 
@@ -51,13 +51,13 @@ public class RobotContainer {
   private final Shooter Shooter = new Shooter();
 
   
-    private final RobotVision robotVision = new RobotVision.Builder()
-        .addPhotonVisionCamera(VisionConstants.ARDUCAM_OV2311_USB_CAMERA_NAME, VisionConstants.ARDUCAM_OV2311_OFFSET,
-            VisionConstants.APRIL_TAG_PIPELINE)
-        // .addPhotonVisionCamera(VisionConstants.USB_2M_GS_CAMERA_NAME, VisionConstants.USB_2M_GS_CAMERA_OFFSET,
-        //     VisionConstants.APRIL_TAG_PIPELINE)
-        .build();
-    private final DriveSubsystem driveSubsystem = new DriveSubsystem(true, robotVision::estimateRobotPose);
+    // private final RobotVision robotVision = new RobotVision.Builder()
+    //     .addPhotonVisionCamera(VisionConstants.ARDUCAM_OV2311_USB_CAMERA_NAME, VisionConstants.ARDUCAM_OV2311_OFFSET,
+    //         VisionConstants.APRIL_TAG_PIPELINE)
+    //     // .addPhotonVisionCamera(VisionConstants.USB_2M_GS_CAMERA_NAME, VisionConstants.USB_2M_GS_CAMERA_OFFSET,
+    //     //     VisionConstants.APRIL_TAG_PIPELINE)
+    //     .build();
+    private final DriveSubsystem driveSubsystem = new DriveSubsystem(true, null);//robotVision::estimateRobotPose);
 
     // The driver's controller
     private final XboxController driverController = new XboxController(OIConstants.DRIVER_CONTROLLER_PORT);
@@ -226,7 +226,7 @@ public class RobotContainer {
 
     // Adjust the dafult command based on which controler the driver ants to use.
     if (SmartDashboard.getBoolean("useXBoxController", true)) {
-      driveSubsystem.setDefaultCommand(xBoxControllerCommand);
+    //   driveSubsystem.setDefaultCommand(xBoxControllerCommand);
     } else {
       driveSubsystem.setDefaultCommand(flightstickCommand);
     }  
@@ -275,7 +275,7 @@ public class RobotContainer {
     private void configureButtonBindings() {
 
         // Reset the IMU when the start button is pressed.
-        startButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem, robotVision));
+        // startButton.onTrue(new ResetImuWithVisionCommand(driveSubsystem, robotVision));
     }
 
     /**
@@ -334,7 +334,7 @@ public class RobotContainer {
      * Takes a photo using all of the cameras.
      */
     public void snapshot() {
-        robotVision.snapshotAll();
+        // robotVision.snapshotAll();
     }
 
     /**
