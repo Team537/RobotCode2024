@@ -128,7 +128,7 @@ public class TalonUtils {
 
         // pos is the desired location of the falcon in rotations
         //creates a new PID position request with pos [pos] with the PID slot 0. FOC makes better command chaining
-        final PositionVoltage m_request = new PositionVoltage(pos).withSlot(0).withEnableFOC(true);
+        final PositionVoltage m_request = new PositionVoltage(pos).withSlot(0);
 
         //tells motor to move to the position
         m_talon.setControl(m_request);
